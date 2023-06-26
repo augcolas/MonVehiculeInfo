@@ -1,8 +1,12 @@
-import { StyleSheet, Text, TextInput, View, Button } from "react-native";
+import { StyleSheet, Text, TextInput, View, Pressable } from "react-native";
 import { React } from "react";
 
-export default function Login() {
+function submitInfo() {
+  // Envoyer informations utilisateur + vérification
+  console.log("quoicoubeh");
+}
 
+export default function Login() {
   return (
     <View style={styles.form}>
       <View style={styles.container}>
@@ -29,11 +33,9 @@ export default function Login() {
         <Text style={styles.pwd}>Mot de passe oublié?</Text>
       </View>
 
-      <View style={styles.container}>
-        <Button style={styles.submit} onClick={""}>
-          Se Connecter
-        </Button>
-      </View>
+      <Pressable style={styles.submit} onPress={submitInfo}>
+        Se Connecter
+      </Pressable>
 
     </View>
   );
@@ -78,5 +80,11 @@ const styles = StyleSheet.create({
   submit: {
     maxWidth: "60%",
     color: "white",
-  }
+    backgroundColor: "#58A1D9",
+    border: "1px solid white",
+    borderRadius: "5px",
+    padding: "0.8em",
+    textAlign: "center",
+    alignSelf: "center",
+  },
 });
