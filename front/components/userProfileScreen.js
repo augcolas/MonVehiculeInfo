@@ -7,7 +7,7 @@ function UserProfileScreen({ user, onLogout }) {
       // Gérer la logique de déconnexion ici
       onLogout();
     };
-  
+
     return (
       <View style={styles.screen}>
       <Navbar></Navbar>
@@ -22,16 +22,8 @@ function UserProfileScreen({ user, onLogout }) {
 
   const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
+              },
       screen: {
-        backgroundColor: 'white',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
       },
   });
 

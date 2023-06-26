@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
-import { Camera } from 'expo-camera';
+import React, {useEffect, useRef, useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Camera} from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
-import { encode as btoa } from 'base-64';
 import * as ImageManipulator from 'expo-image-manipulator';
 
-export default function App() {
+export default function CameraScannerLicencePlate() {
     const [hasPermission, setHasPermission] = useState(null);
     const [ratio, setRatio] = useState('4:3');  // Set initial ratio
     const cameraRef = useRef(null);

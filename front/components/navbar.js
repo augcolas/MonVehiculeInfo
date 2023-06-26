@@ -1,7 +1,7 @@
-import {StyleSheet, Touchable, TouchableOpacity, View} from "react-native";
+import {StyleSheet, TouchableOpacity, View} from "react-native";
 import React from "react";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {Link, useRouter} from "expo-router";
+import {useRouter} from "expo-router";
 
 export default function Navbar({route}) {
 
@@ -47,6 +47,5 @@ const styles = StyleSheet.create({
         borderWidth:2,
         borderColor: "#000",
         borderRadius: 50,
-        transition:'0.5s'
     },
 });

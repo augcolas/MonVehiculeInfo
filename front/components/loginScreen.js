@@ -20,16 +20,9 @@ function LoginScreen({ onLogin }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   screen: {
-    backgroundColor: 'white',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+
   },
 });
 

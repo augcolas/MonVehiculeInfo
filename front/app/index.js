@@ -1,7 +1,9 @@
-import { StyleSheet, View } from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import LoginScreen from '../components/loginScreen';
-import UserProfileScreen from '../components/userProfileScreen';
-import { useState } from 'react';
+import {useState} from 'react';
+import App from "../components/camPage";
+import Navbar from "../components/navbar";
+import CameraScannerLicencePlate from "../components/camPage";
 
 export default function Page() {
   const [user, setUser] = useState(null);
@@ -18,7 +20,12 @@ export default function Page() {
     <View style={styles.container}>
       {!user && <LoginScreen onLogin={handleLogin} />}
 
-      {user && <UserProfileScreen user={user} onLogout={handleLogout} />}
+      {user &&
+          <>
+            <CameraScannerLicencePlate></CameraScannerLicencePlate>
+            <Navbar></Navbar>
+          </>
+      }
     </View>
   );
 }
