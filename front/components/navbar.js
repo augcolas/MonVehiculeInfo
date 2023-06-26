@@ -1,16 +1,18 @@
 import {StyleSheet, View} from "react-native";
 import React from "react";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {Link, useRouter} from "expo-router";
+import {Link} from "expo-router";
 
-export default function Navbar() {
+export default function Navbar({route}) {
+    console.log(route);
+
     return (
         <View style={styles.container}>
-            <View style={styles.item}><Link href="/profile"><Ionicons name="person-circle-outline" size={24} color="black" /></Link></View>
-            <View style={styles.item}><Link href="/vehicules"><Ionicons name="car-outline" size={24} color="black" /></Link></View>
-            <View style={styles.item}><Link href="/"><Ionicons name="md-camera-outline" size={24} color="black" /></Link></View>
-            <View style={styles.item}><Link href="/chat"><Ionicons name="chatbox-outline" size={24} color="black" /></Link></View>
-            <View style={styles.item}><Link href="/settings"><Ionicons name="ios-settings-outline" size={24} color="black" /></Link></View>
+            <View style={route === "sdsd" ? styles.item : [styles.item, styles.current]}><Link href="/profile"><Ionicons name="person-circle-outline" size={24} color="black" /></Link></View>
+            <View style={[styles.item]}><Link href="/vehicules"><Ionicons name="car-outline" size={24} color="black" /></Link></View>
+            <View style={[styles.item]}><Link href="/"><Ionicons name="md-camera-outline" size={24} color="black" /></Link></View>
+            <View style={[styles.item]}><Link href="/chat"><Ionicons name="chatbox-outline" size={24} color="black" /></Link></View>
+            <View style={[styles.item]}><Link href="/settings"><Ionicons name="ios-settings-outline" size={24} color="black" /></Link></View>
         </View>
     );
 }
@@ -30,6 +32,10 @@ const styles = StyleSheet.create({
     },
     item: {
         flex: 1,
-        textAlign:"center"
+        display: "flex",
+        alignItems: "center"
+    },
+    current: {
+        backgroundColor: '#f00'
     }
 });
