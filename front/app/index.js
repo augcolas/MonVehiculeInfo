@@ -1,10 +1,13 @@
 import {StyleSheet, View} from 'react-native';
 import Navbar from "../components/navbar";
+import {useSegments} from "expo-router";
+import React from "react";
 
 export default function Page() {
+    const segments = useSegments()[0];
   return (
       <View style={styles.container}>
-        <Navbar></Navbar>
+          <Navbar route={segments}></Navbar>
       </View>
   );
 }
