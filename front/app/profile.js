@@ -9,6 +9,7 @@ export default function Page() {
     return (
         <View style={styles.container}>
             <Text>PROFILE:</Text>
+            <Navbar route={segments}></Navbar>
         </View>
     );
 }
