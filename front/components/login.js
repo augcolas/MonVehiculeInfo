@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
     fontSize: "3em",
     marginBottom: "6vh",
     color: "#180033",
+    fontFamily: "Helvetica Neue",
   },
   container: {
     marginBottom: "2em",
@@ -62,6 +63,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: "1.5em",
     color: "#180033",
+    fontFamily: "Helvetica Neue",
   },
   field: {
     fontSize: "1em",
@@ -76,6 +78,7 @@ const styles = StyleSheet.create({
     marginBottom: "4em",
     fontStyle: "italic",
     textAlign: "center",
+    fontFamily: "Helvetica Neue",
   },
   submit: {
     maxWidth: "60%",
@@ -86,5 +89,6 @@ const styles = StyleSheet.create({
     padding: "0.8em",
     textAlign: "center",
     alignSelf: "center",
+    fontFamily: "Helvetica Neue",
   },
 });
