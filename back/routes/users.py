@@ -20,7 +20,8 @@ def get_utilisateur(id):
 @app.route('/users', methods=['POST'])
 def creer_utilisateur():
     data = request.get_json()
-    new_user = User(name=data['name'], email=data['email'], password=data['password'])
+    new_user = User(name=data['name'], email=data['email'], password=data['password'], vehicles=data['vehicles'])
+
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'Utilisateur créé avec succès'})
