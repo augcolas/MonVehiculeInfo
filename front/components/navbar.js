@@ -11,6 +11,7 @@ export default function Navbar() {
         </View>
     );
 }
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#fff',
