@@ -14,13 +14,13 @@ export default function Navbar() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#fff',
+        backgroundColor: '#58A1D9',
         borderRadius: 5,
         height: '5%',
         width: '100%',
-        position:"absolute",
-        bottom:50,
-        left:0,
+        position: "absolute",
+        bottom: 50,
+        left: 0,
         display: "flex",
         flexDirection: "row",
         alignItems: "center"
