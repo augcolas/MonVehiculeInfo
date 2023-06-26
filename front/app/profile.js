@@ -4,10 +4,11 @@ import React from "react";
 import {useRouter, useSegments} from "expo-router";
 
 export default function Page() {
+
     const segments = useSegments()[0];
     return (
         <View style={styles.container}>
-            <Text>PROFILE</Text>
+            <Text>PROFILE:</Text>
             <Navbar route={segments}></Navbar>
         </View>
     );

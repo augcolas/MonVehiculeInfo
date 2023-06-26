@@ -1,16 +1,25 @@
-import {StyleSheet, View} from 'react-native';
-import Navbar from "../components/navbar";
-import CameraView from "../components/camPage";
-import {useSegments} from "expo-router";
-import React from "react";
+import { StyleSheet, View } from 'react-native';
+import LoginScreen from '../components/loginScreen';
+import UserProfileScreen from '../components/userProfileScreen';
+import { useState } from 'react';
 
 export default function Page() {
-    const segments = useSegments()[0];
+  const [user, setUser] = useState(null);
+
+  const handleLogin = (userData) => {
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+  };
+
   return (
-      <View style={styles.container}>
-          <CameraView></CameraView>
-          <Navbar route={segments}></Navbar>
-      </View>
+    <View style={styles.container}>
+      {!user && <LoginScreen onLogin={handleLogin} />}
+
+      {user && <UserProfileScreen user={user} onLogout={handleLogout} />}
+    </View>
   );
 }
 
