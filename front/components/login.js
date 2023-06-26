@@ -30,10 +30,11 @@ export default function Login() {
       </View>
 
       <View style={styles.container}>
-        <Button style={styles.submit} variant={"contained"} onClick={""}>
+        <Button style={styles.submit} onClick={""}>
           Se Connecter
         </Button>
       </View>
+
     </View>
   );
 }
@@ -41,11 +42,11 @@ export default function Login() {
 const styles = StyleSheet.create({
   form: {
     margin: 0,
-    fontFamily: "Quicksand",
     minHeight: "87vh",
     padding: "10vw",
     position: "absolute",
     backgroundColor: "#ffffff",
+    alignItems: "center",
   },
   title: {
     fontSize: "3em",
@@ -54,6 +55,7 @@ const styles = StyleSheet.create({
   },
   container: {
     marginBottom: "2em",
+    minWidth: "100%",
   },
   subtitle: {
     fontSize: "1.5em",
@@ -62,7 +64,8 @@ const styles = StyleSheet.create({
   field: {
     fontSize: "1em",
     backgroundColor: "#ececec",
-    padding: "3px",
+    padding: "2px",
+    paddingHorizontal: "5px",
     width: "auto",
     marginBottom: "0.5em",
     borderRadius: "5px",
@@ -73,8 +76,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   submit: {
-    backgroundColor: "red",
-    padding: "1em",
-    marginTop: "1em",
-  },
+    maxWidth: "60%",
+    color: "white",
+  }
 });
