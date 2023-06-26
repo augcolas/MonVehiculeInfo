@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import React from "react";
+import { React } from "react";
 
 export default function Login() {
 
@@ -29,13 +29,11 @@ export default function Login() {
         <Text style={styles.pwd}>Mot de passe oublié?</Text>
       </View>
 
-      <Button
-        variant={"contained"}
-        style={styles.submit}
-        onClick={alert("test")}
-      >
-        Se Connecter
-      </Button>
+      <View style={styles.container}>
+        <Button style={styles.submit} variant={"contained"} onClick={""}>
+          Se Connecter
+        </Button>
+      </View>
     </View>
   );
 }
@@ -43,11 +41,7 @@ export default function Login() {
 const styles = StyleSheet.create({
   form: {
     margin: 0,
-    padding: 0,
     fontFamily: "Quicksand",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
     minHeight: "87vh",
     padding: "10vw",
     position: "absolute",
@@ -60,7 +54,6 @@ const styles = StyleSheet.create({
   },
   container: {
     marginBottom: "2em",
-    width: "100%",
   },
   subtitle: {
     fontSize: "1.5em",
@@ -80,9 +73,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   submit: {
-    padding: "1em",
     backgroundColor: "red",
+    padding: "1em",
     marginTop: "1em",
-    width: "100%",
   },
 });
