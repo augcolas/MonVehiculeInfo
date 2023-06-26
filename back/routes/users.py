@@ -1,5 +1,6 @@
 from main import app, db, User
 from flask import jsonify, request
+import hashlib
 
 # Route pour récupérer tous les utilisateurs
 @app.route('/users', methods=['GET'])
@@ -20,7 +21,8 @@ def get_utilisateur(id):
 @app.route('/users', methods=['POST'])
 def creer_utilisateur():
     data = request.get_json()
-    new_user = User(name=data['name'], email=data['email'], password=data['password'], vehicles=data['vehicles'])
+    hashed_password = hashlib.md5(data['password'].encode()).hexdigest()
+    new_user = User(name=data['name'], email=data['email'], password=hashed_password, vehicles=data['vehicles'])
 
     db.session.add(new_user)
     db.session.commit()
