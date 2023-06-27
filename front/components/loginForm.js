@@ -7,7 +7,7 @@ function logUser(e) {
   console.log("logUser()");
 }
 
-export default function Login() {
+export default function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
