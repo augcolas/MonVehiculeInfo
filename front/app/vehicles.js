@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, Button, ScrollView, Dimensions} from 'react-native';
 import Navbar from "../components/navbar";
 import React from "react";
 import {useRouter, useSegments} from "expo-router";
@@ -13,20 +13,60 @@ export default function Page() {
             setVehicles(data);
         });
     },[]);
+
+    const addVehicle = async () => {
+        const newVehicle = {
+            type: 'Type',
+            brand: 'Brand',
+            color: 'Color',
+            license_plate: 'License Plate',
+            user_id: 1
+        };
+
+        try {
+            const response = await fetch('http://minikit.pythonanywhere.com/vehicles', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newVehicle)
+            });
+
+            if (response.ok) {
+                const addedVehicle = await response.json();
+                setVehicles([...vehicles, addedVehicle]);
+            } else {
+                console.error('Failed to add vehicle');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     return (
         <View style={styles.container}>
-            <Text>Vehicles</Text>
-            {
-                vehicles.map((data) => {
-                    return (
-                        <Text key={data.id}>{data.license_plate}</Text>
-                    )
-                })
-            }
+            <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+
+                {vehicles.map((data) => (
+                    <View style={styles.card} key={data.id}>
+                        <Text style={styles.title}>{data.brand}</Text>
+                        <Text style={styles.text}>Type: {data.type}</Text>
+                        <Text style={styles.text}>Color: {data.color}</Text>
+                        <Text style={styles.text}>License Plate: {data.license_plate}</Text>
+                        <Text style={styles.text}>ID: {data.id}</Text>
+                        <Text style={styles.text}>User ID: {data.user_id}</Text>
+                    </View>
+                ))}
+                <View style={styles.buttonContainer}>
+                    <Button title="Ajouter un véhicule" onPress={addVehicle} />
+                </View>
+            </ScrollView>
             <Navbar route={segments}></Navbar>
         </View>
     );
 }
+
+const windowWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
     container: {
@@ -34,6 +74,31 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    scrollViewContainer: {
+        paddingTop: 50,
+        paddingBottom: 100,
+        alignItems: 'center',
+        flexGrow: 1,
+    },
+    card: {
+        backgroundColor: '#f5f5f5',
+        borderRadius: 8,
+        padding: 16,
+        marginVertical: 8,
+        width: windowWidth * 0.9,
+        maxWidth: 400,
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    text: {
+        marginBottom: 4,
+    },
+    buttonContainer: {
+        marginVertical: 16,
     },
 });
 
