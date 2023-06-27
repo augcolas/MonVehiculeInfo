@@ -1,9 +1,9 @@
 import {Slot, useSegments} from "expo-router";
-import {AuthProvider} from "../../context/AuthContext";
 import Navbar from "../../components/navbar";
+import {Provider} from "../../context/Auth";
 
 export default function Layout() {
-    const segments = useSegments()[0];
+    const segments = useSegments()[1];
     return (
         <>
             <Slot />

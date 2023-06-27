@@ -1,11 +1,14 @@
 import { Button, StyleSheet, View } from "react-native";
+import {useAuth} from "../../context/Auth";
 
 // Composant pour l'écran de connexion
-export default function Login({ onLogin }) {
+export default function Login() {
+    const { signIn } = useAuth();
+
     const handleLoginPress = () => {
         // Gérer la logique de connexion ici et appeler onLogin avec les données de l'utilisateur
         const userData = { name: 'John Doe', email: 'john.doe@example.com' };
-        onLogin(userData);
+        signIn();
     };
 
     return (
@@ -19,9 +22,4 @@ export default function Login({ onLogin }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-    },
-    screen: {
-
-    },
 });

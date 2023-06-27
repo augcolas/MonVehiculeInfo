@@ -10,7 +10,6 @@ function UserProfileScreen({ user, onLogout }) {
 
     return (
       <View style={styles.screen}>
-      <Navbar></Navbar>
         {/* Afficher les informations de l'utilisateur */}
         <Text>Bienvenue, {user.name}!</Text>
         <Text>Email: {user.email}</Text>
