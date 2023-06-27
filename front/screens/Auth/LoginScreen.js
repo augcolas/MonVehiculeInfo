@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, StyleSheet, Text, View} from "react-native";
 import {useAuth} from "../../context/Auth";
+import LoginForm from "../../components/loginForm";
 
 export default function LoginScreen() {
     const {logIn, logout} = useAuth();
@@ -12,11 +13,8 @@ export default function LoginScreen() {
 
     return (
         <View style={styles.container}>
-            <Text>TEST</Text>
-            {/* Formulaire de connexion */}
-            {/* ... */}
-            {/* Bouton de connexion */}
-            <Button title="Se connecter" onPress={handleLoginPress}/>
+            <LoginForm></LoginForm>
+            {/*<Button title="Se connecter" onPress={handleLoginPress}/>*/}
         </View>
     );
 }

@@ -1,21 +1,44 @@
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import { React, useState } from "react";
-
-function logUser(e) {
-  e.preventDefault();
-  // Connecter utilisateur + vérifications
-  console.log("logUser()");
-}
+import { React, useEffect, useState } from "react";
+import { checkPassword, getUserByEmail, getUsers } from "../services/user.service";
+import { useAuth } from "../context/Auth";
 
 export default function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState();
   const [passwordCheck, setPasswordCheck] = useState("");
+
+  const {logIn, logout} = useAuth();
+
+
+  useEffect(() => {
+    const initUsers = async () => {
+      const users = await getUsers();
+      console.log(users);
+    }
+    initUsers();
+},[]);
+
+  async function logUser(e) {
+    e.preventDefault();
+    console.log(email);
+    console.log(password);
+    const user = await getUserByEmail(email);
+    if (user) {
+      const res = await checkPassword(user.id, password);
+      console.log(res);
+      if(res.result === true){
+        logIn({email: user.email})
+      }
+    }
+  }
+
 
   return (
     <View style={styles.form}>
-      
+
       <View style={styles.container}>
         <Text style={styles.title}>Connexion</Text>
       </View>
@@ -42,6 +65,7 @@ export default function LoginForm() {
           value={password}
         ></TextInput>
         <Text style={styles.pwd}>Mot de passe oublié?</Text>
+        {error && (<Text style={styles.error}>{error}</Text>)}
       </View>
 
       <Button title="Se Connecter" style={styles.submit} onPress={logUser} />
@@ -89,6 +113,9 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     textAlign: "center",
     fontFamily: "Helvetica Neue",
+  },
+  error: {
+    color: 'red'
   },
   submit: {
     maxWidth: "60%",

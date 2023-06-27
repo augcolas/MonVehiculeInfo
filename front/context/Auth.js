@@ -11,6 +11,7 @@ export const AuthProvider = (props) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const logIn = (user) => {
+        console.log(user);
         setAuthUser(user);
         setIsLoggedIn(true);
     }
