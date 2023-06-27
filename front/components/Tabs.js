@@ -16,7 +16,7 @@ export default function Tabs() {
     const {authUser, setAuthUser, isLoggedIn, setIsLoggedIn} = useAuth();
 
 
-    return <Tab.Navigator screenOptions={{
+    return <Tab.Navigator initialRouteName="Camera" screenOptions={{
         headerShown: false, tabBarStyle: {
             backgroundColor: '#fff',
             borderRadius: 5
