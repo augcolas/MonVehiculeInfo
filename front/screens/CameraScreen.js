@@ -3,8 +3,9 @@ import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from 'react
 import {Camera} from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
-import RectangleCorners from './rectangleCorners';
-export default function CameraScannerLicencePlate() {
+import RectangleCorners from "../components/rectangleCorners";
+
+export default function CameraScreen() {
     const [hasPermission, setHasPermission] = useState(null);
     const [ratio, setRatio] = useState('4:3');
     const cameraRef = useRef(null);

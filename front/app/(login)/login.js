@@ -6,8 +6,6 @@ export default function Login() {
     const { signIn } = useAuth();
 
     const handleLoginPress = () => {
-        // Gérer la logique de connexion ici et appeler onLogin avec les données de l'utilisateur
-        const userData = { name: 'John Doe', email: 'john.doe@example.com' };
         signIn();
     };
 

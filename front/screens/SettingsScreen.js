@@ -1,18 +1,19 @@
 import {StyleSheet, Text, View} from "react-native";
 
-export default function Page() {
+export default function SettingsScreen() {
+
     return (
         <View style={styles.container}>
-            <Text>VEHICLES</Text>
+            <Text style={styles.text}>PROFILE SCREEN</Text>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#000',
-        alignItems: 'center',
-        justifyContent: 'center',
+        backgroundColor: "#000"
     },
+    text: {
+        color: "#fff"
+    }
 });
