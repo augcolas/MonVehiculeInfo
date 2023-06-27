@@ -1,13 +1,18 @@
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import { React } from "react";
+import { React, useState } from "react";
 
 function logUser(e) {
   e.preventDefault();
   // Connecter utilisateur + vérifications
-  console.log("Utilisateur connecté ! (non)");
+  console.log("logUser()");
 }
 
 export default function Login() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
+
   return (
     <View style={styles.form}>
       
@@ -16,11 +21,13 @@ export default function Login() {
       </View>
 
       <View style={styles.container}>
-        <Text style={styles.subtitle}>Identifiant</Text>
+        <Text style={styles.subtitle}>Email</Text>
         <TextInput
           style={styles.field}
+          isRequired
           placeholder={"..."}
-          onChangeText={(username) => setUsername(username)}
+          onChangeText={(email) => setEmail(email)}
+          value={email}
         ></TextInput>
       </View>
 
@@ -28,9 +35,11 @@ export default function Login() {
         <Text style={styles.subtitle}>Mot de Passe</Text>
         <TextInput
           style={styles.field}
+          isRequired
           placeholder={"..."}
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
+          value={password}
         ></TextInput>
         <Text style={styles.pwd}>Mot de passe oublié?</Text>
       </View>
