@@ -1,14 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Camera} from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
-
+import RectangleCorners from './rectangleCorners';
 export default function CameraScannerLicencePlate() {
     const [hasPermission, setHasPermission] = useState(null);
-    const [ratio, setRatio] = useState('4:3');  // Set initial ratio
+    const [ratio, setRatio] = useState('4:3');
     const cameraRef = useRef(null);
     const [detectedPlate, setDetectedPlate] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
 
     useEffect(() => {
         (async () => {
@@ -20,8 +22,10 @@ export default function CameraScannerLicencePlate() {
 
     const handleScanPlate = async () => {
         if (cameraRef.current) {
-            let photo = await cameraRef.current.takePictureAsync();
+            setIsLoading(true);
+            setDetectedPlate('');
 
+            let photo = await cameraRef.current.takePictureAsync();
             let resizedPhoto = await ImageManipulator.manipulateAsync(
                 photo.uri,
                 [{ resize: { width: 1024, height: 768 } }],
@@ -45,7 +49,7 @@ export default function CameraScannerLicencePlate() {
             fetch("https://api.platerecognizer.com/v1/plate-reader/", {
                 method: "POST",
                 headers: {
-                    'Authorization': 'Token b8aaed1bbccb04d8e32a55147bf3e563ddf971e1',  // Replace with your token
+                    'Authorization': 'Token b8aaed1bbccb04d8e32a55147bf3e563ddf971e1',
                 },
                 body: form,
             })
@@ -53,12 +57,22 @@ export default function CameraScannerLicencePlate() {
                 .then((json) => {
                     if (json.results && json.results.length > 0) {
                         let plate = json.results[0].plate;
-                        setDetectedPlate(plate);  // Update the detectedPlate state
+                        let regex = /^[A-Z]{2}\d{3}[A-Z]{2}$/i;
+                        if (regex.test(plate)) {
+                            // Format and display the plate
+                            setDetectedPlate(plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3"));
+                        } else {
+                            setDetectedPlate(plate.toUpperCase());
+                        }
                     } else {
                         setDetectedPlate('Aucune plaque détectée');
                     }
+                    setIsLoading(false);
                 })
-                .catch((error) => console.error(error));
+                .catch((error) => {
+                    console.error(error);
+                    setIsLoading(false);
+                });
         }
     };
 
@@ -71,10 +85,11 @@ export default function CameraScannerLicencePlate() {
 
     return (
         <Camera style={styles.camera} type={Camera.Constants.Type.back} ref={cameraRef} ratio={ratio}>
-            <View style={styles.topLeftCorner} />
-            <View style={styles.topRightCorner} />
-            <View style={styles.bottomLeftCorner} />
-            <View style={styles.bottomRightCorner} />
+            {isLoading ? (
+                <View style={styles.loader}>
+                    <ActivityIndicator size='large' color='rgba(255,255,255,0.5)' style={styles.activityIndicator} />
+                </View>
+            ) : <RectangleCorners />}
             <TouchableOpacity onPress={handleScanPlate} style={styles.captureButton}>
                 <Text style={styles.buttonText}>Scanner une plaque</Text>
             </TouchableOpacity>
@@ -89,46 +104,6 @@ const styles = StyleSheet.create({
     camera: {
         flex: 1,
         width: '100%',
-    },
-    topLeftCorner: {
-        position: 'absolute',
-        top: '35%',
-        left: '7%',
-        width: 30,
-        height: 30,
-        borderTopWidth: 2,
-        borderLeftWidth: 2,
-        borderColor: 'white',
-    },
-    topRightCorner: {
-        position: 'absolute',
-        top: '35%',
-        right: '7%',
-        width: 30,
-        height: 30,
-        borderTopWidth: 2,
-        borderRightWidth: 2,
-        borderColor: 'white',
-    },
-    bottomLeftCorner: {
-        position: 'absolute',
-        bottom: '50%',
-        left: '7%',
-        width: 30,
-        height: 30,
-        borderBottomWidth: 2,
-        borderLeftWidth: 2,
-        borderColor: 'white',
-    },
-    bottomRightCorner: {
-        position: 'absolute',
-        bottom: '50%',
-        right: '7%',
-        width: 30,
-        height: 30,
-        borderBottomWidth: 2,
-        borderRightWidth: 2,
-        borderColor: 'white',
     },
     captureButton: {
         position: 'absolute',
@@ -148,5 +123,15 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         color: 'white',
         fontSize: 18,
+    },
+    loader: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -80,  // Half the height of the ActivityIndicator
+        marginLeft: -15,  // Half the width of the ActivityIndicator
+    },
+    activityIndicator: {
+        transform: [{ scale: 2 }],  // Double the size of the ActivityIndicator
     },
 });
