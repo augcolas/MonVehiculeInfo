@@ -27,3 +27,14 @@ def creer_utilisateur():
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'Utilisateur créé avec succès'})
+
+# Route pour vérifier un mot de passe
+@app.route('/users/<id> /check-password', methods=['POST'])
+def check_password(id):
+    data = request.get_json()
+    hashed_password = hashlib.md5(data['password'].encode()).hexdigest()
+    user = User.query.get(id)
+    if user.password == hashed_password:
+        return jsonify({'message': 'Mot de passe correct','result': True})
+    else:
+        return jsonify({'message': 'Mot de passe incorrect','result': False})
