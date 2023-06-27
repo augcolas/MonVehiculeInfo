@@ -32,4 +32,12 @@ def creer_vehicule():
     new_vehicle = Vehicle(type=data['type'], brand=data['brand'], color=data['color'], license_plate=data['license_plate'], user_id=data['user_id'])
     db.session.add(new_vehicle)
     db.session.commit()
-    return jsonify({'message': 'Véhicule créé avec succès'})
+    #return the new vehicle
+    return jsonify({'id': new_vehicle.id, 'type': new_vehicle.type, 'brand': new_vehicle.brand, 'color': new_vehicle.color, 'license_plate': new_vehicle.license_plate})
+# Route pour supprimer un véhicule
+@app.route('/vehicles/<id>', methods=['DELETE'])
+def supprimer_vehicule(id):
+    vehicle = Vehicle.query.get(id)
+    db.session.delete(vehicle)
+    db.session.commit()
+    return jsonify({'message': 'Véhicule supprimé avec succès'})
