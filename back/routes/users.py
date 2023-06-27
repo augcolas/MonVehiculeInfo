@@ -29,7 +29,7 @@ def creer_utilisateur():
     return jsonify({'message': 'Utilisateur créé avec succès'})
 
 # Route pour vérifier un mot de passe
-@app.route('/users/<id> /check-password', methods=['POST'])
+@app.route('/users/<id>/check-password', methods=['POST'])
 def check_password(id):
     data = request.get_json()
     hashed_password = hashlib.md5(data['password'].encode()).hexdigest()
