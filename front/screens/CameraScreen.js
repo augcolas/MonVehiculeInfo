@@ -11,6 +11,7 @@ export default function CameraScreen() {
     const cameraRef = useRef(null);
     const [detectedPlate, setDetectedPlate] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [scannedQR, setScannedQR] = useState(null);
 
 
     useEffect(() => {
@@ -21,6 +22,17 @@ export default function CameraScreen() {
 
     }, []);
 
+    const handleBarCodeScanned = ({ type, data }) => {
+        const prefix = 'vehiculeId: ';
+
+        if (data.startsWith(prefix)) {
+            const vehicleId = data.slice(prefix.length);
+
+            setScannedQR(vehicleId);
+        } else {
+            setDetectedPlate("QR code invalide");
+        }
+    }
     const handleScanPlate = async () => {
         if (cameraRef.current) {
             setIsLoading(true);
@@ -60,7 +72,6 @@ export default function CameraScreen() {
                         let plate = json.results[0].plate;
                         let regex = /^[A-Z]{2}\d{3}[A-Z]{2}$/i;
                         if (regex.test(plate)) {
-                            // Format and display the plate
                             setDetectedPlate(plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3"));
                         } else {
                             setDetectedPlate(plate.toUpperCase());
@@ -85,7 +96,13 @@ export default function CameraScreen() {
     }
 
     return (
-        <Camera style={styles.camera} type={Camera.Constants.Type.back} ref={cameraRef} ratio={ratio}>
+        <Camera
+            style={styles.camera}
+            type={Camera.Constants.Type.back}
+            ref={cameraRef}
+            ratio={ratio}
+            onBarCodeScanned={scannedQR ? undefined : handleBarCodeScanned}
+        >
             {isLoading ? (
                 <View style={styles.loader}>
                     <ActivityIndicator size='large' color='rgba(255,255,255,0.5)' style={styles.activityIndicator} />
@@ -134,5 +151,12 @@ const styles = StyleSheet.create({
     },
     activityIndicator: {
         transform: [{ scale: 2 }],  // Double the size of the ActivityIndicator
+    },
+    qrText: {
+        position: 'absolute',
+        bottom: '15%', // Ajustez cette valeur selon vos besoins
+        alignSelf: 'center',
+        color: 'white',
+        fontSize: 18,
     },
 });
