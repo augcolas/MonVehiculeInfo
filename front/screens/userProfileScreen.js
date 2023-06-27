@@ -1,5 +1,4 @@
 import {Button, StyleSheet, Text, View} from "react-native";
-import Navbar from "../components/navbar";
 
 // Composant pour l'écran de l'utilisateur connecté
 function UserProfileScreen({user, onLogout}) {
