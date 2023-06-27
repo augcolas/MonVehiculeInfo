@@ -34,7 +34,12 @@ def check_password(id):
     data = request.get_json()
     hashed_password = hashlib.md5(data['password'].encode()).hexdigest()
     user = User.query.get(id)
+
     if user.password == hashed_password:
-        return jsonify({'message': 'Mot de passe correct','result': True})
+        object = {'message': 'Mot de passe correct','result': True}
     else:
-        return jsonify({'message': 'Mot de passe incorrect','result': False})
+        object = {'message': 'Mot de passe incorrect','result': False}
+
+    response = jsonify(object)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
