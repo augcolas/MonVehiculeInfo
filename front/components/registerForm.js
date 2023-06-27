@@ -22,7 +22,7 @@ function registerUser(e) {
   console.log("registerUser()");
 }
 
-export default function Register() {
+export default function RegisterForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
