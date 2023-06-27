@@ -29,8 +29,8 @@ def creer_utilisateur():
     return jsonify({'message': 'Utilisateur créé avec succès'})
 
 # Route pour récupérer un utilisateur par email
-@app.route('/users/getUser', methods=['GET'])
-def get_utilisateur():
+@app.route('/users/get_by_email', methods=['GET'])
+def get_user_by_email():
     email = request.args.get('email')  # Récupère la valeur de l'email dans la requête
     user = User.query.filter_by(email=email).first()  # Filtrer les utilisateurs par email
     return jsonify({'id': user.id, 'name': user.name, 'email': user.email, 'password': user.password})
