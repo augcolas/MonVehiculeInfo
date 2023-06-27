@@ -1,18 +1,23 @@
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
 import { React } from "react";
 
-function logUser(e) {
+function registerUser(e) {
   e.preventDefault();
-  // Connecter utilisateur + vérifications
-  console.log("Utilisateur connecté ! (non)");
+  // Envoyer informations utilisateur + vérification
+  if (this.username != null && this.password != null) {
+    if (this.password == this.passwordCheck) {
+      console.log("MDP identiques");
+    }
+  }
+  console.log("Utilisateur Inscrit ! (non)");
 }
 
-export default function Login() {
+export default function Register() {
   return (
     <View style={styles.form}>
-      
+
       <View style={styles.container}>
-        <Text style={styles.title}>Connexion</Text>
+        <Text style={styles.title}>Inscription</Text>
       </View>
 
       <View style={styles.container}>
@@ -32,11 +37,20 @@ export default function Login() {
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
         ></TextInput>
-        <Text style={styles.pwd}>Mot de passe oublié?</Text>
       </View>
 
-      <Button title="Se Connecter" style={styles.submit} onPress={logUser} />
+      <View style={styles.container}>
+        <Text style={styles.subtitle}>Vérifier Mot de Passe</Text>
+        <TextInput
+          style={styles.field}
+          placeholder={"..."}
+          secureTextEntry={true}
+          onChangeText={(passwordCheck) => setPasswordCheck(passwordCheck)}
+        ></TextInput>
+      </View>
 
+      <Button title="S'inscrire" style={styles.submit} onPress={registerUser} />
+      
     </View>
   );
 }
@@ -74,12 +88,6 @@ const styles = StyleSheet.create({
     width: "auto",
     marginBottom: "0.5em",
     borderRadius: "5px",
-  },
-  pwd: {
-    marginBottom: "4em",
-    fontStyle: "italic",
-    textAlign: "center",
-    fontFamily: "Helvetica Neue",
   },
   submit: {
     maxWidth: "60%",
