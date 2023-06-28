@@ -19,7 +19,7 @@ export default function LoginForm() {
       if (user) {
         const res = await checkPassword(user.id, password);
         if (res.result === true) {
-          logIn({ email: user.email })
+          logIn(user);
         } else {
           setError('Le mot de passe est incorrect')
         }
