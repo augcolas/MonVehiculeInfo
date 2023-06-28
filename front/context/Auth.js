@@ -18,9 +18,10 @@ export const AuthProvider = (props) => {
         setIsLoggedIn(true);
     }
 
-    const logout = () => {
+    const logout = async () => {
         setAuthUser(null);
         setIsLoggedIn(false);
+        await AsyncStorage.removeItem('user');
     }
 
     const value = {

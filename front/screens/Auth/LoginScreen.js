@@ -2,7 +2,6 @@ import {ActivityIndicator, Button, StyleSheet, Text, TextInput, View} from "reac
 import {useAuth} from "../../context/Auth";
 import {useState} from "react";
 import {checkPassword, getUserByEmail} from "../../services/user.service";
-import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function LoginScreen() {
 
