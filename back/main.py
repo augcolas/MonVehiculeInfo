@@ -33,6 +33,7 @@ class Vehicle(db.Model):
     brand = db.Column(db.String(50))
     color = db.Column(db.String(50))
     license_plate = db.Column(db.String(50))
+    state = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 # creer la base de données
