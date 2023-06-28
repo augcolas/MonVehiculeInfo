@@ -1,21 +1,27 @@
-import {StyleSheet, Text, View, ScrollView} from "react-native";
+import {StyleSheet, Text, View, ScrollView, Button} from "react-native";
 import React, {useEffect} from "react";
 import {useAuth} from "../context/Auth";
 
 export default function ProfileScreen() {
-    const {authUser} = useAuth();
+    const {authUser, logout} = useAuth();
 
-    useEffect(() => {
-        console.log('authUser',authUser)
-    },[])
+    const handleLogout = () => {
+        // Appeler la fonction de déconnexion ici
+        logout();
+    };
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
                 <Text style={styles.title}>Votre Profil</Text>
 
                 <View style={styles.pinfos}>
-                    <Text>Prénom : {authUser.name}</Text>
-                    <Text>Mail : </Text>
+                    <Text style={styles.text} >Prénom : {authUser.name}</Text>
+                    <Text style={styles.text} >Mail : {authUser.email}</Text>
+                </View>
+
+                <View style={styles.buttonContainer}>
+                    <Button color={"white"} title="Déconnexion" onPress={handleLogout} />
                 </View>
             </ScrollView>
         </View>
@@ -30,7 +36,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     text: {
-        color: "#fff"
+        marginBottom: 4,
     },
     title: {
         fontSize: 18,
@@ -45,5 +51,14 @@ const styles = StyleSheet.create({
     },
     pinfos: {
         marginTop: 50,
-    }
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "left",
+    },
+    buttonContainer: {
+        marginVertical: 16,
+        backgroundColor: '#2ec530',
+        borderRadius: 10,
+        padding: 1,
+    },
 });
