@@ -14,7 +14,7 @@ export const AuthProvider = (props) => {
     const logIn = async (user) => {
         console.log(user);
         setAuthUser(user);
-        await AsyncStorage.setItem('user', user);
+        await AsyncStorage.setItem('user', JSON.stringify(user));
         setIsLoggedIn(true);
     }
 

@@ -13,7 +13,8 @@ export default function MainApp() {
 
     useEffect(() => {
         const verifyUser = async () => {
-            const user = await AsyncStorage.getItem('user');
+            const userJson = await AsyncStorage.getItem('user');
+            const user = JSON.parse(userJson);
             if(user){
                 logIn(user);
             }
