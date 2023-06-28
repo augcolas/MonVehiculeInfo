@@ -28,7 +28,7 @@ export default function MainApp() {
             {isLoggedIn && <Tabs></Tabs>}
             {!isLoggedIn &&
                 <Stack.Navigator>
-                    <Stack.Screen name="Login" component={LoginScreen}/>
+                    <Stack.Screen options={{headerShown: false}} name="Login" component={LoginScreen}/>
                 </Stack.Navigator>
             }
        </>)
