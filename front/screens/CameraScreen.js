@@ -125,10 +125,10 @@ const styles = StyleSheet.create({
     },
     captureButton: {
         position: 'absolute',
-        bottom: '25%',
+        bottom: '15%',
         alignSelf: 'center',
         padding: 10,
-        backgroundColor: '#2196F3',
+        backgroundColor: '#2ec530',
         borderRadius: 8,
     },
     buttonText: {
@@ -137,14 +137,14 @@ const styles = StyleSheet.create({
     },
     plateText: {
         position: 'absolute',
-        bottom: '20%',
+        bottom: '10%',
         alignSelf: 'center',
         color: 'white',
         fontSize: 18,
     },
     loader: {
         position: 'absolute',
-        top: '50%',
+        top: '60%',
         left: '50%',
         marginTop: -80,
         marginLeft: -15,
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     },
     qrText: {
         position: 'absolute',
-        bottom: '15%',
+        bottom: '5%',
         alignSelf: 'center',
         color: 'white',
         fontSize: 18,
