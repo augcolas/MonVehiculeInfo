@@ -26,7 +26,7 @@ export default function Tabs() {
             tabBarIcon: ({focused}) => (
                 <View style={styles.item}>
                     <View style={focused ? styles.current : {}}>
-                        <Ionicons name="person-circle-outline" size={24} color="black"/>
+                        <Ionicons name="person-circle-outline" size={24} color={focused ? "white":"black"}/>
                     </View>
                 </View>
             )
@@ -37,7 +37,7 @@ export default function Tabs() {
             tabBarIcon: ({focused}) => (
                 <View style={styles.item}>
                     <View style={focused ? styles.current : {}}>
-                        <Ionicons name="car-outline" size={24} color="black"/>
+                        <Ionicons name="car-outline" size={24} color={focused ? "white":"black"}/>
                     </View>
                 </View>
             )
@@ -48,7 +48,7 @@ export default function Tabs() {
             tabBarIcon: ({focused}) => (
                 <View style={styles.item}>
                     <View style={focused ? styles.current : {}}>
-                        <Ionicons name="md-camera-outline" size={24} color="black"/>
+                        <Ionicons name="md-camera-outline" size={24} color={focused ? "white":"black"}/>
                     </View>
                 </View>
             )
@@ -59,7 +59,7 @@ export default function Tabs() {
             tabBarIcon: ({focused}) => (
                 <View style={styles.item}>
                     <View style={focused ? styles.current : {}}>
-                        <Ionicons name="chatbox-outline" size={24} color="black"/>
+                        <Ionicons name="chatbox-outline" size={24} color={focused ? "white":"black"}/>
                     </View>
                 </View>
             )
@@ -70,7 +70,7 @@ export default function Tabs() {
             tabBarIcon: ({focused}) => (
                 <View style={styles.item}>
                     <View style={focused ? styles.current : {}}>
-                        <Ionicons name="ios-settings-outline" size={24} color="black"/>
+                        <Ionicons name="ios-settings-outline" size={24} color={focused ? "white":"black"}/>
                     </View>
                 </View>
             )
@@ -90,16 +90,14 @@ const styles = StyleSheet.create({
         height: 50,
     },
     current: {
-        backgroundColor: "#58A1D9",
-        transform: [{scale: 1.5}],
+        backgroundColor: "#2ec530",
+        transform: [{scale: 1.1}],
         height: 40,
         width: 40,
-        top: -25,
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: 2,
         borderColor: "#000",
-        borderRadius: 50,
+        borderRadius: 10,
     },
 });
