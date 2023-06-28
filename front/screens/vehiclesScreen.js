@@ -2,6 +2,7 @@ import {Ionicons} from '@expo/vector-icons';
 import { StyleSheet, Text, View, Button, ScrollView, Dimensions, TouchableOpacity, Modal, TextInput } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import React from "react";
+import VehicleQRCode from "../components/qrCode";
 
 export default function VehiclesScreen() {
     const [vehicles, setVehicles] = React.useState([]);
@@ -94,6 +95,15 @@ export default function VehiclesScreen() {
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
                             <Text style={styles.text}>ID: {data.id}</Text>
                             <Text style={styles.text}>User ID: {data.user_id}</Text>
+                            <Button title="Show QR Code" onPress={() => setModalVisible(true)} />
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={modalVisible}
+                                onRequestClose={() => setModalVisible(false)}
+                            >
+                                <VehicleQRCode vehicleId={data.id} />
+                            </Modal>
                         </View>
                     </View>
                 ))}

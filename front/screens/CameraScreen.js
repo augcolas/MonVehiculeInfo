@@ -125,10 +125,10 @@ const styles = StyleSheet.create({
     },
     captureButton: {
         position: 'absolute',
-        bottom: '25%', // Adjust this value as needed
+        bottom: '25%',
         alignSelf: 'center',
         padding: 10,
-        backgroundColor: '#2196F3', // You can customize the color of the button
+        backgroundColor: '#2196F3',
         borderRadius: 8,
     },
     buttonText: {
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     },
     plateText: {
         position: 'absolute',
-        bottom: '20%', // Adjust this value as needed
+        bottom: '20%',
         alignSelf: 'center',
         color: 'white',
         fontSize: 18,
@@ -146,15 +146,15 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: '50%',
         left: '50%',
-        marginTop: -80,  // Half the height of the ActivityIndicator
-        marginLeft: -15,  // Half the width of the ActivityIndicator
+        marginTop: -80,
+        marginLeft: -15,
     },
     activityIndicator: {
-        transform: [{ scale: 2 }],  // Double the size of the ActivityIndicator
+        transform: [{ scale: 2 }],
     },
     qrText: {
         position: 'absolute',
-        bottom: '15%', // Ajustez cette valeur selon vos besoins
+        bottom: '15%',
         alignSelf: 'center',
         color: 'white',
         fontSize: 18,
