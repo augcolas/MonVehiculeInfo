@@ -1,29 +1,45 @@
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import { React, useState } from "react";
-
-function logUser(e) {
-  e.preventDefault();
-  // Connecter utilisateur + vérifications
-  console.log("logUser()");
-}
+import { React, useEffect, useState } from "react";
+import { checkPassword, getUserByEmail, getUsers } from "../services/user.service";
+import { useAuth } from "../context/Auth";
 
 export default function LoginForm() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState();
   const [passwordCheck, setPasswordCheck] = useState("");
+
+  const { logIn } = useAuth();
+
+  async function logUser(e) {
+    e.preventDefault();
+    try {
+      const user = await getUserByEmail(email);
+      if (user) {
+        const res = await checkPassword(user.id, password);
+        if (res.result === true) {
+          logIn({ email: user.email })
+        } else {
+          setError('Le mot de passe est incorrect')
+        }
+      } 
+    } catch (e) {
+      setError("L'utilisateur n'existe pas")
+    }
+  }
+
 
   return (
     <View style={styles.form}>
-      
-      <View style={styles.container}>
-        <Text style={styles.title}>Connexion</Text>
+
+      <View>
+        <Text>Connexion</Text>
       </View>
 
-      <View style={styles.container}>
-        <Text style={styles.subtitle}>Email</Text>
+      <View>
+        <Text>Email</Text>
         <TextInput
-          style={styles.field}
           isRequired
           placeholder={"..."}
           onChangeText={(email) => setEmail(email)}
@@ -31,34 +47,37 @@ export default function LoginForm() {
         ></TextInput>
       </View>
 
-      <View style={styles.container}>
-        <Text style={styles.subtitle}>Mot de Passe</Text>
+      <View>
+        <Text>Mot de Passe</Text>
         <TextInput
-          style={styles.field}
           isRequired
           placeholder={"..."}
           secureTextEntry={true}
           onChangeText={(password) => setPassword(password)}
           value={password}
         ></TextInput>
-        <Text style={styles.pwd}>Mot de passe oublié?</Text>
+        <Text >Mot de passe oublié?</Text>
+        {error && (<Text>{error}</Text>)}
       </View>
 
-      <Button title="Se Connecter" style={styles.submit} onPress={logUser} />
+      <Button title="Se Connecter" onPress={logUser} />
 
     </View>
   );
 }
 
+
+
 const styles = StyleSheet.create({
   form: {
     margin: 0,
-    minHeight: "87vh",
-    padding: "10vw",
     position: "absolute",
     backgroundColor: "#ffffff",
     alignItems: "center",
   },
+});
+
+/*
   title: {
     fontSize: "3em",
     fontStyle: "bold",
@@ -90,6 +109,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: "Helvetica Neue",
   },
+  error: {
+    color: 'red'
+  },
   submit: {
     maxWidth: "60%",
     color: "white",
@@ -100,5 +122,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     alignSelf: "center",
     fontFamily: "Helvetica Neue",
-  },
-});
+  }, 
+  */
