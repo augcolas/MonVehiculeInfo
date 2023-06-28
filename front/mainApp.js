@@ -5,6 +5,7 @@ import * as React from "react";
 import LoginScreen from "./screens/Auth/LoginScreen";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ModalAlert from "./components/modalAlert";
 
 export default function MainApp() {
     const {isLoggedIn, logIn} = useAuth();
@@ -25,7 +26,7 @@ export default function MainApp() {
 
     return (
        <>
-            {isLoggedIn && <Tabs></Tabs>}
+            {isLoggedIn && <ModalAlert></ModalAlert>}
             {!isLoggedIn &&
                 <Stack.Navigator>
                     <Stack.Screen name="Login" component={LoginScreen}/>
