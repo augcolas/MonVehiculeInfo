@@ -4,8 +4,13 @@ import {Picker} from '@react-native-picker/picker';
 import React from "react";
 import VehicleQRCode from "../components/qrCode";
 import {Share} from "react-native";
+import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+
+
 
 export default function VehiclesScreen() {
+    const qrCodeRef = React.useRef();
     const [vehicles, setVehicles] = React.useState([]);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [selectedType, setSelectedType] = React.useState('voiture');
@@ -106,6 +111,40 @@ export default function VehiclesScreen() {
         }
     };
 
+    const saveQrToDisk = async (vehicleId) => {
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+
+        if (status !== 'granted') {
+            alert('Désolé, nous avons besoin des autorisations de la galerie pour faire cela !');
+            return;
+        }
+
+        // Nous recherchons le QRCode associé au véhicule
+        const qrCodeRef = qrCodesRef[vehicleId];
+
+        if (qrCodeRef) {
+            const uri = await qrCodeRef.toDataURL();
+            const asset = await MediaLibrary.createAssetAsync(`data:image/png;base64,${uri}`);
+
+            await MediaLibrary.createAlbumAsync('QR Codes', asset, false)
+                .then(() => {
+                    alert('Le QR Code a été sauvegardé dans la galerie !');
+                })
+                .catch((error) => {
+                    console.log('err', error);
+                });
+        }
+    };
+
+    const qrCodesRef = vehicles.reduce((refs, vehicle) => {
+        // Nous créons une ref pour chaque véhicule
+        refs[vehicle.id] = React.createRef();
+        return refs;
+    }, {});
+
+
+    <Button color={"white"} title="Télécharger" onPress={() => saveQrToDisk(data.id)} />
+
 
     return (
         <View style={styles.container}>
@@ -140,13 +179,12 @@ export default function VehiclesScreen() {
                                 <View style={styles.modalContainer}>
                                     <View style={styles.modalContent}>
                                         <Text style={styles.modalTitle}>Partager mon QR Code</Text>
-
-                                        <VehicleQRCode style={{ margin: 20 }} vehicleId={data.id} />
-                                        <View style={styles.buttonContainer}>
-                                            <Button color={"white"} title="Partager" onPress={shareQRCode} />
+                                        <VehicleQRCode vehicleId={data.id} ref={qrCodesRef[data.id]}/>
+                                        <View style={styles.buttonContainer} >
+                                            <Button color={"white"} title="Télécharger" onPress={saveQrToDisk} />
                                         </View>
                                         <View style={styles.buttonContainer}>
-                                            <Button color={"white"} title="Annuler" onPress={() => setModalVisible(false)} />
+                                            <Button color={"white"} title="Fermer" onPress={() => setQrModalVisible(false)} />
                                         </View>
                                     </View>
                                 </View>
@@ -258,7 +296,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginVertical: 16,
-        backgroundColor: '#2ec530',
+        backgroundColor: '#58A1D9',
         borderRadius: 10,
         padding: 1,
     },

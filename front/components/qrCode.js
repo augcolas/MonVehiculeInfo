@@ -1,18 +1,21 @@
+import React from 'react';
 import QRCode from 'react-native-qrcode-svg';
-import {SvgXml} from 'react-native-svg';
 
-export default function VehicleQRCode ({vehicleId}) {
-
+function VehicleQRCode({vehicleId}, ref) {
     const value = `vehiculeId: ${vehicleId}`;
 
     return (
         <QRCode
             value={value}
-            logoSize={100}
-            logoBackgroundColor='transparent'
-            color='black'
-            logo={require('../assets/logo.png')}
+            size={150}
+            color='#58A1D9'
+            backgroundColor='white'
+            logo={require('../assets/logo_blue.png')}
+            logoSize={30}
+            logoBackgroundColor='white'
+            getRef={ref} // Nous passons la ref ici
         />
     );
 };
 
+export default React.forwardRef(VehicleQRCode);
