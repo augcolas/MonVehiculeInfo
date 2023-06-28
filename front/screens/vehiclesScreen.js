@@ -16,6 +16,10 @@ export default function VehiclesScreen() {
         state: 'good'
     });
 
+    const getStateColor = (state) => {
+        return state == 'good' ? 'green' : 'red';
+    };
+
     React.useEffect(() => {
         getOwnVehicles().then((data) => {
             console.log('data',data)
@@ -93,10 +97,12 @@ export default function VehiclesScreen() {
                         </TouchableOpacity>
                         <View style={styles.cardContent}>
                             <Text style={styles.title}>{data.brand}</Text>
+                            <View style={[styles.stateIndicator, { backgroundColor: getStateColor(data.state) }]} />
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
                         </View>
+
                     </View>
                 ))}
                 <View style={styles.buttonContainer}>
@@ -244,5 +250,14 @@ const styles = StyleSheet.create({
     pickerItem: {
         fontSize: 15, // Ajustez la taille de la police selon vos préférences
         height: 120, // Ajustez la hauteur de chaque élément selon vos préférences
+    },
+    stateIndicator: {
+        position: 'absolute',
+        top: 3,
+        left: 50,
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        marginRight: 8,
     },
 });
