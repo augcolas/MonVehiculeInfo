@@ -2,11 +2,14 @@ import {Ionicons} from '@expo/vector-icons';
 import { StyleSheet, Text, View, Button, ScrollView, Dimensions, TouchableOpacity, Modal, TextInput } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import React from "react";
+import VehicleQRCode from "../components/qrCode";
+import {Share} from "react-native";
 
 export default function VehiclesScreen() {
     const [vehicles, setVehicles] = React.useState([]);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [selectedType, setSelectedType] = React.useState('voiture');
+    const [qrModalVisible, setQrModalVisible] = React.useState(false);
     const [newVehicleInfo, setNewVehicleInfo] = React.useState({
         type: selectedType,
         brand: '',
@@ -83,6 +86,27 @@ export default function VehiclesScreen() {
         }
     };
 
+    const shareQRCode = async () => {
+        try {
+            const result = await Share.share({
+                message: 'Here is the QR code for my vehicle',
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    console.log('Shared with activity: ' + result.activityType);
+                } else {
+                    console.log('Shared successfully!');
+                }
+            } else if (result.action === Share.dismissedAction) {
+                console.log('Share dialog was closed');
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -101,6 +125,32 @@ export default function VehiclesScreen() {
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
+                            <Button title="Mon QR Code" onPress={() => {
+                                console.log('data.id:', data.id);
+                                setQrModalVisible(true);
+                            }}
+                            />
+
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={qrModalVisible}
+                                onRequestClose={() => setQrModalVisible(false)}
+                            >
+                                <View style={styles.modalContainer}>
+                                    <View style={styles.modalContent}>
+                                        <Text style={styles.modalTitle}>Partager mon QR Code</Text>
+
+                                        <VehicleQRCode style={{ margin: 20 }} vehicleId={data.id} />
+                                        <View style={styles.buttonContainer}>
+                                            <Button color={"white"} title="Partager" onPress={shareQRCode} />
+                                        </View>
+                                        <View style={styles.buttonContainer}>
+                                            <Button color={"white"} title="Annuler" onPress={() => setModalVisible(false)} />
+                                        </View>
+                                    </View>
+                                </View>
+                            </Modal>
                         </View>
 
                     </View>
@@ -244,12 +294,12 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     pickerContainer: {
-        width: '100%', // Ajustez la largeur selon vos préférences
+        width: '100%',
         marginBottom: 16,
     },
     pickerItem: {
-        fontSize: 15, // Ajustez la taille de la police selon vos préférences
-        height: 120, // Ajustez la hauteur de chaque élément selon vos préférences
+        fontSize: 15,
+        height: 120,
     },
     stateIndicator: {
         position: 'absolute',
