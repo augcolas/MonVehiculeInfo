@@ -27,3 +27,26 @@ def creer_utilisateur():
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'Utilisateur créé avec succès'})
+
+# Route pour récupérer un utilisateur par email
+@app.route('/users/get_by_email', methods=['GET'])
+def get_user_by_email():
+    email = request.args.get('email')  # Récupère la valeur de l'email dans la requête
+    user = User.query.filter_by(email=email).first()  # Filtrer les utilisateurs par email
+    return jsonify({'id': user.id, 'name': user.name, 'email': user.email, 'password': user.password})
+
+# Route pour vérifier un mot de passe
+@app.route('/users/<id>/check-password', methods=['POST'])
+def check_password(id):
+    data = request.get_json()
+    hashed_password = hashlib.md5(data['password'].encode()).hexdigest()
+    user = User.query.get(id)
+
+    if user.password == hashed_password:
+        object = {'message': 'Mot de passe correct','result': True}
+    else:
+        object = {'message': 'Mot de passe incorrect','result': False}
+
+    response = jsonify(object)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response

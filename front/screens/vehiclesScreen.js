@@ -12,11 +12,17 @@ export default function VehiclesScreen() {
         brand: '',
         color: '',
         license_plate: '',
-        user_id: 1
+        user_id: 1,
+        state: 'good'
     });
+
+    const getStateColor = (state) => {
+        return state == 'good' ? 'green' : 'red';
+    };
 
     React.useEffect(() => {
         getOwnVehicles().then((data) => {
+            console.log('data',data)
             setVehicles(data);
         });
     },[]);
@@ -46,11 +52,12 @@ export default function VehiclesScreen() {
                 setVehicles([...vehicles, addedVehicle]);
                 setModalVisible(false);
                 setNewVehicleInfo({
-                    type: '',
+                    type: selectedType,
                     brand: '',
                     color: '',
                     license_plate: '',
-                    user_id: 1
+                    user_id: 1,
+                    state: 'good'
                 });
             } else {
                 console.error('Failed to add vehicle');
@@ -79,6 +86,7 @@ export default function VehiclesScreen() {
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+                <Text style={styles.title}>Vos véhicules</Text>
                 {vehicles.map((data) => (
                     <View style={styles.card} key={data.id}>
                         <TouchableOpacity
@@ -89,12 +97,12 @@ export default function VehiclesScreen() {
                         </TouchableOpacity>
                         <View style={styles.cardContent}>
                             <Text style={styles.title}>{data.brand}</Text>
+                            <View style={[styles.stateIndicator, { backgroundColor: getStateColor(data.state) }]} />
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
-                            <Text style={styles.text}>ID: {data.id}</Text>
-                            <Text style={styles.text}>User ID: {data.user_id}</Text>
                         </View>
+
                     </View>
                 ))}
                 <View style={styles.buttonContainer}>
@@ -111,21 +119,6 @@ export default function VehiclesScreen() {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>Ajouter un véhicule</Text>
-                        <View style={styles.pickerContainer}>
-                            <Picker
-                                selectedValue={newVehicleInfo.type}
-                                onValueChange={(itemValue) =>{
-                                    setNewVehicleInfo({...newVehicleInfo, type: itemValue})
-
-                                }}
-                                style={styles.picker}
-                            >
-                                {/* Options de type */}
-                                <Picker.Item label="Voiture" value="voiture" />
-                                <Picker.Item label="Vélo" value="velo" />
-                                <Picker.Item label="Trotinette" value="trotinette" />
-                            </Picker>
-                        </View>
                         <TextInput
                             style={styles.input}
                             placeholder="Brand"
@@ -144,6 +137,22 @@ export default function VehiclesScreen() {
                             value={newVehicleInfo.license_plate}
                             onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, license_plate: text})}
                         />
+                        <View style={styles.pickerContainer}>
+                            <Picker
+                                selectedValue={newVehicleInfo.type}
+                                onValueChange={(itemValue) =>{
+                                    setNewVehicleInfo({...newVehicleInfo, type: itemValue})
+
+                                }}
+                                style={styles.picker}
+                                itemStyle={styles.pickerItem}
+                            >
+                                {/* Options de type */}
+                                <Picker.Item label="Voiture" value="voiture" />
+                                <Picker.Item label="Vélo" value="velo" />
+                                <Picker.Item label="Trotinette" value="trotinette" />
+                            </Picker>
+                        </View>
                         <View style={styles.buttonContainer}>
                             <Button color={"white"} title="Ajouter" onPress={addVehicle} />
                         </View>
@@ -199,7 +208,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginVertical: 16,
-        backgroundColor: '#36e038',
+        backgroundColor: '#2ec530',
         borderRadius: 10,
         padding: 1,
     },
@@ -233,12 +242,22 @@ const styles = StyleSheet.create({
     picker: {
         width: '100%',
         marginBottom: 16,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 4,
     },
     pickerContainer: {
-        width: '50%', // Ajustez la largeur selon vos préférences
+        width: '100%', // Ajustez la largeur selon vos préférences
         marginBottom: 16,
-    }
+    },
+    pickerItem: {
+        fontSize: 15, // Ajustez la taille de la police selon vos préférences
+        height: 120, // Ajustez la hauteur de chaque élément selon vos préférences
+    },
+    stateIndicator: {
+        position: 'absolute',
+        top: 3,
+        left: 50,
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        marginRight: 8,
+    },
 });
