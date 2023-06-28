@@ -24,7 +24,7 @@ export const AuthProvider = (props) => {
     }
 
     const value = {
-        isLoggedIn, logIn, logout
+        isLoggedIn, logIn, logout, authUser
     }
 
     return (
