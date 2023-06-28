@@ -18,6 +18,7 @@ export default function VehiclesScreen() {
 
     React.useEffect(() => {
         getOwnVehicles().then((data) => {
+            console.log('data',data)
             setVehicles(data);
         });
     },[]);
