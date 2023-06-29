@@ -6,11 +6,12 @@ import VehicleQRCode from "../components/qrCode";
 import {Share} from "react-native";
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
+import {useAuth} from "../context/Auth";
 
 
 
 export default function VehiclesScreen() {
-    const qrCodeRef = React.useRef();
+    const {authUser} = useAuth();
     const [vehicles, setVehicles] = React.useState([]);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [selectedType, setSelectedType] = React.useState('voiture');
@@ -20,7 +21,7 @@ export default function VehiclesScreen() {
         brand: '',
         color: '',
         license_plate: '',
-        user_id: 1,
+        user_id: authUser.id,
         state: 'good'
     });
 
@@ -37,7 +38,7 @@ export default function VehiclesScreen() {
 
     const getOwnVehicles = async () => {
         let response = await fetch(
-            'http://minikit.pythonanywhere.com/vehicles/user/1'
+            'http://minikit.pythonanywhere.com/vehicles/user/' + authUser.id
         );
         let json = await response.json();
         return json;
@@ -64,7 +65,7 @@ export default function VehiclesScreen() {
                     brand: '',
                     color: '',
                     license_plate: '',
-                    user_id: 1,
+                    user_id: authUser.id,
                     state: 'good'
                 });
             } else {
@@ -164,32 +165,34 @@ export default function VehiclesScreen() {
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
-                            <Button title="Mon QR Code" onPress={() => {
+                        </View>
+                        <Button
+                            title="QR Code"
+                            color={'#2ec530'}
+                            onPress={() => {
                                 console.log('data.id:', data.id);
                                 setQrModalVisible(true);
                             }}
-                            />
-
-                            <Modal
-                                animationType="slide"
-                                transparent={true}
-                                visible={qrModalVisible}
-                                onRequestClose={() => setQrModalVisible(false)}
-                            >
-                                <View style={styles.modalContainer}>
-                                    <View style={styles.modalContent}>
-                                        <Text style={styles.modalTitle}>Partager mon QR Code</Text>
-                                        <VehicleQRCode vehicleId={data.id} ref={qrCodesRef[data.id]}/>
-                                        <View style={styles.buttonContainer} >
-                                            <Button color={"white"} title="Télécharger" onPress={saveQrToDisk} />
-                                        </View>
-                                        <View style={styles.buttonContainer}>
-                                            <Button color={"white"} title="Fermer" onPress={() => setQrModalVisible(false)} />
-                                        </View>
+                        />
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={qrModalVisible}
+                            onRequestClose={() => setQrModalVisible(false)}
+                        >
+                            <View style={styles.modalContainer}>
+                                <View style={styles.modalContent}>
+                                    <Text style={styles.modalTitle}>Partager mon QR Code</Text>
+                                    <VehicleQRCode vehicleId={data.id} ref={qrCodesRef[data.id]}/>
+                                    <View style={styles.buttonContainer} >
+                                        <Button color={"white"} title="Télécharger" onPress={saveQrToDisk} />
+                                    </View>
+                                    <View style={styles.buttonContainer}>
+                                        <Button color={"white"} title="Fermer" onPress={() => setQrModalVisible(false)} />
                                     </View>
                                 </View>
-                            </Modal>
-                        </View>
+                            </View>
+                        </Modal>
 
                     </View>
                 ))}
@@ -281,7 +284,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     deleteButton: {
+        position: "relative",
         marginRight: 8,
+        top: -40,
+        left: 300,
     },
     cardContent: {
         flex: 1,
@@ -296,7 +302,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginVertical: 16,
-        backgroundColor: '#58A1D9',
+        backgroundColor: '#2ec530',
         borderRadius: 10,
         padding: 1,
     },
@@ -341,8 +347,8 @@ const styles = StyleSheet.create({
     },
     stateIndicator: {
         position: 'absolute',
-        top: 3,
-        left: 50,
+        top: 40,
+        left: -27,
         width: 16,
         height: 16,
         borderRadius: 8,
