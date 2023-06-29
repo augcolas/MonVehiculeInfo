@@ -7,6 +7,7 @@
 # source venv/bin/activate
 # flask --app main run
 
+import datetime
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -37,17 +38,30 @@ class Vehicle(db.Model):
     state = db.Column(db.String(50))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-# creer la base de données
+class Conversation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    contact_id= db.Column(db.Integer, db.ForeignKey('user.id'))
+    messages = db.relationship('Message', backref='user', lazy=True)
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(50))
+    date = db.Column(db.DateTime, nullable=False, default=datetime.datetime)
+    conversation_id = db.Column(db.Integer, db.ForeignKey('conversation.id'))
+
+# Creer la base de données
 with app.app_context():
     db.create_all()
 
 @app.route('/')
 def hello():
-    return 'this application running'
+    return 'The application is running...'
+
 
 # Route pour les utilisateurs
-# Route pour récupérer tous les utilisateurs
 
+# Route pour récupérer tous les utilisateurs
 @app.route('/users', methods=['GET'])
 def get_utilisateurs():
     users = User.query.all()
@@ -95,8 +109,6 @@ def check_password(id):
     response = jsonify(object)
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
-
-
 
 
 # Route pour les véhicules
@@ -177,6 +189,83 @@ def supprimer_vehicule(id):
     db.session.commit()
     return jsonify({'message': 'Véhicule supprimé avec succès'})
 
+
+# Routes pour les conversations / messages
+
+# Route pour récupérer toutes les conversations d'un utilisateur
+@app.route('/conversations/user/<user_id>', methods=['GET'])
+def get_conversations_user(user_id):
+    conversations = Conversation.query.filter_by(user_id=user_id).all()
+    result = []
+    for conversation in conversations:
+        result.append({
+            'id': conversation.id,
+            'user_id': conversation.user_id,
+            'contact_id': conversation.contact_id,
+            'messages': conversation.messages
+        })
+    return jsonify(result)
+
+# Route pour récupérer une conversation entre deux utilisateurs
+@app.route('/conversations/<id>', methods=['GET'])
+def get_conversation(id):
+    conversation = Conversation.query.get(id)
+    return jsonify({
+        'id': conversation.id,
+        'user_id': conversation.user_id,
+        'contact_id': conversation.contact_id,
+        'messages': conversation.messages
+    })
+
+# Route pour créer une nouvelle conversation
+@app.route('/conversations', methods=['POST'])
+def creer_conversation():
+    data = request.get_json()
+    app.logger.info(data)
+    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], messages=data['messages'])
+    db.session.add(new_conversation)
+    db.session.commit()
+    return jsonify({
+        'id': new_conversation.id,
+        'user_id': new_conversation.user_id,
+        'contact_id': new_conversation.contact_id,
+        'messages': new_conversation.messages
+    })
+
+# Route pour supprimer une conversation
+@app.route('/conversations/<id>', methods=['DELETE'])
+def supprimer_conversation(id):
+    conversation = Conversation.query.get(id)
+    # messages = Message.query.filter_by(id=id).all() # TODO: check
+    db.session.delete(conversation)
+    db.session.commit()
+    return jsonify({'message': 'Conversation supprimée avec succès'})
+
+# Route pour récupérer les messages d'une conversation
+@app.route('/conversations/<id>/messages', methods=['GET'])
+def get_messages(id):
+    messages = Message.query.get(id)
+    return jsonify({
+        'id': messages.id,
+        'content': messages.content,
+        'date': messages.date,
+        'conversation_id': messages.conversation_id
+    })
+
+# Route pour créer un message dans une conversation
+@app.route('/conversations/<id>/messages', methods=['POST'])
+def creer_message():
+    data = request.get_json()
+    app.logger.info(data)
+    new_message = Message(content=data['content'], date=data['date'], conversation_id=data['conversation_id'])
+    db.session.add(new_message)
+    db.session.commit()
+    return jsonify({
+        'id': new_message.id,
+        'content': new_message.content,
+        'date': new_message.date,
+        'conversation_id': new_message.conversation_id
+    })
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
