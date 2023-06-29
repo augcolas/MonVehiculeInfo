@@ -3,14 +3,10 @@ import { StyleSheet, Text, View, Button, ScrollView, Dimensions, TouchableOpacit
 import {Picker} from '@react-native-picker/picker';
 import React from "react";
 import VehicleQRCode from "../components/qrCode";
-import {Share} from "react-native";
-import * as MediaLibrary from 'expo-media-library';
-import * as FileSystem from 'expo-file-system';
 
 
 
 export default function VehiclesScreen() {
-    const qrCodeRef = React.useRef();
     const [vehicles, setVehicles] = React.useState([]);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [selectedType, setSelectedType] = React.useState('voiture');
@@ -91,61 +87,6 @@ export default function VehiclesScreen() {
         }
     };
 
-    const shareQRCode = async () => {
-        try {
-            const result = await Share.share({
-                message: 'Here is the QR code for my vehicle',
-            });
-
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    console.log('Shared with activity: ' + result.activityType);
-                } else {
-                    console.log('Shared successfully!');
-                }
-            } else if (result.action === Share.dismissedAction) {
-                console.log('Share dialog was closed');
-            }
-        } catch (error) {
-            console.error(error.message);
-        }
-    };
-
-    const saveQrToDisk = async (vehicleId) => {
-        const { status } = await MediaLibrary.requestPermissionsAsync();
-
-        if (status !== 'granted') {
-            alert('Désolé, nous avons besoin des autorisations de la galerie pour faire cela !');
-            return;
-        }
-
-        // Nous recherchons le QRCode associé au véhicule
-        const qrCodeRef = qrCodesRef[vehicleId];
-
-        if (qrCodeRef) {
-            const uri = await qrCodeRef.toDataURL();
-            const asset = await MediaLibrary.createAssetAsync(`data:image/png;base64,${uri}`);
-
-            await MediaLibrary.createAlbumAsync('QR Codes', asset, false)
-                .then(() => {
-                    alert('Le QR Code a été sauvegardé dans la galerie !');
-                })
-                .catch((error) => {
-                    console.log('err', error);
-                });
-        }
-    };
-
-    const qrCodesRef = vehicles.reduce((refs, vehicle) => {
-        // Nous créons une ref pour chaque véhicule
-        refs[vehicle.id] = React.createRef();
-        return refs;
-    }, {});
-
-
-    <Button color={"white"} title="Télécharger" onPress={() => saveQrToDisk(data.id)} />
-
-
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -176,19 +117,9 @@ export default function VehiclesScreen() {
                                 visible={qrModalVisible}
                                 onRequestClose={() => setQrModalVisible(false)}
                             >
-                                <View style={styles.modalContainer}>
-                                    <View style={styles.modalContent}>
-                                        <Text style={styles.modalTitle}>Partager mon QR Code</Text>
-                                        <VehicleQRCode vehicleId={data.id} ref={qrCodesRef[data.id]}/>
-                                        <View style={styles.buttonContainer} >
-                                            <Button color={"white"} title="Télécharger" onPress={saveQrToDisk} />
-                                        </View>
-                                        <View style={styles.buttonContainer}>
-                                            <Button color={"white"} title="Fermer" onPress={() => setQrModalVisible(false)} />
-                                        </View>
-                                    </View>
-                                </View>
+                                <VehicleQRCode vehicleId={data.id} styles={styles} setQrModalVisible={setQrModalVisible} />
                             </Modal>
+
                         </View>
 
                     </View>
