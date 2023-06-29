@@ -3,7 +3,7 @@ import { globalOptionsTab, optionsTab } from "../utils/options.helper";
 import { useState } from "react";
 import AlertMessageForm from "./alertMessageForm";
 
-const ModalAlert = () => {
+const ModalAlert = ({license_plate}) => {
     const [selectedOption, setSelectedOption] = useState();
     const [isPressed, setIsPressed] = useState(false);
     const [options, setOptions] = useState();
@@ -21,14 +21,15 @@ const ModalAlert = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <View>
             {!options && (
             <>
                 <View>
+                    <Text style={styles.cardText}>Précisez la nature du problème :</Text>
                     {globalOptions.map((item, index) => (
                         <TouchableOpacity onPress={() => handlePress(item)} key={index} style={styles.cardItem}>
                             <View>
-                                <Text style={styles.cardText}>{item}</Text>
+                                <Text>{item}</Text>
                             </View>
                         </TouchableOpacity>
                     ))}
@@ -38,25 +39,23 @@ const ModalAlert = () => {
             </>
             )}
 
-            {options && (
+            {options && !selectedOption && (
             <>
                 <View>
+                    <Text style={styles.cardText}>Précisez la nature du problème :</Text>
                     {options.map((option, index) => (
                         <TouchableOpacity onPress={() => selectOption(option)} key={index}>
                             <View key={index} style={styles.cardItem}>
-                                <Text style={styles.cardText}>{option}</Text>
+                                <Text>{option}</Text>
                             </View>
                         </TouchableOpacity>
                     ))}
 
-                </View>
-                <View>
-                    {selectedOption && (<Text>{selectedOption}</Text>)}
                 </View>
             </>
             )}
             {selectedOption && (
-                <AlertMessageForm option={selectedOption} licensePlate={'AAAAA'}></AlertMessageForm>
+                <AlertMessageForm option={selectedOption} licensePlate={license_plate}></AlertMessageForm>
             )}
         </View>
 
@@ -65,28 +64,6 @@ const ModalAlert = () => {
 
 
 const styles = StyleSheet.create({
-    card: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        padding: 16,
-        marginVertical: 8,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        elevation: 3,
-    },
-    container: {
-        maxHeight: 200,
-        flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        padding: 16,
-    },
     cardItem: {
         width: '100%', // Réglez la largeur de chaque élément en fonction de la disposition en deux colonnes
         backgroundColor: '#fff',
@@ -105,7 +82,11 @@ const styles = StyleSheet.create({
     cardText: {
         fontSize: 16,
         fontWeight: 'bold',
+        marginBottom: 20,
     },
+    longText: {
+
+    }
 });
 
 export default ModalAlert;

@@ -1,17 +1,22 @@
 import { Button, StyleSheet, TextInput, View } from "react-native";
 import { ALERT } from "../utils/options.helper";
+import {useState} from "react";
 
 const AlertMessageForm = ({ option, licensePlate }) => {
-    const message = ALERT.replace("{option}", option).replace("{licensePlate}", licensePlate);
+
+    const [message,setMessage] = useState(ALERT.replace("{option}", option).replace("{licensePlate}", licensePlate))
     return (
         <>
             <TextInput
                 style={styles.input}
+                onChangeText={(text) => setMessage(text)}
                 value={message}
-                editable={false}
+                editable={true}
+                multiline = {true}
+                numberOfLines = {4}
             />
-            <View style={styles.button}>
-                <Button title="ENVOYER"></Button>
+            <View style={styles.buttonContainer}>
+                <Button title="ENVOYER" color={"white"}></Button>
             </View>
         </>
     )
@@ -19,15 +24,17 @@ const AlertMessageForm = ({ option, licensePlate }) => {
 
 const styles = StyleSheet.create({
     input: {
-        width: 700,
-        height: 40,
+        height: 100,
+        width:200,
         margin: 12,
         borderWidth: 1,
         padding: 10,
     },
-    button: {
-        marginLeft: 100,
-        maxWidth: 200
+    buttonContainer: {
+        marginVertical: 16,
+        backgroundColor: '#2ec530',
+        borderRadius: 10,
+        padding: 1,
     },
 });
 

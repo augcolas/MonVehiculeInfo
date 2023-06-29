@@ -1,9 +1,21 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {ActivityIndicator, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+    ActivityIndicator,
+    Button,
+    Dimensions,
+    Modal,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import {Camera} from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 import * as ImageManipulator from 'expo-image-manipulator';
 import RectangleCorners from "../components/rectangleCorners";
+import {Picker} from "@react-native-picker/picker";
+import ModalAlert from "../components/modalAlert";
 
 export default function CameraScreen() {
     const [hasPermission, setHasPermission] = useState(null);
@@ -12,6 +24,7 @@ export default function CameraScreen() {
     const [detectedPlate, setDetectedPlate] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [scannedQR, setScannedQR] = useState(null);
+    const [modalVisible, setModalVisible] = React.useState(false);
 
 
     useEffect(() => {
@@ -66,25 +79,29 @@ export default function CameraScreen() {
                 },
                 body: form,
             })
-                .then((response) => response.json())
-                .then((json) => {
-                    if (json.results && json.results.length > 0) {
-                        let plate = json.results[0].plate;
-                        let regex = /^[A-Z]{2}\d{3}[A-Z]{2}$/i;
-                        if (regex.test(plate)) {
-                            setDetectedPlate(plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3"));
-                        } else {
-                            setDetectedPlate(plate.toUpperCase());
-                        }
+            .then((response) => response.json())
+            .then((json) => {
+                if (json.results && json.results.length > 0) {
+                    let plate = json.results[0].plate;
+                    let regex = /^[A-Z]{2}\d{3}[A-Z]{2}$/i;
+                    if (regex.test(plate)) {
+                        setDetectedPlate(plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3"));
                     } else {
-                        setDetectedPlate('Aucune plaque détectée');
+                        setDetectedPlate(plate.toUpperCase());
                     }
-                    setIsLoading(false);
-                })
-                .catch((error) => {
-                    console.error(error);
-                    setIsLoading(false);
-                });
+                } else {
+                    setDetectedPlate('Aucune plaque détectée');
+
+                    setDetectedPlate('FW-448-KP');
+                    setModalVisible(true)
+                }
+                setIsLoading(false);
+            })
+            .catch((error) => {
+                console.error(error);
+                setIsLoading(false);
+            });
+
         }
     };
 
@@ -114,9 +131,24 @@ export default function CameraScreen() {
             {detectedPlate && (
                 <Text style={styles.plateText}>{detectedPlate}</Text>
             )}
+
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <ModalAlert license_plate={detectedPlate}></ModalAlert>
+                        <Button onPress={() => setModalVisible(false)}  title={"Annuler"} color={"#2ec530"}></Button>
+                    </View>
+                </View>
+            </Modal>
         </Camera>
     );
 }
+const windowWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
     camera: {
@@ -158,5 +190,27 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         color: 'white',
         fontSize: 18,
+    },modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        padding: 16,
+        alignItems: 'center',
+        width: windowWidth * 0.9,
+        maxWidth: 300,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 16,
+    },
+    modalText: {
+        fontSize: 20,
+        marginBottom: 20,
+    }
 });

@@ -6,6 +6,8 @@ import LoginScreen from "./screens/Auth/LoginScreen";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalAlert from "./components/modalAlert";
+import {Camera} from "expo-camera";
+import CameraScreen from "./screens/CameraScreen";
 
 export default function MainApp() {
     const {isLoggedIn, logIn} = useAuth();
@@ -26,11 +28,12 @@ export default function MainApp() {
 
     return (
        <>
-            {isLoggedIn && <ModalAlert></ModalAlert>}
+            {isLoggedIn && <Tabs/>}
             {!isLoggedIn &&
                 <Stack.Navigator>
                     <Stack.Screen name="Login" component={LoginScreen}/>
                 </Stack.Navigator>
             }
-       </>)
+       </>
+    )
 }
