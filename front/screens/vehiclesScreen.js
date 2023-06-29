@@ -3,10 +3,14 @@ import { StyleSheet, Text, View, Button, ScrollView, Dimensions, TouchableOpacit
 import {Picker} from '@react-native-picker/picker';
 import React from "react";
 import VehicleQRCode from "../components/qrCode";
+import {Share} from "react-native";
+import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
 
 
 
 export default function VehiclesScreen() {
+    const {authUser} = useAuth();
     const [vehicles, setVehicles] = React.useState([]);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [selectedType, setSelectedType] = React.useState('voiture');
@@ -16,7 +20,7 @@ export default function VehiclesScreen() {
         brand: '',
         color: '',
         license_plate: '',
-        user_id: 1,
+        user_id: authUser.id,
         state: 'good'
     });
 
@@ -33,7 +37,7 @@ export default function VehiclesScreen() {
 
     const getOwnVehicles = async () => {
         let response = await fetch(
-            'http://minikit.pythonanywhere.com/vehicles/user/1'
+            'http://minikit.pythonanywhere.com/vehicles/user/' + authUser.id
         );
         let json = await response.json();
         return json;
@@ -60,7 +64,7 @@ export default function VehiclesScreen() {
                     brand: '',
                     color: '',
                     license_plate: '',
-                    user_id: 1,
+                    user_id: authUser.id,
                     state: 'good'
                 });
             } else {
@@ -87,6 +91,61 @@ export default function VehiclesScreen() {
         }
     };
 
+    const shareQRCode = async () => {
+        try {
+            const result = await Share.share({
+                message: 'Here is the QR code for my vehicle',
+            });
+
+            if (result.action === Share.sharedAction) {
+                if (result.activityType) {
+                    console.log('Shared with activity: ' + result.activityType);
+                } else {
+                    console.log('Shared successfully!');
+                }
+            } else if (result.action === Share.dismissedAction) {
+                console.log('Share dialog was closed');
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
+
+    const saveQrToDisk = async (vehicleId) => {
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+
+        if (status !== 'granted') {
+            alert('Désolé, nous avons besoin des autorisations de la galerie pour faire cela !');
+            return;
+        }
+
+        // Nous recherchons le QRCode associé au véhicule
+        const qrCodeRef = qrCodesRef[vehicleId];
+
+        if (qrCodeRef) {
+            const uri = await qrCodeRef.toDataURL();
+            const asset = await MediaLibrary.createAssetAsync(`data:image/png;base64,${uri}`);
+
+            await MediaLibrary.createAlbumAsync('QR Codes', asset, false)
+                .then(() => {
+                    alert('Le QR Code a été sauvegardé dans la galerie !');
+                })
+                .catch((error) => {
+                    console.log('err', error);
+                });
+        }
+    };
+
+    const qrCodesRef = vehicles.reduce((refs, vehicle) => {
+        // Nous créons une ref pour chaque véhicule
+        refs[vehicle.id] = React.createRef();
+        return refs;
+    }, {});
+
+
+    <Button color={"white"} title="Télécharger" onPress={() => saveQrToDisk(data.id)} />
+
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
@@ -105,9 +164,12 @@ export default function VehiclesScreen() {
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
-                            <Button title="Mon QR Code" onPress={() => {
-                                console.log('data.id:', data.id);
-                                setQrModalVisible(true);
+                            <Button
+                                title="QR Code"
+                                color={'#2ec530'}
+                                onPress={() => {
+                                    console.log('data.id:', data.id);
+                                    setQrModalVisible(true);
                             }}
                             />
 
@@ -212,7 +274,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     deleteButton: {
+        position: "relative",
         marginRight: 8,
+        top: -40,
+        left: 300,
     },
     cardContent: {
         flex: 1,
@@ -227,7 +292,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         marginVertical: 16,
-        backgroundColor: '#58A1D9',
+        backgroundColor: '#2ec530',
         borderRadius: 10,
         padding: 1,
     },
@@ -272,8 +337,8 @@ const styles = StyleSheet.create({
     },
     stateIndicator: {
         position: 'absolute',
-        top: 3,
-        left: 50,
+        top: 40,
+        left: -27,
         width: 16,
         height: 16,
         borderRadius: 8,

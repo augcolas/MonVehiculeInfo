@@ -1,10 +1,28 @@
-import {StyleSheet, Text, View} from "react-native";
+import {StyleSheet, Text, View, ScrollView} from "react-native";
+import React from "react";
+import UserConversation from "../components/UserConversation";
 
 export default function HistoricScreen() {
+    const [conversations, setConversations] = React.useState([]);
+
+    const getConversations = async () => {
+        const response = await fetch('http://minikit.pythonanywhere.com/conversations/1');
+        const json = await response.json();
+        setConversations(json);
+    }
+
+    React.useEffect(() => {
+        getConversations();
+    }, []);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>HISTORIC SCREEN</Text>
+            <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+                <Text style={styles.title}>Vos messages</Text>
+                {conversations.map((conversation, index) => (
+                    <UserConversation key={index} conversation={conversation}/>
+                ))}
+            </ScrollView>
         </View>
     );
 }
@@ -12,11 +30,19 @@ export default function HistoricScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
+        backgroundColor: '#fff',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
-    text: {
-        color: "#fff"
-    }
+    scrollViewContainer: {
+        alignItems: 'center',
+        flexGrow: 1,
+        paddingTop: 50,
+        paddingBottom: 100,
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
 });
