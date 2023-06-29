@@ -1,5 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useContext, useState} from 'react'
+import {onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword} from "firebase/auth/react-native";
+import {auth} from "../config/firebaseConfig";
 
 const AuthContext = React.createContext();
 
@@ -8,24 +9,35 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = (props) => {
-    const [authUser, setAuthUser] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
+    const [onRetrieve, setOnRetrieve] = useState(true);
 
-    const logIn = async (user) => {
-        console.log(user);
-        setAuthUser(user);
-        await AsyncStorage.setItem('user', JSON.stringify(user));
-        setIsLoggedIn(true);
+
+    const signIn = async (email, password) => {
+        return signInWithEmailAndPassword(auth, email, password).then((user) => {
+            setUser(user.user);
+        });
     }
 
-    const logout = async () => {
-        setAuthUser(null);
-        setIsLoggedIn(false);
-        await AsyncStorage.removeItem('user');
+    const register = async (name, email, password) => {
+        createUserWithEmailAndPassword(auth,email, password).then((result) => {
+            console.log(result);
+        });
+    }
+
+ onAuthStateChanged(auth, (userT) =>{
+     if(onRetrieve) {
+         setUser(userT);
+         setOnRetrieve(false);
+     }
+ });
+    const signout = () => {
+        setUser(null);
+        return signOut(auth);
     }
 
     const value = {
-        isLoggedIn, logIn, logout, authUser
+        user, signIn, signout
     }
 
     return (

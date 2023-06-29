@@ -1,13 +1,14 @@
-import {StyleSheet, Text, View, ScrollView, Button} from "react-native";
-import React, {useEffect} from "react";
+import {Button, ScrollView, StyleSheet, Text, View} from "react-native";
+import React from "react";
 import {useAuth} from "../context/Auth";
 
 export default function ProfileScreen() {
-    const {authUser, logout} = useAuth();
+    const {user, signout} = useAuth();
 
-    const handleLogout = () => {
+    const handleLogout = (e) => {
+        e.preventDefault();
         // Appeler la fonction de déconnexion ici
-        logout();
+        signout();
     };
 
     return (
@@ -16,8 +17,8 @@ export default function ProfileScreen() {
                 <Text style={styles.title}>Votre Profil</Text>
 
                 <View style={styles.pinfos}>
-                    <Text style={styles.text} >Prénom : {authUser.name}</Text>
-                    <Text style={styles.text} >Mail : {authUser.email}</Text>
+                    <Text style={styles.text} >Prénom : {user.email}</Text>
+                    <Text style={styles.text} >Mail : {user.email}</Text>
                 </View>
 
                 <View style={styles.buttonContainer}>
