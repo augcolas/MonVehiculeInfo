@@ -8,7 +8,7 @@ export default function HistoricScreen() {
     const {authUser} = useAuth();
 
     const getConversations = async () => {
-        const response = await fetch('http://minikit.pythonanywhere.com/conversations/user/' + authUser.id + '/');
+        const response = await fetch('http://localhost:5000/conversations/user/' + authUser.id + '/');
         const json = await response.json();
         setConversations(json);
     }
