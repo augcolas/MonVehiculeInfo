@@ -145,6 +145,19 @@ def get_vehicule(id):
         'state': vehicle.state
     })
 
+# Route pour récupérer un utilisateur selon une plaque d'immatriculation
+@app.route('/user/get_by_license_plate/<lp>', methods=['GET'])
+def get_vehicle_by_license_plate(lp):
+    vehicle = Vehicle.query.filter_by(license_plate=lp).first()
+    user = User.query.get(vehicle.user_id)
+    return jsonify({
+        'user': {
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+        },
+    )
+
 # Route pour récupérer tous les véhicules d'un utilisateur
 @app.route('/vehicles/user/<user_id>', methods=['GET'])
 def get_vehicules_user(user_id):
@@ -206,7 +219,7 @@ def get_conversations_user(user_id):
         })
     return jsonify(result)
 
-# Route pour récupérer une conversation entre deux utilisateurs
+# Route pour récupérer une conversation via son ID
 @app.route('/conversations/<id>', methods=['GET'])
 def get_conversation(id):
     conversation = Conversation.query.get(id)
@@ -216,6 +229,26 @@ def get_conversation(id):
         'contact_id': conversation.contact_id,
         'messages': conversation.messages
     })
+
+# Route pour récupérer une conversation entre 2 utilisateurs selon leur id
+@app.route('/conversations/exist', methods=['GET'])
+def get_conversation_by_users():
+    user_id = request.args.get('user_id')
+    contact_id = request.args.get('contact_id')
+    conversation = Conversation.query.filter_by(user_id=user_id, contact_id=contact_id).first()
+
+    #if conversation not found
+    if conversation is None:
+        return jsonify({
+            'message': 'Conversation not found'
+        })
+    else:
+        return jsonify({
+            'id': conversation.id,
+            'user_id': conversation.user_id,
+            'contact_id': conversation.contact_id,
+            'messages': conversation.messages
+        })
 
 # Route pour créer une nouvelle conversation
 @app.route('/conversations', methods=['POST'])
