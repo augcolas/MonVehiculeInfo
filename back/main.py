@@ -73,8 +73,8 @@ def get_utilisateurs():
 # Route pour récupérer un utilisateur
 @app.route('/users/<id>', methods=['GET'])
 def get_utilisateur(id):
-    user = User.query.get(id)
-    return jsonify({'id': user.id, 'name': user.name, 'email': user.email})
+    user = User.query.filter_by(firebase_uuid=id).first(    )
+    return jsonify({'id': user.id, 'name': user.name, 'email': user.email, 'firebase_uuid':user.firebase_uuid})
 
 # Route pour créer un nouvel utilisateur
 @app.route('/users', methods=['POST'])

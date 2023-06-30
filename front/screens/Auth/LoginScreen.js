@@ -9,7 +9,7 @@ export default function LoginScreen() {
     const [error, setError] = useState();
     const [loading, setLoading] = useState(false);
 
-    const {signIn} = useAuth();
+    const {signIn, loadingRetrieve} = useAuth();
     const navigation = useNavigation();
 
     async function logUser(e) {
@@ -35,7 +35,7 @@ export default function LoginScreen() {
     return (
 
         <View style={styles.container}>
-            {loading && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
+            {(loading || loadingRetrieve) && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
             <View style={styles.container_login}>
                 <Text style={styles.title}>Connexion</Text>
                 {error && (<Text style={styles.error}>{error}</Text>)}

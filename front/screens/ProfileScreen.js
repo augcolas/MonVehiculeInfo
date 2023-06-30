@@ -17,7 +17,7 @@ export default function ProfileScreen() {
                 <Text style={styles.title}>Votre Profil</Text>
 
                 <View style={styles.pinfos}>
-                    <Text style={styles.text} >Prénom : {user.email}</Text>
+                    <Text style={styles.text} >Prénom : {user.name}</Text>
                     <Text style={styles.text} >Mail : {user.email}</Text>
                 </View>
 

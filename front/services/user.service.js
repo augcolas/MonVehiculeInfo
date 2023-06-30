@@ -1,7 +1,7 @@
 const url = 'http://minikit.pythonanywhere.com/users';
 
 export const getUserByEmail = (email) => {
-    const queryParams = new URLSearchParams({ email });
+    const queryParams = new URLSearchParams({email});
     const fetchUrl = `${url}/get_by_email?${queryParams}`;
 
     return fetch(fetchUrl)
@@ -19,19 +19,22 @@ export const addUser = (body) => {
         method: "POST",
         body: JSON.stringify(body)
     })
-        .then(response => { return response.json() })
+        .then(response => {
+            return response.json()
+        })
 }
 
-export const checkPassword = (userId, pwd) => {
-    return fetch(`${url}/${userId}/check-password`, {
+export const getUserByFirebaseUuId = (uuid) => {
+    return fetch(`${url}/${uuid}`, {
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type':'application/json'
         },
-        method: "POST",
-        body: JSON.stringify({password: pwd})
+        method: 'GET'
+    }).then(response => {
+        return response.json()
     })
-        .then(response => { return response.json() })
 }
+
 
 export const getUsers = () => {
     return fetch(url)

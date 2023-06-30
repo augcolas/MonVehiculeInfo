@@ -33,14 +33,12 @@ export default function RegisterScreen() {
 
     }
 
-
     return (
-
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.arrow_back}>
                 <Ionicons name="arrow-back" size={36} color="black"/>
             </TouchableOpacity>
-            {loading && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
+            {   loading && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
             <View style={styles.container_login}>
                 <Text style={styles.title}>Nouveau compte</Text>
                 {error && (<Text style={styles.error}>{error}</Text>)}
@@ -49,9 +47,8 @@ export default function RegisterScreen() {
                         <Text style={styles.label}>Nom</Text>
                         <TextInput style={styles.textInput}
                                    isRequired
-                                   secureTextEntry={true}
                                    onChangeText={(name) => setName(name)}
-                                   value={password}
+                                   value={name}
                                    editable={!loading}
                         ></TextInput>
                     </View>
