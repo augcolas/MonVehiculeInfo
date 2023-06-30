@@ -5,9 +5,7 @@ import React from "react";
 import VehicleQRCode from "../components/qrCode";
 import {Share} from "react-native";
 import * as MediaLibrary from 'expo-media-library';
-import * as FileSystem from 'expo-file-system';
 import {useAuth} from "../context/Auth";
-
 
 
 export default function VehiclesScreen() {
@@ -165,34 +163,25 @@ export default function VehiclesScreen() {
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
-                        </View>
-                        <Button
-                            title="QR Code"
-                            color={'#2ec530'}
-                            onPress={() => {
-                                console.log('data.id:', data.id);
-                                setQrModalVisible(true);
+                            <Button
+                                title="QR Code"
+                                color={'#2ec530'}
+                                onPress={() => {
+                                    console.log('data.id:', data.id);
+                                    setQrModalVisible(true);
                             }}
-                        />
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={qrModalVisible}
-                            onRequestClose={() => setQrModalVisible(false)}
-                        >
-                            <View style={styles.modalContainer}>
-                                <View style={styles.modalContent}>
-                                    <Text style={styles.modalTitle}>Partager mon QR Code</Text>
-                                    <VehicleQRCode vehicleId={data.id} ref={qrCodesRef[data.id]}/>
-                                    <View style={styles.buttonContainer} >
-                                        <Button color={"white"} title="Télécharger" onPress={saveQrToDisk} />
-                                    </View>
-                                    <View style={styles.buttonContainer}>
-                                        <Button color={"white"} title="Fermer" onPress={() => setQrModalVisible(false)} />
-                                    </View>
-                                </View>
-                            </View>
-                        </Modal>
+                            />
+
+                            <Modal
+                                animationType="slide"
+                                transparent={true}
+                                visible={qrModalVisible}
+                                onRequestClose={() => setQrModalVisible(false)}
+                            >
+                                <VehicleQRCode vehicleId={data.id} styles={styles} setQrModalVisible={setQrModalVisible} />
+                            </Modal>
+
+                        </View>
 
                     </View>
                 ))}
