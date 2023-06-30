@@ -16,15 +16,26 @@ export default function RegisterScreen() {
 
     async function registerUser(e) {
         e.preventDefault();
+        if (name === "") {
+            setError("Le nom est vide");
+            return;
+        }
         setLoading(true);
         register(name, email, password).catch((e) => {
             setLoading(false);
+            console.log(e);
             switch (e.code) {
                 case 'auth/invalid-email':
                     setError("L'email est invalide")
                     break;
-                case 'auth/wrong-password':
+                case 'auth/weak-password':
+                    setError('Mot de passe trop faible (8 caractères minimum)')
+                    break;
+                case 'auth/missing-password':
                     setError('Mot de passe invalide')
+                    break;
+                case 'auth/email-already-in-use':
+                    setError('Email déjà utilisé')
                     break;
                 default:
                     setError('Connexion impossible')
@@ -38,10 +49,12 @@ export default function RegisterScreen() {
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.arrow_back}>
                 <Ionicons name="arrow-back" size={36} color="black"/>
             </TouchableOpacity>
-            {   loading && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
+            {loading && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
             <View style={styles.container_login}>
-                <Text style={styles.title}>Nouveau compte</Text>
-                {error && (<Text style={styles.error}>{error}</Text>)}
+                <View style={styles.header}>
+                    <Text style={styles.title}>Nouveau compte</Text>
+                    {error && (<Text style={styles.error}>{error}</Text>)}
+                </View>
                 <View style={styles.container_inputs}>
                     <View style={styles.input}>
                         <Text style={styles.label}>Nom</Text>
@@ -98,11 +111,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
     }, container_inputs: {
-        flex: 2, display: "flex"
+        flex: 5, display: "flex"
     }, container_buttons: {
         flex: 1, display: "flex", justifyContent: "center", transform: ([{scale: 1.5}])
-    }, title: {
-        flex: 1, color: "#2ec530", fontSize: 30, textAlign: "center"
+    }, header: {
+        flex: 1
+    },
+    title: {
+        color: "#2ec530", fontSize: 30, textAlign: "center"
     }, label: {
         fontSize: 20
     }, input: {
@@ -112,7 +128,7 @@ const styles = StyleSheet.create({
     }, forgotPassword: {
         marginTop: 24, fontSize: 12, color: "#2ec530", fontWeight: "700"
     }, error: {
-        color: "#f00", fontSize: 16
+        color: "#f00", fontSize: 16, textAlign: "center"
     }, activityIndicator: {
         position: "absolute", top: 50, bottom: 50, zIndex: 99, transform: [{scale: 2}],
     }, arrow_back: {

@@ -50,7 +50,9 @@ export const AuthProvider = (props) => {
     onAuthStateChanged(auth, (user) => {
         if(firstTime) {
             setFirstTime(false);
-            retrieveUserData(user.uid);
+            if(user) {
+                retrieveUserData(user.uid);
+            }
         }
     })
 

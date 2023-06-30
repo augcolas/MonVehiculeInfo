@@ -1,15 +1,25 @@
 import {Ionicons} from '@expo/vector-icons';
-import { StyleSheet, Text, View, Button, ScrollView, Dimensions, TouchableOpacity, Modal, TextInput } from 'react-native';
+import {
+    Button,
+    Dimensions,
+    Modal,
+    ScrollView,
+    Share,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import React from "react";
 import VehicleQRCode from "../components/qrCode";
-import {Share} from "react-native";
 import * as MediaLibrary from 'expo-media-library';
 import {useAuth} from "../context/Auth";
 
 
 export default function VehiclesScreen() {
-    const {authUser} = useAuth();
+    const {user} = useAuth();
     const [vehicles, setVehicles] = React.useState([]);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [selectedType, setSelectedType] = React.useState('voiture');
@@ -19,7 +29,7 @@ export default function VehiclesScreen() {
         brand: '',
         color: '',
         license_plate: '',
-        user_id: authUser.id,
+        user_id: user.id,
         state: 'good'
     });
 
@@ -36,7 +46,7 @@ export default function VehiclesScreen() {
 
     const getOwnVehicles = async () => {
         let response = await fetch(
-            'http://minikit.pythonanywhere.com/vehicles/user/' + authUser.id
+            'http://minikit.pythonanywhere.com/vehicles/user/' + user.id
         );
         let json = await response.json();
         return json;
@@ -63,7 +73,7 @@ export default function VehiclesScreen() {
                     brand: '',
                     color: '',
                     license_plate: '',
-                    user_id: authUser.id,
+                    user_id: user.id,
                     state: 'good'
                 });
             } else {
