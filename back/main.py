@@ -149,14 +149,22 @@ def get_vehicule(id):
 @app.route('/user/get_by_license_plate/<lp>', methods=['GET'])
 def get_vehicle_by_license_plate(lp):
     vehicle = Vehicle.query.filter_by(license_plate=lp).first()
-    user = User.query.get(vehicle.user_id)
-    return jsonify({
-        'user': {
-            'id': user.id,
-            'name': user.name,
-            'email': user.email,
-        },
-    )
+    app.logger.info(vehicle)
+    returned_object = {}
+    # le vehicule n'existe pas dans la base de données
+    if vehicle is None:
+        returned_object = {'message': 'Le véhicule n\'existe pas dans la base de données'}
+    else:
+        user = User.query.get(vehicle.user_id)
+        app.logger.info(user)
+        # l'utilisateur n'existe pas dans la base de données
+        if user is None:
+            returned_object = {'message': 'L\'utilisateur n\'existe pas dans la base de données'}
+        else:
+            returned_object = {'id': user.id, 'name': user.name, 'email': user.email}
+
+    app.logger.info(returned_object)
+    return jsonify(returned_object)
 
 # Route pour récupérer tous les véhicules d'un utilisateur
 @app.route('/vehicles/user/<user_id>', methods=['GET'])
@@ -255,14 +263,13 @@ def get_conversation_by_users():
 def creer_conversation():
     data = request.get_json()
     app.logger.info(data)
-    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], messages=data['messages'])
+    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'])
     db.session.add(new_conversation)
     db.session.commit()
     return jsonify({
         'id': new_conversation.id,
         'user_id': new_conversation.user_id,
         'contact_id': new_conversation.contact_id,
-        'messages': new_conversation.messages
     })
 
 # Route pour supprimer une conversation
