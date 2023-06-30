@@ -1,5 +1,13 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useContext, useState} from 'react'
+import {
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signOut,
+    createUserWithEmailAndPassword,
+    signInWithCredential
+} from "firebase/auth/react-native";
+import {auth} from "../config/firebaseConfig";
+import {addUser, getUserByFirebaseUuId} from "../services/user.service";
 
 const AuthContext = React.createContext();
 
@@ -8,24 +16,46 @@ export const useAuth = () => {
 }
 
 export const AuthProvider = (props) => {
-    const [authUser, setAuthUser] = useState(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
+    const [firstTime, setFirstTime] = useState(true);
+    const [loadingRetrieve, setOnloadingRetrieve] = useState(false);
 
-    const logIn = async (user) => {
-        console.log(user);
-        setAuthUser(user);
-        await AsyncStorage.setItem('user', JSON.stringify(user));
-        setIsLoggedIn(true);
+    const signIn = async (email, password) => {
+        return signInWithEmailAndPassword(auth, email, password).then((user) => {
+            retrieveUserData(user.user.uid);
+        });
     }
 
-    const logout = async () => {
-        setAuthUser(null);
-        setIsLoggedIn(false);
-        await AsyncStorage.removeItem('user');
+    const register = async (name, email, password) => {
+        return createUserWithEmailAndPassword(auth, email, password).then((result) => {
+            addUser({name, email, firebase_uuid: result.user.uid, vehicles: []}).then((data) => {
+                retrieveUserData(result.user.uid);
+            })
+        })
     }
+
+    const retrieveUserData = (uuid) => {
+        setOnloadingRetrieve(true);
+        getUserByFirebaseUuId(uuid).then((result) => {
+            setUser(result);
+            setOnloadingRetrieve(false)
+        });
+    }
+
+    const signout = () => {
+        setUser(null);
+        return signOut(auth);
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if(firstTime) {
+            setFirstTime(false);
+            retrieveUserData(user.uid);
+        }
+    })
 
     const value = {
-        isLoggedIn, logIn, logout, authUser
+        user, signIn, signout, register, loadingRetrieve
     }
 
     return (

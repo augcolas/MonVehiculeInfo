@@ -2,22 +2,24 @@ import {ActivityIndicator, Button, StyleSheet, Text, TextInput, TouchableOpacity
 import {useAuth} from "../../context/Auth";
 import {useState} from "react";
 import {useNavigation} from "@react-navigation/native";
+import {Ionicons} from "@expo/vector-icons";
 
-export default function LoginScreen() {
+export default function RegisterScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
     const [error, setError] = useState();
     const [loading, setLoading] = useState(false);
 
-    const {signIn, loadingRetrieve} = useAuth();
     const navigation = useNavigation();
+    const {register} = useAuth();
 
-    async function logUser(e) {
+    async function registerUser(e) {
         e.preventDefault();
         setLoading(true);
-        signIn(email, password).catch((e) => {
+        register(name, email, password).catch((e) => {
             setLoading(false);
-            switch(e.code){
+            switch (e.code) {
                 case 'auth/invalid-email':
                     setError("L'email est invalide")
                     break;
@@ -31,15 +33,25 @@ export default function LoginScreen() {
 
     }
 
-
     return (
-
         <View style={styles.container}>
-            {(loading || loadingRetrieve) && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.arrow_back}>
+                <Ionicons name="arrow-back" size={36} color="black"/>
+            </TouchableOpacity>
+            {   loading && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
             <View style={styles.container_login}>
-                <Text style={styles.title}>Connexion</Text>
+                <Text style={styles.title}>Nouveau compte</Text>
                 {error && (<Text style={styles.error}>{error}</Text>)}
                 <View style={styles.container_inputs}>
+                    <View style={styles.input}>
+                        <Text style={styles.label}>Nom</Text>
+                        <TextInput style={styles.textInput}
+                                   isRequired
+                                   onChangeText={(name) => setName(name)}
+                                   value={name}
+                                   editable={!loading}
+                        ></TextInput>
+                    </View>
                     <View style={styles.input}>
                         <Text style={styles.label}>Email</Text>
                         <TextInput
@@ -60,30 +72,20 @@ export default function LoginScreen() {
                                    editable={!loading}
                         ></TextInput>
                     </View>
-                    <Text style={styles.forgotPassword}>Mot de passe oublié?</Text>
                 </View>
-
-
                 <View style={styles.container_buttons}>
-                    <Button color={"#2ec530"} title="Se Connecter" onPress={logUser}/>
+                    <Button color={"#2ec530"} title="Créer son compte" onPress={registerUser}/>
                 </View>
+
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.register}>Créer son compte</Text>
-            </TouchableOpacity>
-        </View>
-    );
+        </View>);
 }
 
 
 const styles = StyleSheet.create({
     container: {
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    container_login: {
+        height: "100%", display: "flex", alignItems: "center", justifyContent: "center"
+    }, container_login: {
         backgroundColor: "#fff",
         borderRadius: 5,
         display: "flex",
@@ -95,58 +97,25 @@ const styles = StyleSheet.create({
         shadowColor: '#171717',
         shadowOpacity: 0.2,
         shadowRadius: 3,
-    },
-    container_inputs: {
-        flex: 2,
-        display: "flex"
-    },
-    container_buttons: {
-        flex: 1,
-        display: "flex",
-        justifyContent: "center",
-        transform: ([{scale: 1.5}])
-    },
-    title: {
-        flex: 1,
-        color: "#2ec530",
-        fontSize: 46
-    },
-    label: {
+    }, container_inputs: {
+        flex: 2, display: "flex"
+    }, container_buttons: {
+        flex: 1, display: "flex", justifyContent: "center", transform: ([{scale: 1.5}])
+    }, title: {
+        flex: 1, color: "#2ec530", fontSize: 30, textAlign: "center"
+    }, label: {
         fontSize: 20
-    },
-    input: {
-        flex: 1,
-        display: "flex",
-        justifyContent: "center",
-        width: 240
-    },
-    textInput: {
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: "#808080",
-        padding: 6
-    },
-    forgotPassword: {
-        marginTop: 24,
-        fontSize: 12,
-        color: "#2ec530",
-        fontWeight: "700"
-    },
-    register: {
-        marginTop: 24,
-        fontSize: 16,
-        color: "#2ec530",
-        fontWeight: "500"
-    },
-    error: {
-        color: "#f00",
-        fontSize: 16
-    },
-    activityIndicator: {
-        position: "absolute",
-        top: 50,
-        bottom: 50,
-        zIndex: 99,
-        transform: [{scale: 2}],
-    },
+    }, input: {
+        flex: 1, display: "flex", justifyContent: "center", width: 240
+    }, textInput: {
+        borderWidth: 1, borderRadius: 5, borderColor: "#808080", padding: 6
+    }, forgotPassword: {
+        marginTop: 24, fontSize: 12, color: "#2ec530", fontWeight: "700"
+    }, error: {
+        color: "#f00", fontSize: 16
+    }, activityIndicator: {
+        position: "absolute", top: 50, bottom: 50, zIndex: 99, transform: [{scale: 2}],
+    }, arrow_back: {
+        position: "absolute", top: 50, left: 10
+    }
 });
