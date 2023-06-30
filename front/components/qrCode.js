@@ -10,20 +10,27 @@ function VehicleQRCode({vehicleId, styles, setQrModalVisible}) {
     let qrCode = useRef(null);
 
     const saveQrToDisk = async () => {
-        qrCode.toDataURL((dataURL) => {
-            let date = new Date();
-            let path = FileSystem.documentDirectory + "qr_" + Math.floor(date.getTime() + date.getSeconds() / 2) + ".png";
-            FileSystem.writeAsStringAsync(path, dataURL, { encoding: FileSystem.EncodingType.Base64 })
-                .then(async () => {
-                    const asset = await MediaLibrary.createAssetAsync(path);
-                    await MediaLibrary.createAlbumAsync('MediaLibrary/Default', asset, false);
-                    console.log('QR code saved at: ', path);
-                })
-                .catch((error) => {
-                    console.error('Error saving QR to disk ', error);
-                });
-        });
+        // Check for permissions
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Sorry, we need camera roll permissions to make this work!');
+        } else {
+            qrCode.toDataURL((dataURL) => {
+                let date = new Date();
+                let path = FileSystem.documentDirectory + "qr_" + Math.floor(date.getTime() + date.getSeconds() / 2) + ".png";
+                FileSystem.writeAsStringAsync(path, dataURL, { encoding: FileSystem.EncodingType.Base64 })
+                    .then(async () => {
+                        const asset = await MediaLibrary.createAssetAsync(path);
+                        await MediaLibrary.createAlbumAsync('MediaLibrary/Default', asset, false);
+                        console.log('QR code saved at: ', path);
+                    })
+                    .catch((error) => {
+                        console.error('Error saving QR to disk ', error);
+                    });
+            });
+        }
     };
+
 
     return (
         <View style={styles.modalContainer}>
@@ -35,7 +42,7 @@ function VehicleQRCode({vehicleId, styles, setQrModalVisible}) {
                     size={150}
                     color='#2ec530'
                     backgroundColor='white'
-                    logo={require('../assets/logo_blue.png')}
+                    logo={require('../assets/logo_green.png')}
                     logoSize={30}
                     logoBackgroundColor='white'
                 />
