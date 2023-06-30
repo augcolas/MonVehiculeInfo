@@ -262,7 +262,7 @@ def get_conversation_by_users():
 @app.route('/conversations', methods=['POST'])
 def creer_conversation():
     data = request.get_json()
-    app.logger.info(data)
+    app.logger.info('data :',data)
     new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'])
     db.session.add(new_conversation)
     db.session.commit()

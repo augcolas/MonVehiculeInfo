@@ -35,7 +35,7 @@ const AlertMessageForm = ({ option, licensePlate }) => {
                     },
                     body: JSON.stringify({
                         user_id: authUser.id,
-                        contact_id: contact.id,
+                        contact_id: contact.id,u
                     }),
                 }
             );
