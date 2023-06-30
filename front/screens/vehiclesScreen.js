@@ -5,8 +5,7 @@ import React from "react";
 import VehicleQRCode from "../components/qrCode";
 import {Share} from "react-native";
 import * as MediaLibrary from 'expo-media-library';
-import * as FileSystem from 'expo-file-system';
-
+import {useAuth} from "../context/Auth";
 
 
 export default function VehiclesScreen() {
