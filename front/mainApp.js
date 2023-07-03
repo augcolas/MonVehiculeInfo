@@ -19,6 +19,6 @@ export default function MainApp() {
                     <Stack.Screen options={{headerShown: false}} name="Register" component={RegisterScreen}/>
                 </Stack.Navigator>
             }
-       </>
+        </>
     )
 }
