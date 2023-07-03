@@ -39,24 +39,22 @@ class ConversationScreen extends React.Component {
         <MessageCard message={item.content} isReceived={item.isReceived} />
     );
 
-    renderHeader = () => (
-        <View style={styles.header}>
-            <Text style={styles.conversationNumber}>
-                Conversation #{this.state.conversationNumber}
-            </Text>
-            <Text>
-                Plaque: {this.state.plaqueNumber}
-            </Text>
-        </View>
-    );
 
     render() {
         return (
             <View style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.conversationNumber}>
+                        Conversation #{this.state.conversationNumber}
+                    </Text>
+                    <Text>
+                        Plaque: {this.state.plaqueNumber}
+                    </Text>
+                </View>
                 <FlatList
-                    stickyHeaderIndices={[0]}
+                    inverted
                     ListHeaderComponent={this.renderHeader}
-                    data={this.state.messages}
+                    data={this.state.messages.reverse()}
                     renderItem={this.renderMessageCard}
                     keyExtractor={(item) => item.id.toString()}
                 />
@@ -69,13 +67,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#fff',
     },
     header: {
         alignItems: 'center',
         paddingVertical: 10,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
+        backgroundColor: '#fff',
         marginBottom: 10,
     },
     conversationNumber: {
