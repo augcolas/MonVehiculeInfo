@@ -2,6 +2,7 @@ import { Button, StyleSheet, TextInput, View } from "react-native";
 import { ALERT } from "../utils/options.helper";
 import {useState} from "react";
 import {useAuth} from "../context/Auth";
+import {checkConversationExist, createConversation, createMessage} from "../services/conversation.service";
 
 const AlertMessageForm = ({ option, licensePlate }) => {
     const {user} = useAuth();
@@ -9,6 +10,7 @@ const AlertMessageForm = ({ option, licensePlate }) => {
 
     const sendMessage = async () => {
         //getting the contact infos
+        console.log('getting the contact infos')
         const response1 = await fetch(
             'http://minikit.pythonanywhere.com/user/get_by_license_plate/'+licensePlate
         );
@@ -21,51 +23,15 @@ const AlertMessageForm = ({ option, licensePlate }) => {
         }
 
         //getting the conversation infos
-        const response2 = await fetch('http://minikit.pythonanywhere.com/conversations/exist?user_id='+user.id+'&contact_id='+contact.id);
-        let conversation = await response2.json();
-        console.log('conversation :',conversation)
+
+        let conversation = await checkConversationExist(user.id, contact.id);
 
         //creating the conversation if it doesn't exist
-        if(conversation.id == null) {
-            const messages = []
-            console.log('messages :',messages)
-            const response3 = await fetch(
-                'http://minikit.pythonanywhere.com/conversations/',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        user_id: user.id,
-                        contact_id: contact.id,
-                        license_plate: licensePlate
-                    }),
-                }
-            );
-            conversation = await response3.json();
-            console.log('conversation :',conversation)
+        if(conversation.message != null) {
+            conversation = await createConversation(user.id, contact.id, licensePlate);
         }
-
-        //adding the first message to the conversation
-        const response4 = await fetch(
-            'http://minikit.pythonanywhere.com/messages/',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    content: message,
-                    conversation_id: conversation.id,
-                    date: new Date().getDate(),
-                }),
-            }
-        );
-        const result_message = await response4.json();
-        console.log('message :',result_message)
+        await createMessage(conversation.id, message, user.id);
     }
-
 
     return (
         <>

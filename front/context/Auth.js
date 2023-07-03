@@ -3,7 +3,8 @@ import {
     createUserWithEmailAndPassword,
     onAuthStateChanged,
     signInWithEmailAndPassword,
-    signOut
+    signOut,
+    sendPasswordResetEmail
 } from "firebase/auth/react-native";
 import {auth} from "../config/firebaseConfig";
 import {addUser, getUserByFirebaseUuId, updateExpoToken} from "../services/user.service";
@@ -53,6 +54,10 @@ export const AuthProvider = (props) => {
         return signOut(auth);
     }
 
+    const resetPassword = (email) => {
+        return sendPasswordResetEmail(auth, email);
+    }
+
     onAuthStateChanged(auth, (user) => {
         if (firstTime) {
             setFirstTime(false);
@@ -64,7 +69,7 @@ export const AuthProvider = (props) => {
     })
 
     const value = {
-        user, signIn, signout, register, loadingRetrieve
+        user, signIn, signout, register, loadingRetrieve, resetPassword
     }
 
     return (
