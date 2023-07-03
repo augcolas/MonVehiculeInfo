@@ -19,7 +19,6 @@ function registerUser(e) {
       alert("Le mot de passe défini doit être identique !")
     }
   }
-  console.log("registerUser()");
 }
 
 export default function RegisterForm() {

@@ -43,7 +43,6 @@ export default function LoginScreen() {
             })
             .catch((e) => {
                 setLoading(false);
-                console.log(e.code);
                 switch (e.code) {
                     case 'auth/missing-email':
                         setModalError("L'email est manquante")

@@ -10,7 +10,6 @@ export default function UserConversation(conversation) {
     const [lastMessage, setLastMessage] = React.useState();
 
     React.useEffect(() => {
-        console.log(conversation)
         fetch(`http://minikit.pythonanywhere.com/conversations/${conversation.conversation.id}/messages`)
             .then((res) => res.json())
             .then((res) => {if(res.length>=0){setMessages(res)} });
@@ -19,7 +18,6 @@ export default function UserConversation(conversation) {
     React.useEffect(() => {
         if (messages.length >= 0) {
             if(messages[0]){
-                console.log(messages[0].content);
                 setLastMessage(messages[0].content);
             }
         }
@@ -46,7 +44,7 @@ export default function UserConversation(conversation) {
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(false)}
             >
-                <ConversationScreen messages={messages}></ConversationScreen>
+                <ConversationScreen messages={messages} plaque={conversation.conversation.license_plate} conversation_id={conversation.conversation.id}></ConversationScreen>
             </Modal>
         </View>
     )

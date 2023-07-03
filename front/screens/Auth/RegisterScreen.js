@@ -23,7 +23,6 @@ export default function RegisterScreen() {
         setLoading(true);
         register(name, email, password).catch((e) => {
             setLoading(false);
-            console.log(e);
             switch (e.code) {
                 case 'auth/invalid-email':
                     setError("L'email est invalide")

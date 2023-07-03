@@ -10,15 +10,12 @@ const AlertMessageForm = ({ option, licensePlate }) => {
 
     const sendMessage = async () => {
         //getting the contact infos
-        console.log('getting the contact infos')
         const response1 = await fetch(
             'http://minikit.pythonanywhere.com/user/get_by_license_plate/'+licensePlate
         );
         const contact = await response1.json();
-        console.log('contact :',contact)
 
         if(contact == null && contact.id == null){
-            console.log('unable to find the car owner')
             return
         }
 
