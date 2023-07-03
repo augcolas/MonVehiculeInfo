@@ -273,6 +273,7 @@ def get_messages_conversation(id):
         })
     return jsonify(result)
 
+
 # Route pour créer un message dans une conversation
 @app.route('/conversations/<id>/messages', methods=['POST'])
 def creer_message(id):
@@ -294,6 +295,7 @@ def creer_message(id):
         'conversation_id': new_message.conversation_id,
         'user_id': new_message.user_id
     })
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

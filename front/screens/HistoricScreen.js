@@ -1,11 +1,11 @@
-import {StyleSheet, Text, View, ScrollView} from "react-native";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 import React from "react";
 import UserConversation from "../components/UserConversation";
-import {useAuth} from "../context/Auth";
+import { useAuth } from "../context/Auth";
 
 export default function HistoricScreen() {
     const [conversations, setConversations] = React.useState([]);
-    const {user} = useAuth();
+    const { user } = useAuth();
 
     const getConversations = async () => {
         const response = await fetch('http://minikit.pythonanywhere.com/conversations/user/' + user.id);
@@ -23,8 +23,7 @@ export default function HistoricScreen() {
                 <Text style={styles.title}>Vos messages</Text>
                 {conversations.map((conversation, index) => (
                     <View key={index}>
-                        <Text>il y a une conversation ici</Text>
-                        <UserConversation  conversation={conversation}/>
+                        <UserConversation conversation={conversation} />
                     </View>
                 ))}
             </ScrollView>
