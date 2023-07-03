@@ -52,6 +52,7 @@ class Message(db.Model):
     content = db.Column(db.String(50))
     date = db.Column(db.DateTime, nullable=False, default=datetime.datetime)
     conversation_id = db.Column(db.Integer, db.ForeignKey('conversation.id'))
+    user_id = db.Column(db.Integer, nullable=False)
 
 # Creer la base de données
 with app.app_context():
@@ -267,7 +268,8 @@ def get_messages_conversation(id):
             'id': message.id,
             'content': message.content,
             'date': message.date,
-            'conversation_id': message.conversation_id
+            'conversation_id': message.conversation_id,
+            'user_id': message.user_id
         })
     return jsonify(result)
 
@@ -276,14 +278,21 @@ def get_messages_conversation(id):
 def creer_message(id):
     data = request.get_json()
     app.logger.info(data)
-    new_message = Message(content = data['content'], date = datetime.datetime.now(), conversation_id = id)
+
+    # vérif user_id est bien rempli
+    if 'content' not in data or 'user_id' not in data:
+        return jsonify({'error': 'Content and user_id are required.'}), 400
+
+    new_message = Message(content=data['content'], date=datetime.datetime.now(), conversation_id=id, user_id=data['user_id'])
     db.session.add(new_message)
     db.session.commit()
+
     return jsonify({
         'id': new_message.id,
         'content': new_message.content,
         'date': new_message.date,
-        'conversation_id': new_message.conversation_id
+        'conversation_id': new_message.conversation_id,
+        'user_id': new_message.user_id
     })
 
 if __name__ == '__main__':
