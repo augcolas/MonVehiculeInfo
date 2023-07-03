@@ -12,6 +12,7 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import hashlib
+from datetime import datetime
 
 app = Flask(__name__)
 #removing cors
@@ -258,20 +259,23 @@ def supprimer_conversation(id):
 # Route pour récupérer les messages d'une conversation
 @app.route('/conversations/<id>/messages', methods=['GET'])
 def get_messages(id):
-    messages = Message.query.get(id)
-    return jsonify({
-        'id': messages.id,
-        'content': messages.content,
-        'date': messages.date,
-        'conversation_id': messages.conversation_id
-    })
+    messages = Message.query.filter_by(conversation_id=id).all()
+    result = []
+    for message in messages:
+        result.append({
+            'id': message.id,
+            'content': message.content,
+            'date': message.date,
+            'conversation_id': message.conversation_id
+        })
+    return jsonify(result)
 
 # Route pour créer un message dans une conversation
 @app.route('/conversations/<id>/messages', methods=['POST'])
-def creer_message():
+def creer_message(id):
     data = request.get_json()
     app.logger.info(data)
-    new_message = Message(content=data['content'], date=data['date'], conversation_id=data['conversation_id'])
+    new_message = Message(content = data['content'], date = datetime.fromtimestamp(data['date']), conversation_id = id)
     db.session.add(new_message)
     db.session.commit()
     return jsonify({
