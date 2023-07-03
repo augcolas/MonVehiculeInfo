@@ -1,42 +1,41 @@
-import {ActivityIndicator, Button, StyleSheet, Text, TextInput, View} from "react-native";
+import {ActivityIndicator, Button, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {useAuth} from "../../context/Auth";
 import {useState} from "react";
-import {checkPassword, getUserByEmail} from "../../services/user.service";
+import {useNavigation} from "@react-navigation/native";
 
 export default function LoginScreen() {
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState();
     const [loading, setLoading] = useState(false);
 
-    const {logIn} = useAuth();
+    const {signIn, loadingRetrieve} = useAuth();
+    const navigation = useNavigation();
 
     async function logUser(e) {
         e.preventDefault();
-        try {
-            setLoading(true);
-            const user = await getUserByEmail(email);
-            if (user) {
-                const res = await checkPassword(user.id, password);
-                if (res.result === true) {
-                    logIn(user);
-                } else {
-                    setLoading(false);
-                    setError('Le mot de passe est incorrect')
-                }
-            }
-        } catch (e) {
+        setLoading(true);
+        signIn(email, password).catch((e) => {
             setLoading(false);
-            setError("L'utilisateur n'existe pas")
-        }
+            switch(e.code){
+                case 'auth/invalid-email':
+                    setError("L'email est invalide")
+                    break;
+                case 'auth/wrong-password':
+                    setError('Mot de passe invalide')
+                    break;
+                default:
+                    setError('Connexion impossible')
+            }
+        });
+
     }
 
 
     return (
 
         <View style={styles.container}>
-            {loading && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator} /> }
+            {(loading || loadingRetrieve) && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
             <View style={styles.container_login}>
                 <Text style={styles.title}>Connexion</Text>
                 {error && (<Text style={styles.error}>{error}</Text>)}
@@ -65,11 +64,13 @@ export default function LoginScreen() {
                 </View>
 
 
-
                 <View style={styles.container_buttons}>
                     <Button color={"#2ec530"} title="Se Connecter" onPress={logUser}/>
                 </View>
             </View>
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+                <Text style={styles.register}>Créer son compte</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
     title: {
         flex: 1,
         color: "#2ec530",
-        fontSize: 48
+        fontSize: 46
     },
     label: {
         fontSize: 20
@@ -131,7 +132,13 @@ const styles = StyleSheet.create({
         color: "#2ec530",
         fontWeight: "700"
     },
-    error:{
+    register: {
+        marginTop: 24,
+        fontSize: 16,
+        color: "#2ec530",
+        fontWeight: "500"
+    },
+    error: {
         color: "#f00",
         fontSize: 16
     },
@@ -140,6 +147,6 @@ const styles = StyleSheet.create({
         top: 50,
         bottom: 50,
         zIndex: 99,
-        transform: [{ scale: 2 }],
+        transform: [{scale: 2}],
     },
 });
