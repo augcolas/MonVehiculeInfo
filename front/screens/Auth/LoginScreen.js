@@ -55,7 +55,7 @@ export default function LoginScreen() {
                         setModalError('Vous avez fait trop de requête. Attendez et réessayez')
                         break;
                     default:
-                        setModalError('Reinitialisation du mot de passe impossible')
+                        setModalError('Réinitialisation du mot de passe impossible')
                 }
             })
     }
