@@ -92,7 +92,7 @@ export default function CameraScreen() {
                 } else {
                     setDetectedPlate('Aucune plaque détectée');
 
-                    setDetectedPlate('FW-448-KP');
+                    setDetectedPlate('PLAQUE');
                     setModalVisible(true)
                 }
                 setIsLoading(false);
