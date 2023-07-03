@@ -11,7 +11,6 @@ const ModalAlert = ({license_plate}) => {
     const globalOptions = globalOptionsTab;
 
     const handlePress = (item) => {
-        console.log(item)
         setIsPressed(true);
         setOptions(optionsTab[item]);
     }

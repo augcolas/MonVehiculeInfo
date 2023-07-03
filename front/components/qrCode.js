@@ -22,7 +22,6 @@ function VehicleQRCode({vehicleId, styles, setQrModalVisible}) {
                     .then(async () => {
                         const asset = await MediaLibrary.createAssetAsync(path);
                         await MediaLibrary.createAlbumAsync('MediaLibrary/Default', asset, false);
-                        console.log('QR code saved at: ', path);
                     })
                     .catch((error) => {
                         console.error('Error saving QR to disk ', error);
