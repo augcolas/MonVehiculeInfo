@@ -46,9 +46,13 @@ export const getUsers = () => {
 
 export const updateExpoToken = (uuid, token) => {
     return fetch(`${url}/${uuid}/session`, {
+        headers: {
+            'Content-Type': 'application/json'
+        },
         method: "POST",
-        body: {
-            "expoToken": token
-        }
+        body: JSON.stringify({"expoToken": token})
     })
+        .then(response => {
+            return response.json()
+        })
 }

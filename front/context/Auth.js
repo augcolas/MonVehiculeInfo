@@ -44,7 +44,7 @@ export const AuthProvider = (props) => {
 
     const registerNotifications = (uuid) => {
         registerForPushNotificationsAsync().then((token) => {
-            updateExpoToken(uuid, token).then((result) => console.log(result))
+            updateExpoToken(uuid, token).then((result) => console.log('result', result))
         });
     }
 
