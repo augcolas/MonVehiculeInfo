@@ -286,7 +286,7 @@ def get_messages(id):
 def creer_message(id):
     data = request.get_json()
     app.logger.info(data)
-    new_message = Message(content = data['content'], date = datetime.fromtimestamp(data['date']), conversation_id = id)
+    new_message = Message(content = data['content'], date = datetime.datetime.now(), conversation_id = id)
     db.session.add(new_message)
     db.session.commit()
     return jsonify({

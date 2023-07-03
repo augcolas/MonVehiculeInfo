@@ -64,9 +64,6 @@ const AlertMessageForm = ({ option, licensePlate }) => {
         );
         const result_message = await response4.json();
         console.log('message :',result_message)
-
-
-
     }
 
 
