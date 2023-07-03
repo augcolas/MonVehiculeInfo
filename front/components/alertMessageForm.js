@@ -38,7 +38,8 @@ const AlertMessageForm = ({ option, licensePlate }) => {
                     },
                     body: JSON.stringify({
                         user_id: user.id,
-                        contact_id: contact.id,u
+                        contact_id: contact.id,
+                        license_plate: licensePlate
                     }),
                 }
             );
@@ -105,4 +106,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default AlertMessageForm; 
+export default AlertMessageForm;

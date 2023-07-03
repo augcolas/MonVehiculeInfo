@@ -44,6 +44,7 @@ class Conversation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     contact_id= db.Column(db.Integer, db.ForeignKey('user.id'))
+    licence_plate = db.Column(db.String(50))
     messages = db.relationship('Message', backref='user', lazy=True)
 
 class Message(db.Model):
@@ -247,13 +248,14 @@ def get_conversation_by_users():
 def creer_conversation():
     data = request.get_json()
     app.logger.info('data :',data)
-    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'])
+    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], licence_plate=data['licence_plate'])
     db.session.add(new_conversation)
     db.session.commit()
     return jsonify({
         'id': new_conversation.id,
         'user_id': new_conversation.user_id,
         'contact_id': new_conversation.contact_id,
+        'licence_plate': new_conversation.licence_plate
     })
 
 # Route pour supprimer une conversation
