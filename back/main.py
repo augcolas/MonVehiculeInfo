@@ -12,7 +12,7 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import hashlib
-from datetime import datetime
+import datetime
 
 app = Flask(__name__)
 #removing cors
@@ -69,14 +69,14 @@ def get_utilisateurs():
     users = User.query.all()
     result = []
     for user in users:
-        result.append({'id': user.id, 'name': user.name, 'email': user.email})
+        result.append({'id': user.id, 'name': user.name, 'email': user.email, 'firebase_uuid':user.firebase_uuid, 'expoToken':user.expoToken})
     return jsonify(result)
 
 # Route pour récupérer un utilisateur
 @app.route('/users/<id>', methods=['GET'])
 def get_utilisateur(id):
     user = User.query.filter_by(firebase_uuid=id).first()
-    return jsonify({'id': user.id, 'name': user.name, 'email': user.email, 'firebase_uuid':user.firebase_uuid})
+    return jsonify({'id': user.id, 'name': user.name, 'email': user.email, 'firebase_uuid':user.firebase_uuid, 'expoToken':user.expoToken})
 
 # Route pour créer un nouvel utilisateur
 @app.route('/users', methods=['POST'])
