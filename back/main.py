@@ -27,6 +27,7 @@ class User(db.Model):
     name = db.Column(db.String(50))
     email = db.Column(db.String(50))
     firebase_uuid = db.Column(db.String(50), unique=True)
+    expoToken = db.Column(db.String(50))
     vehicles = db.relationship('Vehicle', backref='user', lazy=True)
 
 class Vehicle(db.Model):
@@ -73,7 +74,7 @@ def get_utilisateurs():
 # Route pour récupérer un utilisateur
 @app.route('/users/<id>', methods=['GET'])
 def get_utilisateur(id):
-    user = User.query.filter_by(firebase_uuid=id).first(    )
+    user = User.query.filter_by(firebase_uuid=id).first()
     return jsonify({'id': user.id, 'name': user.name, 'email': user.email, 'firebase_uuid':user.firebase_uuid})
 
 # Route pour créer un nouvel utilisateur
@@ -85,6 +86,14 @@ def creer_utilisateur():
     db.session.add(new_user)
     db.session.commit()
     return jsonify({'message': 'Utilisateur créé avec succès'})
+
+@app.route('/users/<id>/session', methods=['POST'])
+def updateSession(id):
+    data = request.get_json()
+    user = User.query.filter_by(firebase_uuid=id).first()
+    user.expoToken = data['expoToken']
+    db.session.commit()
+    return jsonify({"session": user.expoToken})
 
 # Route pour les véhicules
 # Route pour récupérer tous les véhicules

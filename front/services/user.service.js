@@ -27,7 +27,7 @@ export const addUser = (body) => {
 export const getUserByFirebaseUuId = (uuid) => {
     return fetch(`${url}/${uuid}`, {
         headers: {
-            'Content-Type':'application/json'
+            'Content-Type': 'application/json'
         },
         method: 'GET'
     }).then(response => {
@@ -42,4 +42,13 @@ export const getUsers = () => {
         .then(data => {
             return data;
         })
+}
+
+export const updateExpoToken = (uuid, token) => {
+    return fetch(`${url}/${uuid}/session`, {
+        method: "POST",
+        body: {
+            "expoToken": token
+        }
+    })
 }

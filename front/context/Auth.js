@@ -1,13 +1,13 @@
 import React, {useContext, useState} from 'react'
 import {
+    createUserWithEmailAndPassword,
     onAuthStateChanged,
     signInWithEmailAndPassword,
-    signOut,
-    createUserWithEmailAndPassword,
-    signInWithCredential
+    signOut
 } from "firebase/auth/react-native";
 import {auth} from "../config/firebaseConfig";
-import {addUser, getUserByFirebaseUuId} from "../services/user.service";
+import {addUser, getUserByFirebaseUuId, updateExpoToken} from "../services/user.service";
+import {registerForPushNotificationsAsync} from "../config/notification";
 
 const AuthContext = React.createContext();
 
@@ -42,16 +42,23 @@ export const AuthProvider = (props) => {
         });
     }
 
+    const registerNotifications = (uuid) => {
+        registerForPushNotificationsAsync().then((token) => {
+            updateExpoToken(uuid, token).then((result) => console.log(result))
+        });
+    }
+
     const signout = () => {
         setUser(null);
         return signOut(auth);
     }
 
     onAuthStateChanged(auth, (user) => {
-        if(firstTime) {
+        if (firstTime) {
             setFirstTime(false);
-            if(user) {
+            if (user) {
                 retrieveUserData(user.uid);
+                registerNotifications(user.uid);
             }
         }
     })
