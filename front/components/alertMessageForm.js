@@ -9,6 +9,7 @@ const AlertMessageForm = ({ option, licensePlate }) => {
 
     const sendMessage = async () => {
         //getting the contact infos
+        console.log('getting the contact infos')
         const response1 = await fetch(
             'http://minikit.pythonanywhere.com/user/get_by_license_plate/'+licensePlate
         );
@@ -26,11 +27,10 @@ const AlertMessageForm = ({ option, licensePlate }) => {
         console.log('conversation :',conversation)
 
         //creating the conversation if it doesn't exist
-        if(conversation.id == null) {
-            const messages = []
-            console.log('messages :',messages)
+        if(conversation.message != null) {
+            console.log('creating the conversation')
             const response3 = await fetch(
-                'http://minikit.pythonanywhere.com/conversations/',
+                'http://minikit.pythonanywhere.com/conversations',
                 {
                     method: 'POST',
                     headers: {
@@ -44,12 +44,12 @@ const AlertMessageForm = ({ option, licensePlate }) => {
                 }
             );
             conversation = await response3.json();
-            console.log('conversation :',conversation)
         }
 
         //adding the first message to the conversation
+        console.log('adding first message')
         const response4 = await fetch(
-            'http://minikit.pythonanywhere.com/messages/',
+            'http://minikit.pythonanywhere.com/conversations/'+ conversation.id + 'messages',
             {
                 method: 'POST',
                 headers: {
@@ -65,7 +65,6 @@ const AlertMessageForm = ({ option, licensePlate }) => {
         const result_message = await response4.json();
         console.log('message :',result_message)
     }
-
 
     return (
         <>
