@@ -173,14 +173,20 @@ export default function VehiclesScreen() {
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
-                            <Button
-                                title="QR Code"
-                                color={'#2ec530'}
-                                onPress={() => {
-                                    console.log('data.id:', data.id);
-                                    setQrModalVisible(true);
-                            }}
-                            />
+                            <View>
+                                <Ionicons style={styles.qr} name={'qr-code-outline'} size={20}/>
+                                <Button
+                                    title="QR Code"
+                                    color={'#2ec530'}
+                                    onPress={() => {
+                                        console.log('data.id:', data.id);
+                                        setQrModalVisible(true);
+                                    }}
+                                >
+
+                                </Button>
+                            </View>
+
 
                             <Modal
                                 animationType="slide"
@@ -196,6 +202,7 @@ export default function VehiclesScreen() {
                     </View>
                 ))}
                 <View style={styles.buttonContainer}>
+                    <Ionicons name="add-outline" size={30} color={"white"}/>
                     <Button color={"white"} title="Ajouter un véhicule" onPress={() => setModalVisible(true)} />
                 </View>
             </ScrollView>
@@ -208,20 +215,27 @@ export default function VehiclesScreen() {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Ajouter un véhicule</Text>
+                        <View style={styles.modalHeader}>
+                            <Ionicons name={'car-outline'} size={30}/>
+                            <Text style={styles.modalTitle}>Ajouter un véhicule</Text>
+                        </View>
+
                         <TextInput
+                            placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="Brand"
                             value={newVehicleInfo.brand}
                             onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, brand: text})}
                         />
                         <TextInput
+                            placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="Color"
                             value={newVehicleInfo.color}
                             onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, color: text})}
                         />
                         <TextInput
+                            placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="License Plate"
                             value={newVehicleInfo.license_plate}
@@ -304,6 +318,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#2ec530',
         borderRadius: 10,
         padding: 1,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     modalContainer: {
         flex: 1,
@@ -319,18 +339,24 @@ const styles = StyleSheet.create({
         width: windowWidth * 0.9,
         maxWidth: 400,
     },
+    modalHeader: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
     modalTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 16,
     },
     input: {
         width: '100%',
         padding: 8,
         marginBottom: 16,
         borderWidth: 1,
-        borderColor: '#ccc',
+        borderColor: '#6b6b6b',
         borderRadius: 4,
+        color: '#6b6b6b',
     },
     picker: {
         width: '100%',
@@ -353,4 +379,10 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginRight: 8,
     },
+    qr: {
+        position: 'absolute',
+        top: 9,
+        left: 85,
+        color: '#2ec530',
+    }
 });
