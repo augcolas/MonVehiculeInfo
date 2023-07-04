@@ -14,6 +14,7 @@ from flask_cors import CORS
 from sqlalchemy import or_
 import hashlib
 import datetime
+import requests
 
 app = Flask(__name__)
 #removing cors
@@ -288,6 +289,7 @@ def creer_message(id):
     new_message = Message(content=data['content'], date=datetime.datetime.now(), conversation_id=id, user_id=data['user_id'])
     db.session.add(new_message)
     db.session.commit()
+    sendNotif(id)
 
     return jsonify({
         'id': new_message.id,
@@ -296,6 +298,21 @@ def creer_message(id):
         'conversation_id': new_message.conversation_id,
         'user_id': new_message.user_id
     })
+
+def sendNotif(id):
+    user = User.query.get(id)
+    if user.expoToken is not None:
+        print("TADA")
+        print(user.expoToken)
+        params ={
+            "to": user.expoToken,
+            "sound": "default",
+            "title": "MA NOTIF DU SHEIII TANN",
+            "body":"ET VOILA LE DSDQD DE LA NOTIF"
+        }
+        response = requests.post("https://exp.host/--/api/v2/push/send", json=params)
+    return "test"
+
 
 
 if __name__ == '__main__':
