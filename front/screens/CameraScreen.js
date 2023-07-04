@@ -18,6 +18,7 @@ import {Picker} from "@react-native-picker/picker";
 import ModalAlert from "../components/modalAlert";
 import ThemeContext from "../themes/ThemeContext";
 import {useContext} from "react";
+import {Ionicons} from "@expo/vector-icons";
 
 export default function CameraScreen() {
     const [hasPermission, setHasPermission] = useState(null);
@@ -42,6 +43,9 @@ export default function CameraScreen() {
             padding: 10,
             backgroundColor: '#2ec530',
             borderRadius: 8,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
         },
         buttonText: {
             color: 'white',
@@ -93,6 +97,9 @@ export default function CameraScreen() {
         modalText: {
             fontSize: 20,
             marginBottom: 20,
+        },
+        scan:{
+            marginRight: 10,
         }
     });
 
@@ -160,11 +167,11 @@ export default function CameraScreen() {
                         setDetectedPlate(plate.toUpperCase());
                     }
                 } else {
-                    setDetectedPlate('Aucune plaque détectée');
+                    //setDetectedPlate('Aucune plaque détectée');
 
                     setDetectedPlate('PLAQUE');
-                    setModalVisible(true)
                 }
+                setModalVisible(true)
                 setIsLoading(false);
             })
             .catch((error) => {
@@ -196,6 +203,7 @@ export default function CameraScreen() {
                 </View>
             ) : <RectangleCorners />}
             <TouchableOpacity onPress={handleScanPlate} style={styles.captureButton}>
+                <Ionicons name={'scan-outline'} size={24} color={'white'} style={styles.scan}/>
                 <Text style={styles.buttonText}>Scanner une plaque</Text>
             </TouchableOpacity>
             {detectedPlate && (
@@ -220,3 +228,68 @@ export default function CameraScreen() {
 }
 const windowWidth = Dimensions.get('window').width;
 
+const styles = StyleSheet.create({
+    camera: {
+        flex: 1,
+        width: '100%',
+    },
+    captureButton: {
+        position: 'absolute',
+        bottom: '15%',
+        alignSelf: 'center',
+        padding: 10,
+        backgroundColor: '#2ec530',
+        borderRadius: 8,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 18,
+    },
+    plateText: {
+        position: 'absolute',
+        bottom: '10%',
+        alignSelf: 'center',
+        color: 'white',
+        fontSize: 18,
+    },
+    loader: {
+        position: 'absolute',
+        top: '60%',
+        left: '50%',
+        marginTop: -80,
+        marginLeft: -15,
+    },
+    activityIndicator: {
+        transform: [{ scale: 2 }],
+    },
+    qrText: {
+        position: 'absolute',
+        bottom: '5%',
+        alignSelf: 'center',
+        color: 'white',
+        fontSize: 18,
+    },modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        marginBottom: 100,
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        padding: 16,
+        alignItems: 'center',
+        width: windowWidth * 0.9,
+        maxWidth: 300,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 16,
+    },
+    modalText: {
+        fontSize: 20,
+        marginBottom: 20,
+    }
+});

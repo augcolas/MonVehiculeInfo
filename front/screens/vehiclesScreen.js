@@ -72,6 +72,12 @@ export default function VehiclesScreen() {
             backgroundColor: '#2ec530',
             borderRadius: 10,
             padding: 1,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingLeft: 10,
+            paddingRight: 10,
         },
         modalContainer: {
             flex: 1,
@@ -87,6 +93,12 @@ export default function VehiclesScreen() {
             width: windowWidth * 0.9,
             maxWidth: 400,
         },
+        modalHeader: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 16,
+        },
         modalTitle: {
             fontSize: 18,
             fontWeight: 'bold',
@@ -98,8 +110,9 @@ export default function VehiclesScreen() {
             padding: 8,
             marginBottom: 16,
             borderWidth: 1,
-            borderColor: '#ccc',
+            borderColor: '#6b6b6',
             borderRadius: 4,
+            color: '#6b6b6b',
         },
         picker: {
             width: '100%',
@@ -124,34 +137,42 @@ export default function VehiclesScreen() {
             borderRadius: 8,
             marginRight: 8,
         },
+        qr: {
+            position: 'absolute',
+            top: 9,
+            left: 85,
+            color: '#2ec530',
+        }
     });
 
     const getStateColor = (state) => {
-        return state === 'good' ? 'green' : 'red';
+        return state == 'good' ? 'green' : 'red';
     };
 
-    useEffect(() => {
+    React.useEffect(() => {
         getOwnVehicles().then((data) => {
-            console.log('data', data);
+            console.log('data',data)
             setVehicles(data);
         });
-    }, []);
+    },[]);
 
     const getOwnVehicles = async () => {
-        let response = await fetch('http://minikit.pythonanywhere.com/vehicles/user/' + user.id);
+        let response = await fetch(
+            'http://minikit.pythonanywhere.com/vehicles/user/' + user.id
+        );
         let json = await response.json();
         return json;
     };
 
     const addVehicle = async () => {
         try {
-            console.log('newVehicleInfo', newVehicleInfo);
+            console.log('newVehicleInfo',newVehicleInfo)
             const response = await fetch('http://minikit.pythonanywhere.com/vehicles', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(newVehicleInfo),
+                body: JSON.stringify(newVehicleInfo)
             });
 
             if (response.ok) {
@@ -165,7 +186,7 @@ export default function VehiclesScreen() {
                     color: '',
                     license_plate: '',
                     user_id: user.id,
-                    state: 'good',
+                    state: 'good'
                 });
             } else {
                 console.error('Failed to add vehicle');
@@ -215,7 +236,7 @@ export default function VehiclesScreen() {
         const { status } = await MediaLibrary.requestPermissionsAsync();
 
         if (status !== 'granted') {
-            alert("Désolé, nous avons besoin des autorisations de la galerie pour faire cela !");
+            alert('Désolé, nous avons besoin des autorisations de la galerie pour faire cela !');
             return;
         }
 
@@ -242,13 +263,20 @@ export default function VehiclesScreen() {
         return refs;
     }, {});
 
+
+    <Button color={"white"} title="Télécharger" onPress={() => saveQrToDisk(data.id)} />
+
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
                 <Text style={styles.title}>Vos véhicules</Text>
                 {vehicles.map((data) => (
                     <View style={styles.card} key={data.id}>
-                        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteVehicle(data.id)}>
+                        <TouchableOpacity
+                            style={styles.deleteButton}
+                            onPress={() => deleteVehicle(data.id)}
+                        >
                             <Ionicons name="close" size={24} color="black" />
                         </TouchableOpacity>
                         <View style={styles.cardContent}>
@@ -257,7 +285,20 @@ export default function VehiclesScreen() {
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
-                            <Button title="QR Code" color={'#2ec530'} onPress={() => setQrModalVisible(true)} />
+                            <View>
+                                <Ionicons style={styles.qr} name={'qr-code-outline'} size={20}/>
+                                <Button
+                                    title="QR Code"
+                                    color={'#2ec530'}
+                                    onPress={() => {
+                                        console.log('data.id:', data.id);
+                                        setQrModalVisible(true);
+                                    }}
+                                >
+
+                                </Button>
+                            </View>
+
 
                             <Modal
                                 animationType="slide"
@@ -267,16 +308,18 @@ export default function VehiclesScreen() {
                             >
                                 <VehicleQRCode vehicleId={data.id} styles={styles} setQrModalVisible={setQrModalVisible} />
                             </Modal>
+
                         </View>
+
                     </View>
                 ))}
                 <View style={styles.buttonContainer}>
+                    <Ionicons name="add-outline" size={30} color={"white"}/>
                     <Button color={"white"} title="Ajouter un véhicule" onPress={() => setModalVisible(true)} />
                 </View>
             </ScrollView>
 
             <Modal
-                style={styles.modalContainer}
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
@@ -284,30 +327,38 @@ export default function VehiclesScreen() {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Ajouter un véhicule</Text>
+                        <View style={styles.modalHeader}>
+                            <Ionicons name={'car-outline'} size={30}/>
+                            <Text style={styles.modalTitle}>Ajouter un véhicule</Text>
+                        </View>
+
                         <TextInput
+                            placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="Brand"
                             value={newVehicleInfo.brand}
-                            onChangeText={(text) => setNewVehicleInfo({ ...newVehicleInfo, brand: text })}
+                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, brand: text})}
                         />
                         <TextInput
+                            placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="Color"
                             value={newVehicleInfo.color}
-                            onChangeText={(text) => setNewVehicleInfo({ ...newVehicleInfo, color: text })}
+                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, color: text})}
                         />
                         <TextInput
+                            placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="License Plate"
                             value={newVehicleInfo.license_plate}
-                            onChangeText={(text) => setNewVehicleInfo({ ...newVehicleInfo, license_plate: text })}
+                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, license_plate: text})}
                         />
                         <View style={styles.pickerContainer}>
                             <Picker
                                 selectedValue={newVehicleInfo.type}
-                                onValueChange={(itemValue) => {
-                                    setNewVehicleInfo({ ...newVehicleInfo, type: itemValue });
+                                onValueChange={(itemValue) =>{
+                                    setNewVehicleInfo({...newVehicleInfo, type: itemValue})
+
                                 }}
                                 style={styles.picker}
                                 itemStyle={styles.pickerItem}
@@ -332,4 +383,3 @@ export default function VehiclesScreen() {
 }
 
 const windowWidth = Dimensions.get('window').width;
-
