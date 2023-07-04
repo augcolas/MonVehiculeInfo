@@ -97,6 +97,7 @@ const styles = StyleSheet.create({
     },
     messageInputContainer: {
         borderTopWidth: 1,
+        paddingBottom: 40,
         borderTopColor: '#ccc',
         paddingTop: 10,
         flexDirection: 'row',

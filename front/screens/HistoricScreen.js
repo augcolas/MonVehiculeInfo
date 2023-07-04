@@ -20,7 +20,7 @@ export default function HistoricScreen() {
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-                <Text style={styles.title}>Vos messages</Text>
+                <Text style={[styles.title, {marginTop: 20}]}>Vos messages</Text>
                 {conversations.map((conversation, index) => (
                     <View key={index}>
                         <UserConversation conversation={conversation} />
