@@ -11,8 +11,10 @@ import datetime
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from sqlalchemy import or_
 import hashlib
 import datetime
+import requests
 
 app = Flask(__name__)
 #removing cors
@@ -200,7 +202,7 @@ def supprimer_vehicule(id):
 # Route pour récupérer toutes les conversations d'un utilisateur
 @app.route('/conversations/user/<user_id>', methods=['GET'])
 def get_conversations_user(user_id):
-    conversations = Conversation.query.filter_by(user_id=user_id).all()
+    conversations = Conversation.query.filter(or_(Conversation.user_id == user_id, Conversation.contact_id == user_id)).all()
     result = []
     for conversation in conversations:
         result.append({
@@ -278,6 +280,7 @@ def get_messages_conversation(id):
 @app.route('/conversations/<id>/messages', methods=['POST'])
 def creer_message(id):
     data = request.get_json()
+    conversation = Conversation.query.get(id)
     app.logger.info(data)
 
     # vérif user_id est bien rempli
@@ -288,6 +291,12 @@ def creer_message(id):
     db.session.add(new_message)
     db.session.commit()
 
+    if(conversation.user_id == data['user_id']):
+        sendNotif(conversation.contact_id, conversation.user_id, data['content'])
+    else:
+        sendNotif(conversation.user_id, conversation.contact.id, data['content'])
+
+
     return jsonify({
         'id': new_message.id,
         'content': new_message.content,
@@ -295,6 +304,20 @@ def creer_message(id):
         'conversation_id': new_message.conversation_id,
         'user_id': new_message.user_id
     })
+
+def sendNotif(receiver_id, sender_id, content):
+    receiver_user = User.query.get(receiver_id)
+    sender_user = User.query.get(sender_id)
+    if receiver_user.expoToken is not None:
+        params ={
+            "to": receiver_user.expoToken,
+            "sound": "default",
+            "title": sender_user.name+" vous a envoyé un message",
+            "body": content
+        }
+        response = requests.post("https://exp.host/--/api/v2/push/send", json=params)
+        print(response)
+
 
 
 if __name__ == '__main__':

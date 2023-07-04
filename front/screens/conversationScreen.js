@@ -1,32 +1,81 @@
-import React from 'react';
-import { View, FlatList, StyleSheet, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import MessageCard from '../components/messageCard';
+import { createMessage, getMessages } from '../services/conversation.service';
+import { useAuth } from '../context/Auth';
 
-const ConversationScreen = ({messages, plaque, conversation_id, sender_id}) => {
+const ConversationScreen = ({ conversation_id, plaque }) => {
+    const [messages, setMessages] = useState([]);
+    const [messageToSend, setMessageToSend] = useState('');
+    const { user } = useAuth();
 
-    renderMessageCard = ({ item }) => (
-        <MessageCard message={item.content} isReceived={item.user_id === sender_id} />
+    useEffect(() => {
+        loadMessages();
+        // Vérifier les nouveaux messages toutes les 5 secondes
+        const interval = setInterval(loadMessages, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const loadMessages = async () => {
+        try {
+            fetch(`http://minikit.pythonanywhere.com/conversations/${conversation_id}/messages`)
+                .then((res) => res.json())
+                .then((res) => { if (res.length >= 0) { setMessages(res.reverse()) } });
+        } catch (error) {
+            console.error('Failed to load messages:', error);
+        }
+    };
+
+    const renderMessageCard = ({ item }) => (
+        <MessageCard message={item.content} isReceived={item.user_id !== user.id} />
     );
 
+    const handleChange = (text) => {
+        setMessageToSend(text);
+    };
+
+    const handlePress = async () => {
+        try {
+            await createMessage(conversation_id, messageToSend, user.id);
+            setMessageToSend('');
+        } catch (error) {
+            console.error('Failed to send message:', error);
+        }
+        loadMessages();
+    };
+
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.container}
+        >
             <View style={styles.header}>
                 <Text style={styles.conversationNumber}>
                     {`Conversation # ${conversation_id}`}
                 </Text>
-                <Text>
-                {`Plaque # ${plaque}`}
-                </Text>
+                <Text>{`Plaque # ${plaque}`}</Text>
             </View>
             <FlatList
                 inverted
-                data={messages.reverse()}
+                data={messages}
                 renderItem={renderMessageCard}
                 keyExtractor={(item) => item.id.toString()}
             />
-        </View>
+            <View style={styles.messageInputContainer}>
+                <TextInput
+                    style={styles.messageInput}
+                    placeholder="Type your message..."
+                    value={messageToSend}
+                    onChangeText={handleChange}
+                />
+                <TouchableOpacity style={styles.sendButton} onPress={handlePress}>
+                    <Text style={styles.sendButtonText}>Envoyer</Text>
+                </TouchableOpacity>
+            </View>
+        </KeyboardAvoidingView>
     );
-}
+
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -44,6 +93,32 @@ const styles = StyleSheet.create({
     },
     conversationNumber: {
         fontSize: 18,
+        fontWeight: 'bold',
+    },
+    messageInputContainer: {
+        borderTopWidth: 1,
+        borderTopColor: '#ccc',
+        paddingTop: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    messageInput: {
+        flex: 1,
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginRight: 10,
+    },
+    sendButton: {
+        backgroundColor: '#007AFF',
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 5,
+    },
+    sendButtonText: {
+        color: '#fff',
         fontWeight: 'bold',
     },
 });
