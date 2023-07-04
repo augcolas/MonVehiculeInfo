@@ -2,11 +2,10 @@ import React from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import MessageCard from '../components/messageCard';
 
-const ConversationScreen = ({messages, plaque, conversation_id}) => {
-
+const ConversationScreen = ({messages, plaque, conversation_id, sender_id}) => {
 
     renderMessageCard = ({ item }) => (
-        <MessageCard message={item.content} isReceived={item.isReceived} />
+        <MessageCard message={item.content} isReceived={item.user_id === sender_id} />
     );
 
     return (
