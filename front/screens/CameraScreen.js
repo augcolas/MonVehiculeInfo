@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
     ActivityIndicator,
+    Alert,
     Button,
     Dimensions,
     Modal,
@@ -25,6 +26,7 @@ export default function CameraScreen() {
     const [ratio, setRatio] = useState('4:3');
     const cameraRef = useRef(null);
     const [detectedPlate, setDetectedPlate] = useState('');
+    const [contact, setContact] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [scannedQR, setScannedQR] = useState(null);
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -157,20 +159,38 @@ export default function CameraScreen() {
                 body: form,
             })
             .then((response) => response.json())
-            .then((json) => {
+            .then(async (json) => {
+                let license_plate = ""
                 if (json.results && json.results.length > 0) {
                     let plate = json.results[0].plate;
                     let regex = /^[A-Z]{2}\d{3}[A-Z]{2}$/i;
                     if (regex.test(plate)) {
+                        license_plate = plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3");
                         setDetectedPlate(plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3"));
                     } else {
+                        license_plate = plate.toUpperCase();
                         setDetectedPlate(plate.toUpperCase());
                     }
                 } else {
                     //setDetectedPlate('Aucune plaque détectée');
-
+                    license_plate = 'PLAQUE';
                     setDetectedPlate('PLAQUE');
                 }
+
+                //getting the contact infos
+                const response1 = await fetch(
+                    `http://minikit.pythonanywhere.com/user/get_by_license_plate/${license_plate}`
+                );
+                const contact1 = await response1.json();
+                console.log(contact1)
+                if(contact1.id == null){
+                    Alert.alert("Avertissement", "Ce véhicule n'est pas enregistré dans notre base de données");
+                    setIsLoading(false);
+                    return
+                }
+
+                setContact(contact1);
+
                 setModalVisible(true)
                 setIsLoading(false);
             })
@@ -207,7 +227,7 @@ export default function CameraScreen() {
                 <Text style={styles.buttonText}>Scanner une plaque</Text>
             </TouchableOpacity>
             {detectedPlate && (
-                <Text style={styles.plateText}>{detectedPlate}</Text>
+                <Text style={styles.plateText}>dernier scan : "{detectedPlate}"</Text>
             )}
 
             <Modal
@@ -218,7 +238,10 @@ export default function CameraScreen() {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <ModalAlert license_plate={detectedPlate}></ModalAlert>
+
+                        {contact != null && contact.id != null &&(
+                                <ModalAlert license_plate={detectedPlate} contact={contact}></ModalAlert>
+                        )}
                         <Button onPress={() => setModalVisible(false)}  title={"Annuler"} color={selectedTheme.buttonColor}></Button>
                     </View>
                 </View>
@@ -227,3 +250,76 @@ export default function CameraScreen() {
     );
 }
 const windowWidth = Dimensions.get('window').width;
+
+
+const styles = StyleSheet.create({
+    camera: {
+        flex: 1,
+        width: '100%',
+    },
+    captureButton: {
+        position: 'absolute',
+        bottom: '15%',
+        alignSelf: 'center',
+        padding: 10,
+        backgroundColor: '#2ec530',
+        borderRadius: 8,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 18,
+    },
+    plateText: {
+        position: 'absolute',
+        bottom: '10%',
+        alignSelf: 'center',
+        color: 'white',
+        fontSize: 18,
+    },
+    loader: {
+        position: 'absolute',
+        top: '60%',
+        left: '50%',
+        marginTop: -80,
+        marginLeft: -15,
+    },
+    activityIndicator: {
+        transform: [{ scale: 2 }],
+    },
+    qrText: {
+        position: 'absolute',
+        bottom: '5%',
+        alignSelf: 'center',
+        color: 'white',
+        fontSize: 18,
+    },modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        padding: 16,
+        alignItems: 'center',
+        width: windowWidth * 0.9,
+        maxWidth: 300,
+        marginBottom: 100,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 16,
+    },
+    modalText: {
+        fontSize: 20,
+        marginBottom: 20,
+    },
+    scan:{
+        marginRight: 10,
+    }
+});
