@@ -15,7 +15,6 @@ export const createConversation = (user_id, contact_id, license_plate) => {
 
 
 export const createMessage = (conversation_id, content, user_id) => {
-    console.log(conversation_id, user_id, content)
     return fetch(`${url}/${conversation_id}/messages`, {
         headers: {
             'Content-Type': 'application/json'
