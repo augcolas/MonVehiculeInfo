@@ -98,7 +98,8 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
     container: {
         height: "100%", display: "flex", alignItems: "center", justifyContent: "center"
-    }, container_login: {
+    }, 
+    container_login: {
         backgroundColor: "#fff",
         borderRadius: 5,
         display: "flex",
@@ -110,28 +111,38 @@ const styles = StyleSheet.create({
         shadowColor: '#171717',
         shadowOpacity: 0.2,
         shadowRadius: 3,
-    }, container_inputs: {
+    }, 
+    container_inputs: {
         flex: 5, display: "flex"
-    }, container_buttons: {
+    }, 
+    container_buttons: {
         flex: 1, display: "flex", justifyContent: "center", transform: ([{scale: 1.5}])
-    }, header: {
+    }, 
+    header: {
         flex: 1
     },
     title: {
         color: "#2ec530", fontSize: 30, textAlign: "center"
-    }, label: {
+    }, 
+    label: {
         fontSize: 20
-    }, input: {
+    }, 
+    input: {
         flex: 1, display: "flex", justifyContent: "center", width: 240
-    }, textInput: {
+    }, 
+    textInput: {
         borderWidth: 1, borderRadius: 5, borderColor: "#808080", padding: 6
-    }, forgotPassword: {
+    }, 
+    forgotPassword: {
         marginTop: 24, fontSize: 12, color: "#2ec530", fontWeight: "700"
-    }, error: {
+    }, 
+    error: {
         color: "#f00", fontSize: 16, textAlign: "center"
-    }, activityIndicator: {
+    }, 
+    activityIndicator: {
         position: "absolute", top: 50, bottom: 50, zIndex: 99, transform: [{scale: 2}],
-    }, arrow_back: {
+    }, 
+    arrow_back: {
         position: "absolute", top: 50, left: 10
     }
 });

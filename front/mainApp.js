@@ -7,8 +7,8 @@ import RegisterScreen from "./screens/Auth/RegisterScreen";
 import Splashscreen from "./screens/Splashscreen";
 
 export default function MainApp() {
-    const {user} = useAuth();
 
+    const {user} = useAuth();
     const Stack = createNativeStackNavigator();
 
     return (

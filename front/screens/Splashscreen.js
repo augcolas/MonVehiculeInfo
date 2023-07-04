@@ -15,7 +15,7 @@ export default function App() {
   useEffect(() => {
     async function prepare() {
       try {
-        //await Font.loadAsync(Entypo.font);
+        await Font.loadAsync(Entypo.font);
         await new Promise(resolve => setTimeout(resolve, 2000));
       } catch (e) {
         console.warn(e);
@@ -26,7 +26,7 @@ export default function App() {
     prepare();
   }, []);
 
-  const onLayoutRootView = useCallback(async () => {
+  const onLayoutView = useCallback(async () => {
     if (appIsReady) {
       await SplashScreen.hideAsync();
     }
@@ -34,22 +34,22 @@ export default function App() {
 
   if (!appIsReady) {
     return (
-      <View style={styles.container} onLayout={onLayoutRootView}>
+      <View style={styles.container} onLayout={onLayoutView}>
         <Entypo style={styles.icon} name="info-with-circle" size={60} />
         <Text style={styles.title}>M.V.I</Text>
       </View> 
     );
   } else {
-    return (
-      navigation.navigate('Login', { params })
-    )
-  }
+    navigation.navigate('Login');
+  } 
 
 }
 
 const styles = {
   container: {
     flex: 1,
+    height: "100%", 
+    display: "flex",
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: "#2EC530",
