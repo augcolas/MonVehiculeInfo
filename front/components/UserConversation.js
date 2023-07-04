@@ -48,7 +48,6 @@ export default function UserConversation(conversation) {
                     messages={messages}
                     plaque={conversation.conversation.license_plate}
                     conversation_id={conversation.conversation.id}
-                    sender_id={conversation.conversation.user_id}
                 >
 
                 </ConversationScreen>
