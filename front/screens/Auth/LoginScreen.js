@@ -2,7 +2,8 @@ import {ActivityIndicator, Button, StyleSheet, Text, TextInput, TouchableOpacity
 import {useAuth} from "../../context/Auth";
 import {useState} from "react";
 import {useNavigation} from "@react-navigation/native";
-
+import ThemeContext from "../../themes/ThemeContext";
+import {useContext} from "react";
 export default function LoginScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -11,6 +12,85 @@ export default function LoginScreen() {
 
     const {signIn, loadingRetrieve} = useAuth();
     const navigation = useNavigation();
+
+    const {selectedTheme} = useContext(ThemeContext);
+    const styles = StyleSheet.create({
+        container: {
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: selectedTheme.primaryColor
+        },
+        container_login: {
+            backgroundColor: selectedTheme.primaryColor,
+            borderRadius: 5,
+            display: "flex",
+            alignItems: "center",
+            padding: 10,
+            height: 400,
+            width: 280,
+            shadowOffset: {width: -2, height: 4},
+            shadowColor: selectedTheme.secondaryColor,
+            shadowOpacity: 0.2,
+            shadowRadius: 3,
+        },
+        container_inputs: {
+            flex: 2,
+            display: "flex"
+        },
+        container_buttons: {
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            transform: ([{scale: 1.5}])
+        },
+        title: {
+            flex: 1,
+            color: selectedTheme.buttonColor,
+            fontSize: 46
+        },
+        label: {
+            fontSize: 20,
+            color: selectedTheme.secondaryColor,
+        },
+        input: {
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+            width: 240
+        },
+        textInput: {
+            borderWidth: 1,
+            borderRadius: 5,
+            borderColor: selectedTheme.cardColor,
+            color: selectedTheme.secondaryColor,
+            padding: 6
+        },
+        forgotPassword: {
+            marginTop: 24,
+            fontSize: 12,
+            color: selectedTheme.buttonColor,
+            fontWeight: "700"
+        },
+        register: {
+            marginTop: 24,
+            fontSize: 16,
+            color: selectedTheme.buttonColor,
+            fontWeight: "500"
+        },
+        error: {
+            color: "#f00",
+            fontSize: 16
+        },
+        activityIndicator: {
+            position: "absolute",
+            top: 50,
+            bottom: 50,
+            zIndex: 99,
+            transform: [{scale: 2}],
+        },
+    });
 
     async function logUser(e) {
         e.preventDefault();
@@ -65,7 +145,7 @@ export default function LoginScreen() {
 
 
                 <View style={styles.container_buttons}>
-                    <Button color={"#2ec530"} title="Se Connecter" onPress={logUser}/>
+                    <Button color={selectedTheme.buttonColor} title="Se Connecter" onPress={logUser}/>
                 </View>
             </View>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
@@ -74,79 +154,3 @@ export default function LoginScreen() {
         </View>
     );
 }
-
-
-const styles = StyleSheet.create({
-    container: {
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    container_login: {
-        backgroundColor: "#fff",
-        borderRadius: 5,
-        display: "flex",
-        alignItems: "center",
-        padding: 10,
-        height: 400,
-        width: 280,
-        shadowOffset: {width: -2, height: 4},
-        shadowColor: '#171717',
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-    },
-    container_inputs: {
-        flex: 2,
-        display: "flex"
-    },
-    container_buttons: {
-        flex: 1,
-        display: "flex",
-        justifyContent: "center",
-        transform: ([{scale: 1.5}])
-    },
-    title: {
-        flex: 1,
-        color: "#2ec530",
-        fontSize: 46
-    },
-    label: {
-        fontSize: 20
-    },
-    input: {
-        flex: 1,
-        display: "flex",
-        justifyContent: "center",
-        width: 240
-    },
-    textInput: {
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: "#808080",
-        padding: 6
-    },
-    forgotPassword: {
-        marginTop: 24,
-        fontSize: 12,
-        color: "#2ec530",
-        fontWeight: "700"
-    },
-    register: {
-        marginTop: 24,
-        fontSize: 16,
-        color: "#2ec530",
-        fontWeight: "500"
-    },
-    error: {
-        color: "#f00",
-        fontSize: 16
-    },
-    activityIndicator: {
-        position: "absolute",
-        top: 50,
-        bottom: 50,
-        zIndex: 99,
-        transform: [{scale: 2}],
-    },
-});
