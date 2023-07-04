@@ -266,6 +266,7 @@ def creer_conversation():
         'user_id': new_conversation.user_id,
         'contact_id': new_conversation.contact_id,
         'license_plate': new_conversation.license_plate
+        'vehicle_id': new_conversation.vehicle_id
     })
 
 # Route pour supprimer une conversation

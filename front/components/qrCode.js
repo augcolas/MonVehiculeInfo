@@ -3,9 +3,12 @@ import QRCode from 'react-native-qrcode-svg';
 import {Button, Text, View} from "react-native";
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
+import ThemeContext from "../themes/ThemeContext";
+import {useContext} from "react";
 
 
 function VehicleQRCode({vehicleId, styles, setQrModalVisible}) {
+    const { selectedTheme } = useContext(ThemeContext);
     const value = `vehiculeId: ${vehicleId}`;
     let qrCode = useRef(null);
 

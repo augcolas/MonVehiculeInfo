@@ -269,11 +269,11 @@ export default function VehiclesScreen() {
         return refs;
     }, {});
 
-    const handleChangeState = async (lp) => {
+    /*const handleChangeState = async (lp) => {
         const test = await modifyVehicleState(lp, 'alert');
         initVehicles();
         console.log(test);
-    }
+    }*/
 
 
     <Button color={"white"} title="Télécharger" onPress={() => saveQrToDisk(data.id)} />

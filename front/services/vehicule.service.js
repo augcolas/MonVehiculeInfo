@@ -1,4 +1,7 @@
-export const modifyVehicleState = async (plate, newState) => {
+export const modifyVehicleState = async (plate, newState, type) => {
+  if (type != 'plate') {
+
+  }
   fetch(`http://minikit.pythonanywhere.com/vehicles/${plate}/state`, {
     method: 'PUT',
     headers: {

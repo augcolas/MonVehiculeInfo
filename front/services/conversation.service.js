@@ -1,13 +1,22 @@
 const url = 'http://minikit.pythonanywhere.com/conversations';
 
 
-export const createConversation = (user_id, contact_id, license_plate) => {
+export const createConversation = (user_id, contact_id, identification, type) => {
+    let license_plate;
+    let vehicle_id;
+    if (type == "plate") {
+         license_plate = identification;
+         vehicle_id = null;
+    }else{
+         license_plate = null;
+         vehicle_id = identification;
+    }
     return fetch(url, {
         headers: {
             'Content-Type': 'application/json'
         },
         method: 'POST',
-        body: JSON.stringify({user_id, contact_id, license_plate})
+        body: JSON.stringify({user_id, contact_id, license_plate, vehicle_id})
     }).then((response) => {
         return response.json();
     })
