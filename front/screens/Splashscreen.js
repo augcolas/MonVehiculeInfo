@@ -4,10 +4,11 @@ import { useNavigation } from "@react-navigation/native";
 import Entypo from '@expo/vector-icons/Entypo';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+import MainApp from '../mainApp';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function App() {
+export default function Splashscreen() {
   
   const [appIsReady, setAppIsReady] = useState(false);
   const navigation = useNavigation();
@@ -36,11 +37,13 @@ export default function App() {
     return (
       <View style={styles.container} onLayout={onLayoutView}>
         <Entypo style={styles.icon} name="info-with-circle" size={60} />
-        <Text style={styles.title}>M.V.I</Text>
+        <Text style={styles.title}>M-V-I</Text>
       </View> 
     );
   } else {
-    navigation.navigate('Login');
+    return (
+      <MainApp></MainApp>
+    )
   } 
 
 }
@@ -58,7 +61,6 @@ const styles = {
     color: 'white',
   },
   title: {
-    fontFamily: "Montserrat",
     fontSize: 30,
     fontWeight: 700,
     marginTop: 20,
