@@ -5,7 +5,7 @@ import AlertMessageForm from "./alertMessageForm";
 import ThemeContext from "../themes/ThemeContext";
 import { useContext } from "react";
 
-const ModalAlert = ({license_plate}) => {
+const ModalAlert = ({license_plate,contact}) => {
     const [selectedOption, setSelectedOption] = useState();
     const [isPressed, setIsPressed] = useState(false);
     const [options, setOptions] = useState();
@@ -38,7 +38,7 @@ const ModalAlert = ({license_plate}) => {
         longText: {
         }
     });
-
+  
     const handlePress = (item) => {
         setIsPressed(true);
         setOptions(optionsTab[item]);
@@ -83,7 +83,7 @@ const ModalAlert = ({license_plate}) => {
             </>
             )}
             {selectedOption && (
-                <AlertMessageForm option={selectedOption} licensePlate={license_plate}></AlertMessageForm>
+                <AlertMessageForm option={selectedOption} licensePlate={license_plate} contact={contact}></AlertMessageForm>
             )}
         </View>
 
