@@ -16,6 +16,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import RectangleCorners from "../components/rectangleCorners";
 import {Picker} from "@react-native-picker/picker";
 import ModalAlert from "../components/modalAlert";
+import {Ionicons} from "@expo/vector-icons";
 
 export default function CameraScreen() {
     const [hasPermission, setHasPermission] = useState(null);
@@ -90,11 +91,11 @@ export default function CameraScreen() {
                         setDetectedPlate(plate.toUpperCase());
                     }
                 } else {
-                    setDetectedPlate('Aucune plaque détectée');
+                    //setDetectedPlate('Aucune plaque détectée');
 
                     setDetectedPlate('PLAQUE');
-                    setModalVisible(true)
                 }
+                setModalVisible(true)
                 setIsLoading(false);
             })
             .catch((error) => {
@@ -126,6 +127,7 @@ export default function CameraScreen() {
                 </View>
             ) : <RectangleCorners />}
             <TouchableOpacity onPress={handleScanPlate} style={styles.captureButton}>
+                <Ionicons name={'scan-outline'} size={24} color={'white'} style={styles.scan}/>
                 <Text style={styles.buttonText}>Scanner une plaque</Text>
             </TouchableOpacity>
             {detectedPlate && (
@@ -162,6 +164,9 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: '#2ec530',
         borderRadius: 8,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     buttonText: {
         color: 'white',
@@ -213,5 +218,8 @@ const styles = StyleSheet.create({
     modalText: {
         fontSize: 20,
         marginBottom: 20,
+    },
+    scan:{
+        marginRight: 10,
     }
 });
