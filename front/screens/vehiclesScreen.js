@@ -23,6 +23,7 @@ export default function VehiclesScreen() {
         user_id: user.id,
         state: 'good',
     });
+    const [isValid, setIsValid] = useState(false);
 
     const styles = StyleSheet.create({
         container: {
@@ -346,13 +347,6 @@ export default function VehiclesScreen() {
                             value={newVehicleInfo.color}
                             onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, color: text})}
                         />
-                        <TextInput
-                            placeholderTextColor={'#6b6b6b'}
-                            style={styles.input}
-                            placeholder="License Plate"
-                            value={newVehicleInfo.license_plate}
-                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, license_plate: text})}
-                        />
                         <View style={styles.pickerContainer}>
                             <Picker
                                 selectedValue={newVehicleInfo.type}
@@ -369,8 +363,31 @@ export default function VehiclesScreen() {
                                 <Picker.Item label="Trotinette" value="trotinette" />
                             </Picker>
                         </View>
+                        {newVehicleInfo.type === 'voiture' && (
+                            <TextInput
+                                placeholderTextColor={'#6b6b6b'}
+                                style={styles.input}
+                                placeholder="License Plate"
+                                value={newVehicleInfo.license_plate}
+                                onChangeText={(text) => {
+                                    setNewVehicleInfo({...newVehicleInfo, license_plate: text});
+                                    const validateInput = text => {
+                                        if (text.trim() !== '') {
+                                            setIsValid(true);
+                                        } else {
+                                            setIsValid(false);
+                                        }
+                                    };
+                                    validateInput(text);
+                                }}
+                            />
+                        )}
                         <View style={styles.buttonContainer}>
-                            <Button color={"white"} title="Ajouter" onPress={addVehicle} />
+                            <Button
+                                color={"white"}
+                                title="Ajouter"
+                                disabled={!isValid && newVehicleInfo.type === 'voiture'}
+                                onPress={addVehicle} />
                         </View>
                         <View style={styles.buttonContainer}>
                             <Button color={"white"} title="Annuler" onPress={() => setModalVisible(false)} />
