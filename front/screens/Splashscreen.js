@@ -4,6 +4,7 @@ import {useNavigation} from "@react-navigation/native";
 import Entypo from '@expo/vector-icons/Entypo';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+import { RotateInDownLeft, ZoomInRotate } from 'react-native-reanimated';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,11 +35,9 @@ export default function App() {
 
   if (!appIsReady) {
     return (
-      <View
-        style={{flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: "#2EC530"}}
-        onLayout={onLayoutRootView}>
-        <Entypo name="info-with-circle" size={60} style={{transform: [{rotate: '180deg'}], color: "white"}} />
-        <Text style={{fontFamily: "Montserrat", fontSize: 30, fontWeight: "700", marginTop: 20, color: "white"}}>M.V.I</Text>
+      <View style={styles.splash} onLayout={onLayoutRootView}>
+        <Entypo name="info-with-circle" size={60} style={styles.icon} />
+        <Text style={styles.title}>M.V.I</Text>
       </View> 
     );
   } else {
@@ -47,4 +46,23 @@ export default function App() {
     )
   }
 
+}
+
+const styles = {
+  splash: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#2EC530",
+  },
+  icon: {
+    color: 'white',
+  },
+  title: {
+    fontFamily: "Montserrat",
+    fontSize: 30,
+    fontWeight: 700,
+    marginTop: 20,
+    color: 'white',
+  }
 }
