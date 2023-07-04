@@ -47,6 +47,7 @@ class Conversation(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     contact_id= db.Column(db.Integer, db.ForeignKey('user.id'))
     license_plate = db.Column(db.String(50))
+    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicle.id'))
     messages = db.relationship('Message', backref='conversation', lazy=True)
 
 class Message(db.Model):
@@ -152,6 +153,25 @@ def get_vehicle_by_license_plate(lp):
     app.logger.info(returned_object)
     return jsonify(returned_object)
 
+# Route pour récupérer un utilisateur selon l'id d'un vehicule
+@app.route('/user/get_by_vehicle_id/<vehicleId>', methods=['GET'])
+def get_vehicle_by_vehicle_id(vehicleId):
+    vehicle = Vehicle.query.filter_by(id=vehicleId).first()
+    returned_object = {}
+    # le vehicule n'existe pas dans la base de données
+    if vehicle is None:
+        returned_object = {'message': 'Le véhicule n\'existe pas dans la base de données'}
+    else:
+        user = User.query.get(vehicle.user_id)
+        # l'utilisateur n'existe pas dans la base de données
+        if user is None:
+            returned_object = {'message': 'L\'utilisateur n\'existe pas dans la base de données'}
+        else:
+            returned_object = {'id': user.id, 'name': user.name, 'email': user.email}
+
+    app.logger.info(returned_object)
+    return jsonify(returned_object)
+
 # Route pour récupérer tous les véhicules d'un utilisateur
 @app.route('/vehicles/user/<user_id>', methods=['GET'])
 def get_vehicules_user(user_id):
@@ -237,7 +257,7 @@ def get_conversation_by_users():
 def creer_conversation():
     data = request.get_json()
     app.logger.info('data :',data)
-    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], license_plate=data['license_plate'])
+    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], license_plate=data['license_plate'], vehicle_id=data['vehicle_id']
     db.session.add(new_conversation)
     db.session.commit()
 
