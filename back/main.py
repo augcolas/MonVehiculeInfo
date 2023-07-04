@@ -156,7 +156,7 @@ def get_vehicle_by_license_plate(lp):
 # Route pour récupérer un utilisateur selon l'id d'un vehicule
 @app.route('/user/get_by_vehicle_id/<vehicleId>', methods=['GET'])
 def get_vehicle_by_vehicle_id(vehicleId):
-    vehicle = Vehicle.query.filter_by(id=vehicleId).first()
+    vehicle = Vehicle.query.get(vehicleId)
     returned_object = {}
     # le vehicule n'existe pas dans la base de données
     if vehicle is None:
@@ -257,7 +257,7 @@ def get_conversation_by_users():
 def creer_conversation():
     data = request.get_json()
     app.logger.info('data :',data)
-    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], license_plate=data['license_plate'], vehicle_id=data['vehicle_id']
+    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], license_plate=data['license_plate'], vehicle_id=data['vehicle_id'])
     db.session.add(new_conversation)
     db.session.commit()
 
