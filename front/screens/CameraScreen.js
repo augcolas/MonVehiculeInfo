@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
     ActivityIndicator,
+    Alert,
     Button,
     Dimensions,
     Modal,
@@ -23,6 +24,7 @@ export default function CameraScreen() {
     const [ratio, setRatio] = useState('4:3');
     const cameraRef = useRef(null);
     const [detectedPlate, setDetectedPlate] = useState('');
+    const [contact, setContact] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [scannedQR, setScannedQR] = useState(null);
     const [modalVisible, setModalVisible] = React.useState(false);
@@ -81,20 +83,38 @@ export default function CameraScreen() {
                 body: form,
             })
             .then((response) => response.json())
-            .then((json) => {
+            .then(async (json) => {
+                let license_plate = ""
                 if (json.results && json.results.length > 0) {
                     let plate = json.results[0].plate;
                     let regex = /^[A-Z]{2}\d{3}[A-Z]{2}$/i;
                     if (regex.test(plate)) {
+                        license_plate = plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3");
                         setDetectedPlate(plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3"));
                     } else {
+                        license_plate = plate.toUpperCase();
                         setDetectedPlate(plate.toUpperCase());
                     }
                 } else {
                     //setDetectedPlate('Aucune plaque détectée');
-
+                    license_plate = 'PLAQUE';
                     setDetectedPlate('PLAQUE');
                 }
+
+                //getting the contact infos
+                const response1 = await fetch(
+                    `http://minikit.pythonanywhere.com/user/get_by_license_plate/${license_plate}`
+                );
+                const contact1 = await response1.json();
+                console.log(contact1)
+                if(contact1.id == null){
+                    Alert.alert("Avertissement", "Ce véhicule n'est pas enregistré dans notre base de données");
+                    setIsLoading(false);
+                    return
+                }
+
+                setContact(contact1);
+
                 setModalVisible(true)
                 setIsLoading(false);
             })
@@ -131,7 +151,7 @@ export default function CameraScreen() {
                 <Text style={styles.buttonText}>Scanner une plaque</Text>
             </TouchableOpacity>
             {detectedPlate && (
-                <Text style={styles.plateText}>{detectedPlate}</Text>
+                <Text style={styles.plateText}>dernier scan : "{detectedPlate}"</Text>
             )}
 
             <Modal
@@ -142,7 +162,10 @@ export default function CameraScreen() {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <ModalAlert license_plate={detectedPlate}></ModalAlert>
+                        {contact != null && contact.id != null &&(
+                                <ModalAlert license_plate={detectedPlate} contact={contact}></ModalAlert>
+                        )}
+
                         <Button onPress={() => setModalVisible(false)}  title={"Annuler"} color={"#2ec530"}></Button>
                     </View>
                 </View>
@@ -200,7 +223,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        marginBottom: 100,
     },
     modalContent: {
         backgroundColor: '#fff',
@@ -209,6 +231,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: windowWidth * 0.9,
         maxWidth: 300,
+        marginBottom: 100,
     },
     modalTitle: {
         fontSize: 18,

@@ -3,12 +3,13 @@ import { globalOptionsTab, optionsTab } from "../utils/options.helper";
 import { useState } from "react";
 import AlertMessageForm from "./alertMessageForm";
 
-const ModalAlert = ({license_plate}) => {
+const ModalAlert = ({license_plate,contact}) => {
     const [selectedOption, setSelectedOption] = useState();
     const [isPressed, setIsPressed] = useState(false);
     const [options, setOptions] = useState();
-
     const globalOptions = globalOptionsTab;
+
+    console.log('contact:', contact)
 
     const handlePress = (item) => {
         setIsPressed(true);
@@ -54,7 +55,7 @@ const ModalAlert = ({license_plate}) => {
             </>
             )}
             {selectedOption && (
-                <AlertMessageForm option={selectedOption} licensePlate={license_plate}></AlertMessageForm>
+                <AlertMessageForm option={selectedOption} licensePlate={license_plate} contact={contact}></AlertMessageForm>
             )}
         </View>
 
