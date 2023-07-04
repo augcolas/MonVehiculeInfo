@@ -202,7 +202,7 @@ def supprimer_vehicule(id):
 # Route pour récupérer toutes les conversations d'un utilisateur
 @app.route('/conversations/user/<user_id>', methods=['GET'])
 def get_conversations_user(user_id):
- conversations = Conversation.query.filter(or_(Conversation.user_id == user_id, Conversation.contact_id == user_id)).all()
+    conversations = Conversation.query.filter(or_(Conversation.user_id == user_id, Conversation.contact_id == user_id)).all()
     result = []
     for conversation in conversations:
         result.append({
