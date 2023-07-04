@@ -69,7 +69,7 @@ export default function VehiclesScreen() {
         },
         buttonContainer: {
             marginVertical: 16,
-            backgroundColor: '#2ec530',
+            backgroundColor: selectedTheme.buttonColor,
             borderRadius: 10,
             padding: 1,
             display: 'flex',
@@ -141,7 +141,7 @@ export default function VehiclesScreen() {
             position: 'absolute',
             top: 9,
             left: 85,
-            color: '#2ec530',
+            color: selectedTheme.buttonColor,
         }
     });
 
@@ -289,7 +289,7 @@ export default function VehiclesScreen() {
                                 <Ionicons style={styles.qr} name={'qr-code-outline'} size={20}/>
                                 <Button
                                     title="QR Code"
-                                    color={'#2ec530'}
+                                    color={selectedTheme.buttonColor}
                                     onPress={() => {
                                         console.log('data.id:', data.id);
                                         setQrModalVisible(true);

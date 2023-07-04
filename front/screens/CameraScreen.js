@@ -41,7 +41,7 @@ export default function CameraScreen() {
             bottom: '15%',
             alignSelf: 'center',
             padding: 10,
-            backgroundColor: '#2ec530',
+            backgroundColor: selectedTheme.buttonColor,
             borderRadius: 8,
             display: 'flex',
             flexDirection: 'row',
@@ -219,7 +219,7 @@ export default function CameraScreen() {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <ModalAlert license_plate={detectedPlate}></ModalAlert>
-                        <Button onPress={() => setModalVisible(false)}  title={"Annuler"} color={"#2ec530"}></Button>
+                        <Button onPress={() => setModalVisible(false)}  title={"Annuler"} color={selectedTheme.buttonColor}></Button>
                     </View>
                 </View>
             </Modal>
@@ -227,69 +227,3 @@ export default function CameraScreen() {
     );
 }
 const windowWidth = Dimensions.get('window').width;
-
-const styles = StyleSheet.create({
-    camera: {
-        flex: 1,
-        width: '100%',
-    },
-    captureButton: {
-        position: 'absolute',
-        bottom: '15%',
-        alignSelf: 'center',
-        padding: 10,
-        backgroundColor: '#2ec530',
-        borderRadius: 8,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 18,
-    },
-    plateText: {
-        position: 'absolute',
-        bottom: '10%',
-        alignSelf: 'center',
-        color: 'white',
-        fontSize: 18,
-    },
-    loader: {
-        position: 'absolute',
-        top: '60%',
-        left: '50%',
-        marginTop: -80,
-        marginLeft: -15,
-    },
-    activityIndicator: {
-        transform: [{ scale: 2 }],
-    },
-    qrText: {
-        position: 'absolute',
-        bottom: '5%',
-        alignSelf: 'center',
-        color: 'white',
-        fontSize: 18,
-    },modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        marginBottom: 100,
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        padding: 16,
-        alignItems: 'center',
-        width: windowWidth * 0.9,
-        maxWidth: 300,
-    },
-    modalTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 16,
-    },
-    modalText: {
-        fontSize: 20,
-        marginBottom: 20,
-    }
-});

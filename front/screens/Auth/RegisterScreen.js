@@ -91,7 +91,7 @@ export default function RegisterScreen() {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.arrow_back}>
-                <Ionicons name="arrow-back" size={36} color="black"/>
+                <Ionicons name="arrow-back" size={36} color={selectedTheme.secondaryColor}/>
             </TouchableOpacity>
             {loading && <ActivityIndicator size='large' color='#000' style={styles.activityIndicator}/>}
             <View style={styles.container_login}>

@@ -12,3 +12,11 @@ export const darkTheme = {
     cardColor: '#2f2f2f'
 
 };
+
+export const purpleTheme = {
+    primaryColor: '#000000',
+    secondaryColor: '#FFFFFF',
+    buttonColor: '#a03cde',
+    cardColor: '#2f2f2f'
+
+};

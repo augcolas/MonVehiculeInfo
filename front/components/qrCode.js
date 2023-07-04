@@ -39,7 +39,7 @@ function VehicleQRCode({vehicleId, styles, setQrModalVisible}) {
                     getRef={(c) => (qrCode = c)}
                     value={value}
                     size={150}
-                    color='#2ec530'
+                    color={selectedTheme.buttonColor}
                     backgroundColor='white'
                     logo={require('../assets/logo_green.png')}
                     logoSize={30}

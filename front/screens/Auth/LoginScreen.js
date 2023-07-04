@@ -1,9 +1,9 @@
 import {ActivityIndicator, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 import {useAuth} from "../../context/Auth";
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import {useNavigation} from "@react-navigation/native";
 import {Ionicons} from "@expo/vector-icons";
-
+import ThemeContext from "../../themes/ThemeContext";
 export default function LoginScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -15,6 +15,59 @@ export default function LoginScreen() {
     const {signIn, loadingRetrieve, resetPassword} = useAuth();
     const navigation = useNavigation();
 
+    const {selectedTheme} = useContext(ThemeContext);
+    const styles = StyleSheet.create({
+        container: {
+            height: "100%", display: "flex", alignItems: "center", justifyContent: "center",backgroundColor: selectedTheme.primaryColor
+        }, container_login: {
+            backgroundColor: selectedTheme.primaryColor,
+            borderRadius: 5,
+            display: "flex",
+            alignItems: "center",
+            padding: 10,
+            height: 400,
+            width: 280,
+            shadowOffset: {width: -2, height: 4},
+            shadowColor: selectedTheme.secondaryColor,
+            shadowOpacity: 0.2,
+            shadowRadius: 3
+        }, container_inputs: {
+            flex: 3, display: "flex"
+        }, container_buttons: {
+            flex: 2, display: "flex", justifyContent: "center", transform: ([{scale: 1.5}])
+        }, container_forgotPassword: {
+            flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center'
+        }, container_modal: {
+            flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        }, container_modal_content: {
+            display: 'flex', backgroundColor: selectedTheme.primaryColor, width: 250, height: 200, padding: 20
+        }, container_modal_content_inputs: {
+            flex: 2, display: 'flex', justifyContent: 'center'
+        }, modal_container_button: {
+            flex: 1, justifyContent: 'center', textAlign: 'center'
+        }, modal_buttons: {
+            color: selectedTheme.buttonColor, fontSize: 16, textAlign: 'center'
+        }, title: {
+            flex: 2, color: selectedTheme.buttonColor, fontSize: 46
+        }, label: {
+            fontSize: 20,
+            color: selectedTheme.secondaryColor,
+        }, input: {
+            flex: 1, display: "flex", justifyContent: "center", width: 240
+        }, textInput: {
+            borderWidth: 1, borderRadius: 5, borderColor: selectedTheme.cardColor, padding: 6, color: selectedTheme.secondaryColor
+        }, forgotPassword: {
+            fontSize: 12, color: selectedTheme.buttonColor, fontWeight: "700"
+        }, register: {
+            marginTop: 24, fontSize: 16, color: selectedTheme.buttonColor, fontWeight: "500"
+        }, error: {
+            color: "#f00", fontSize: 16, textAlign: "center"
+        }, back: {
+            flex: 1, zIndex: 50
+        }, activityIndicator: {
+            position: "relative", top: 50, bottom: 50, zIndex: 99, transform: [{scale: 2}],
+        },
+    });
     async function logUser(e) {
         e.preventDefault();
         setLoading(true);
@@ -93,7 +146,7 @@ export default function LoginScreen() {
                 </TouchableOpacity>
 
                 <View style={styles.container_buttons}>
-                    <Button color={"#2ec530"} title="Se Connecter" onPress={logUser}/>
+                    <Button color={selectedTheme.buttonColor} title="Se Connecter" onPress={logUser}/>
                 </View>
             </View>
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
@@ -130,56 +183,3 @@ export default function LoginScreen() {
 
     );
 }
-
-
-const styles = StyleSheet.create({
-    container: {
-        height: "100%", display: "flex", alignItems: "center", justifyContent: "center"
-    }, container_login: {
-        backgroundColor: "#fff",
-        borderRadius: 5,
-        display: "flex",
-        alignItems: "center",
-        padding: 10,
-        height: 400,
-        width: 280,
-        shadowOffset: {width: -2, height: 4},
-        shadowColor: '#171717',
-        shadowOpacity: 0.2,
-        shadowRadius: 3
-    }, container_inputs: {
-        flex: 3, display: "flex"
-    }, container_buttons: {
-        flex: 2, display: "flex", justifyContent: "center", transform: ([{scale: 1.5}])
-    }, container_forgotPassword: {
-        flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center'
-    }, container_modal: {
-        flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)'
-    }, container_modal_content: {
-        display: 'flex', backgroundColor: '#fff', width: 250, height: 200, padding: 20
-    }, container_modal_content_inputs: {
-        flex: 2, display: 'flex', justifyContent: 'center'
-    }, modal_container_button: {
-        flex: 1, justifyContent: 'center', textAlign: 'center'
-    }, modal_buttons: {
-        color: "#2ec530", fontSize: 16, textAlign: 'center'
-    }, title: {
-        flex: 2, color: "#2ec530", fontSize: 46
-    }, label: {
-        fontSize: 20
-    }, input: {
-        flex: 1, display: "flex", justifyContent: "center", width: 240
-    }, textInput: {
-        borderWidth: 1, borderRadius: 5, borderColor: "#808080", padding: 6
-    }, forgotPassword: {
-        fontSize: 12, color: "#2ec530", fontWeight: "700"
-    }, register: {
-        marginTop: 24, fontSize: 16, color: "#2ec530", fontWeight: "500"
-    }, error: {
-        color: "#f00", fontSize: 16, textAlign: "center"
-    }, back: {
-        flex: 1, zIndex: 50
-    }, activityIndicator: {
-        position: "relative", top: 50, bottom: 50, zIndex: 99, transform: [{scale: 2}],
-    },
-});

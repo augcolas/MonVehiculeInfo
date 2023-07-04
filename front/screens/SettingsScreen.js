@@ -9,7 +9,7 @@ export default function SettingsScreen() {
     return (
         <View style={[styles.container, { backgroundColor: selectedTheme.primaryColor }]}>
             <ScrollView contentContainerStyle={styles.scrollViewContainer}>
-                <Text style={[styles.title, { color: selectedTheme.textColor }]}>Paramètres</Text>
+                <Text style={[styles.title, { color: selectedTheme.secondaryColor }]}>Paramètres</Text>
                 <ThemeSelection />
             </ScrollView>
         </View>
