@@ -280,6 +280,7 @@ def get_messages_conversation(id):
 @app.route('/conversations/<id>/messages', methods=['POST'])
 def creer_message(id):
     data = request.get_json()
+    conversation = Conversation.query.get(id)
     app.logger.info(data)
 
     # vérif user_id est bien rempli
@@ -289,7 +290,12 @@ def creer_message(id):
     new_message = Message(content=data['content'], date=datetime.datetime.now(), conversation_id=id, user_id=data['user_id'])
     db.session.add(new_message)
     db.session.commit()
-    sendNotif(id)
+
+    if(conversation.user_id == data['user_id']):
+        sendNotif(conversation.contact_id, conversation.user_id, data['content'])
+    else:
+        sendNotif(conversation.user_id, conversation.contact.id, data['content'])
+
 
     return jsonify({
         'id': new_message.id,
@@ -299,19 +305,18 @@ def creer_message(id):
         'user_id': new_message.user_id
     })
 
-def sendNotif(id):
-    user = User.query.get(id)
-    if user.expoToken is not None:
-        print("TADA")
-        print(user.expoToken)
+def sendNotif(receiver_id, sender_id, content):
+    receiver_user = User.query.get(receiver_id)
+    sender_user = User.query.get(sender_id)
+    if receiver_user.expoToken is not None:
         params ={
-            "to": user.expoToken,
+            "to": receiver_user.expoToken,
             "sound": "default",
-            "title": "MA NOTIF DU SHEIII TANN",
-            "body":"ET VOILA LE DSDQD DE LA NOTIF"
+            "title": sender_user.name+" vous a envoyé un message",
+            "body": content
         }
         response = requests.post("https://exp.host/--/api/v2/push/send", json=params)
-    return "test"
+        print(response)
 
 
 
