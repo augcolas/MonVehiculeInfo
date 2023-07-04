@@ -45,14 +45,13 @@ export default function UserConversation(conversation) {
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(false)}
             >
-                <Ionicons onPress={() => setModalVisible(false)} style={[{paddingTop: 5}]} name="arrow-back-outline"
+                <Ionicons onPress={() => setModalVisible(false)} style={[{ paddingTop: 35 }, {height: 70}]} name="arrow-back-outline"
                         size={36} color="black" />
                 <ConversationScreen
                     messages={messages}
                     plaque={conversation.conversation.license_plate}
                     conversation_id={conversation.conversation.id}
                 >
-
                 </ConversationScreen>
             </Modal>
         </View>

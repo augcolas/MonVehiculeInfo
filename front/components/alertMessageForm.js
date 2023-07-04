@@ -4,6 +4,7 @@ import {useState, useContext} from "react";
 import {useAuth} from "../context/Auth";
 import {checkConversationExist, createConversation, createMessage} from "../services/conversation.service";
 import ThemeContext from '../themes/ThemeContext';
+import modifyVehicleState from "../services/vehicule.service";
 
 const AlertMessageForm = ({ option, licensePlate }) => {
     const {user} = useAuth();
@@ -53,6 +54,7 @@ const AlertMessageForm = ({ option, licensePlate }) => {
             conversation = await createConversation(user.id, contact.id, licensePlate);
         }
         await createMessage(conversation.id, message, user.id);
+        modifyVehicleState(licensePlate, 'alert');
     }
 
     return (

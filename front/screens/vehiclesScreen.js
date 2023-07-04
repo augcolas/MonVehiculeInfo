@@ -7,6 +7,7 @@ import { useAuth } from '../context/Auth';
 import { ALERT } from '../utils/options.helper';
 import ThemeContext from '../themes/ThemeContext';
 import VehicleQRCode from '../components/qrCode';
+import { modifyVehicleState } from '../services/vehicule.service';
 
 export default function VehiclesScreen() {
     const { user } = useAuth();
@@ -149,12 +150,16 @@ export default function VehiclesScreen() {
         return state == 'good' ? 'green' : 'red';
     };
 
-    React.useEffect(() => {
+    const initVehicles = () => {
         getOwnVehicles().then((data) => {
-            console.log('data',data)
+            console.log('data', data)
             setVehicles(data);
         });
-    },[]);
+    }
+
+    React.useEffect(() => {
+        initVehicles();
+    }, []);
 
     const getOwnVehicles = async () => {
         let response = await fetch(
@@ -166,7 +171,7 @@ export default function VehiclesScreen() {
 
     const addVehicle = async () => {
         try {
-            console.log('newVehicleInfo',newVehicleInfo)
+            console.log('newVehicleInfo', newVehicleInfo)
             const response = await fetch('http://minikit.pythonanywhere.com/vehicles', {
                 method: 'POST',
                 headers: {
@@ -263,6 +268,12 @@ export default function VehiclesScreen() {
         return refs;
     }, {});
 
+    const handleChangeState = async (lp) => {
+        const test = await modifyVehicleState(lp, 'alert');
+        initVehicles();
+        console.log(test);
+    }
+
 
     <Button color={"white"} title="Télécharger" onPress={() => saveQrToDisk(data.id)} />
 
@@ -282,11 +293,15 @@ export default function VehiclesScreen() {
                         <View style={styles.cardContent}>
                             <Text style={styles.title}>{data.brand}</Text>
                             <View style={[styles.stateIndicator, { backgroundColor: getStateColor(data.state) }]} />
+                            {data.state === 'good' &&
+                                <TouchableOpacity onPress={() => handleChangeState(data.license_plate)} style={[styles.buttonContainer]}>
+                                    <Text style={{color: '#fff'}}>Problème résolu</Text>
+                                </TouchableOpacity>}
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
                             <View>
-                                <Ionicons style={styles.qr} name={'qr-code-outline'} size={20}/>
+                                <Ionicons style={styles.qr} name={'qr-code-outline'} size={20} />
                                 <Button
                                     title="QR Code"
                                     color={selectedTheme.buttonColor}
@@ -314,7 +329,7 @@ export default function VehiclesScreen() {
                     </View>
                 ))}
                 <View style={styles.buttonContainer}>
-                    <Ionicons name="add-outline" size={30} color={"white"}/>
+                    <Ionicons name="add-outline" size={30} color={"white"} />
                     <Button color={"white"} title="Ajouter un véhicule" onPress={() => setModalVisible(true)} />
                 </View>
             </ScrollView>
@@ -328,7 +343,7 @@ export default function VehiclesScreen() {
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <View style={styles.modalHeader}>
-                            <Ionicons name={'car-outline'} size={30}/>
+                            <Ionicons name={'car-outline'} size={30} />
                             <Text style={styles.modalTitle}>Ajouter un véhicule</Text>
                         </View>
 
@@ -337,27 +352,27 @@ export default function VehiclesScreen() {
                             style={styles.input}
                             placeholder="Brand"
                             value={newVehicleInfo.brand}
-                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, brand: text})}
+                            onChangeText={(text) => setNewVehicleInfo({ ...newVehicleInfo, brand: text })}
                         />
                         <TextInput
                             placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="Color"
                             value={newVehicleInfo.color}
-                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, color: text})}
+                            onChangeText={(text) => setNewVehicleInfo({ ...newVehicleInfo, color: text })}
                         />
                         <TextInput
                             placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="License Plate"
                             value={newVehicleInfo.license_plate}
-                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, license_plate: text})}
+                            onChangeText={(text) => setNewVehicleInfo({ ...newVehicleInfo, license_plate: text })}
                         />
                         <View style={styles.pickerContainer}>
                             <Picker
                                 selectedValue={newVehicleInfo.type}
-                                onValueChange={(itemValue) =>{
-                                    setNewVehicleInfo({...newVehicleInfo, type: itemValue})
+                                onValueChange={(itemValue) => {
+                                    setNewVehicleInfo({ ...newVehicleInfo, type: itemValue })
 
                                 }}
                                 style={styles.picker}
