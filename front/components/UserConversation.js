@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ConversationScreen from "../screens/conversationScreen";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function UserConversation(conversation) {
 
@@ -44,6 +45,8 @@ export default function UserConversation(conversation) {
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(false)}
             >
+                <Ionicons onPress={() => setModalVisible(false)} style={[{paddingTop: 5}]} name="arrow-back-outline"
+                        size={36} color="black" />
                 <ConversationScreen
                     messages={messages}
                     plaque={conversation.conversation.license_plate}

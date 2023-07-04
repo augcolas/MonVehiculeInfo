@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import MessageCard from '../components/messageCard';
 import { createMessage, getMessages } from '../services/conversation.service';
 import { useAuth } from '../context/Auth';
@@ -45,7 +45,10 @@ const ConversationScreen = ({ conversation_id, plaque }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.container}
+        >
             <View style={styles.header}>
                 <Text style={styles.conversationNumber}>
                     {`Conversation # ${conversation_id}`}
@@ -69,8 +72,9 @@ const ConversationScreen = ({ conversation_id, plaque }) => {
                     <Text style={styles.sendButtonText}>Envoyer</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
+
 };
 
 const styles = StyleSheet.create({
