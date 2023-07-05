@@ -5,7 +5,7 @@ import {useAuth} from "../context/Auth";
 import {Alert} from "react-native";
 import {checkConversationExist, createConversation, createMessage} from "../services/conversation.service";
 import ThemeContext from '../themes/ThemeContext';
-import modifyVehicleState from "../services/vehicule.service";
+import { modifyVehicleState } from "../services/vehicule.service";
 
 const AlertMessageForm = ({ option, identification,type, contact }) => {
     const {user} = useAuth();
@@ -45,6 +45,7 @@ const AlertMessageForm = ({ option, identification,type, contact }) => {
         }
         
         await createMessage(conversation.id, message, user.id);
+        console.log("id", identification);
         modifyVehicleState(identification, 'alert');
     }
 
