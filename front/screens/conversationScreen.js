@@ -3,11 +3,66 @@ import { View, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, Keyboard
 import MessageCard from '../components/messageCard';
 import { createMessage, getMessages } from '../services/conversation.service';
 import { useAuth } from '../context/Auth';
+import {useContext} from "react";
+import ThemeContext from "../themes/ThemeContext";
 
 const ConversationScreen = ({ conversation_id, plaque }) => {
     const [messages, setMessages] = useState([]);
     const [messageToSend, setMessageToSend] = useState('');
     const { user } = useAuth();
+    const { selectedTheme } = useContext(ThemeContext);
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            padding: 10,
+            backgroundColor: selectedTheme.primaryColor,
+        },
+        header: {
+            alignItems: 'center',
+            paddingVertical: 10,
+            borderBottomWidth: 1,
+            borderBottomColor: selectedTheme.cardColor,
+            backgroundColor: selectedTheme.primaryColor,
+            marginBottom: 10,
+        },
+        conversationNumber: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: selectedTheme.secondaryColor,
+        },
+        messageInputContainer: {
+            borderTopWidth: 1,
+            paddingBottom: 40,
+            borderTopColor: selectedTheme.cardColor,
+            paddingTop: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        messageInput: {
+            flex: 1,
+            height: 40,
+            borderColor: selectedTheme.cardColor,
+            borderWidth: 1,
+            borderRadius: 5,
+            paddingHorizontal: 10,
+            marginRight: 10,
+            color: selectedTheme.secondaryColor,
+        },
+        sendButton: {
+            backgroundColor: selectedTheme.buttonColor,
+            paddingHorizontal: 12,
+            paddingVertical: 8,
+            borderRadius: 5,
+        },
+        sendButtonText: {
+            color: '#fff',
+            fontWeight: 'bold',
+        },
+        label: {
+            color: selectedTheme.secondaryColor,
+        }
+    });
 
     useEffect(() => {
         loadMessages();
@@ -53,7 +108,7 @@ const ConversationScreen = ({ conversation_id, plaque }) => {
                 <Text style={styles.conversationNumber}>
                     {`Conversation # ${conversation_id}`}
                 </Text>
-                <Text>{`Plaque # ${plaque}`}</Text>
+                <Text style={styles.label}>{`Plaque # ${plaque}`}</Text>
             </View>
             <FlatList
                 inverted
@@ -76,52 +131,5 @@ const ConversationScreen = ({ conversation_id, plaque }) => {
     );
 
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 10,
-        backgroundColor: '#fff',
-    },
-    header: {
-        alignItems: 'center',
-        paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        backgroundColor: '#fff',
-        marginBottom: 10,
-    },
-    conversationNumber: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    messageInputContainer: {
-        borderTopWidth: 1,
-        paddingBottom: 40,
-        borderTopColor: '#ccc',
-        paddingTop: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    messageInput: {
-        flex: 1,
-        height: 40,
-        borderColor: 'gray',
-        borderWidth: 1,
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        marginRight: 10,
-    },
-    sendButton: {
-        backgroundColor: '#007AFF',
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 5,
-    },
-    sendButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-});
 
 export default ConversationScreen;
