@@ -1,48 +1,166 @@
-import {Ionicons} from '@expo/vector-icons';
-import {
-    Button,
-    Dimensions,
-    Modal,
-    ScrollView,
-    Share,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
-} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-import React from "react";
-import VehicleQRCode from "../components/qrCode";
+import React, { useContext, useEffect, useState } from 'react';
+import { Button, Dimensions, Modal, ScrollView, Share, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons';
 import * as MediaLibrary from 'expo-media-library';
-import {useAuth} from "../context/Auth";
-
+import { useAuth } from '../context/Auth';
+import { ALERT } from '../utils/options.helper';
+import ThemeContext from '../themes/ThemeContext';
+import VehicleQRCode from '../components/qrCode';
+import { modifyVehicleState } from '../services/vehicule.service';
 
 export default function VehiclesScreen() {
-    const {user} = useAuth();
-    const [vehicles, setVehicles] = React.useState([]);
-    const [modalVisible, setModalVisible] = React.useState(false);
-    const [selectedType, setSelectedType] = React.useState('voiture');
-    const [qrModalVisible, setQrModalVisible] = React.useState(false);
-    const [newVehicleInfo, setNewVehicleInfo] = React.useState({
+    const { user } = useAuth();
+    const { selectedTheme } = useContext(ThemeContext);
+    const [vehicles, setVehicles] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedType, setSelectedType] = useState('voiture');
+    const [qrModalVisible, setQrModalVisible] = useState(false);
+    const [newVehicleInfo, setNewVehicleInfo] = useState({
         type: selectedType,
         brand: '',
         color: '',
         license_plate: '',
         user_id: user.id,
-        state: 'good'
+        state: 'good',
+    });
+    const [isValid, setIsValid] = useState(false);
+
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: selectedTheme.primaryColor,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        scrollViewContainer: {
+            alignItems: 'center',
+            flexGrow: 1,
+            paddingTop: 50,
+            paddingBottom: 100,
+        },
+        card: {
+            backgroundColor: selectedTheme.cardColor,
+            borderRadius: 8,
+            padding: 16,
+            marginVertical: 8,
+            width: windowWidth * 0.9,
+            maxWidth: 400,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+        },
+        deleteButton: {
+            position: 'relative',
+            marginRight: 8,
+            top: -40,
+            left: 300,
+        },
+        cardContent: {
+            flex: 1,
+        },
+        title: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            marginBottom: 8,
+            color: selectedTheme.secondaryColor,
+        },
+        text: {
+            marginBottom: 4,
+            color: selectedTheme.secondaryColor,
+        },
+        buttonContainer: {
+            marginVertical: 16,
+            backgroundColor: selectedTheme.buttonColor,
+            borderRadius: 10,
+            padding: 1,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            paddingLeft: 10,
+            paddingRight: 10,
+        },
+        modalContainer: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: selectedTheme.primaryColor,
+        },
+        modalContent: {
+            backgroundColor: selectedTheme.primaryColor,
+            borderRadius: 8,
+            padding: 16,
+            alignItems: 'center',
+            width: windowWidth * 0.9,
+            maxWidth: 400,
+        },
+        modalHeader: {
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 16,
+        },
+        modalTitle: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            marginBottom: 16,
+            color: selectedTheme.secondaryColor,
+        },
+        input: {
+            width: '100%',
+            padding: 8,
+            marginBottom: 16,
+            borderWidth: 1,
+            borderColor: '#6b6b6b',
+            borderRadius: 4,
+            color: '#6b6b6b',
+        },
+        picker: {
+            width: '100%',
+            marginBottom: 16,
+            color: selectedTheme.secondaryColor,
+        },
+        pickerContainer: {
+            width: '100%',
+            marginBottom: 16,
+        },
+        pickerItem: {
+            fontSize: 15,
+            height: 120,
+            color: selectedTheme.secondaryColor,
+        },
+        stateIndicator: {
+            position: 'absolute',
+            top: 40,
+            left: -27,
+            width: 16,
+            height: 16,
+            borderRadius: 8,
+            marginRight: 8,
+        },
+        qr: {
+            position: 'absolute',
+            top: 9,
+            left: 85,
+            color: selectedTheme.buttonColor,
+        }
     });
 
     const getStateColor = (state) => {
         return state == 'good' ? 'green' : 'red';
     };
 
-    React.useEffect(() => {
+    const initVehicles = () => {
         getOwnVehicles().then((data) => {
-            console.log('data',data)
+            console.log('data', data)
             setVehicles(data);
         });
-    },[]);
+    }
+
+    React.useEffect(() => {
+        initVehicles();
+    }, []);
 
     const getOwnVehicles = async () => {
         let response = await fetch(
@@ -54,7 +172,7 @@ export default function VehiclesScreen() {
 
     const addVehicle = async () => {
         try {
-            console.log('newVehicleInfo',newVehicleInfo)
+            console.log('newVehicleInfo', newVehicleInfo)
             const response = await fetch('http://minikit.pythonanywhere.com/vehicles', {
                 method: 'POST',
                 headers: {
@@ -151,6 +269,12 @@ export default function VehiclesScreen() {
         return refs;
     }, {});
 
+    const handleChangeState = async (vehicleId) => {
+        const test = await modifyVehicleState(vehicleId, 'good');
+        initVehicles();
+        console.log(test);
+    }
+
 
     <Button color={"white"} title="Télécharger" onPress={() => saveQrToDisk(data.id)} />
 
@@ -170,17 +294,27 @@ export default function VehiclesScreen() {
                         <View style={styles.cardContent}>
                             <Text style={styles.title}>{data.brand}</Text>
                             <View style={[styles.stateIndicator, { backgroundColor: getStateColor(data.state) }]} />
+                            {data.state !== 'good' &&
+                                <TouchableOpacity onPress={() => handleChangeState(data.id)} style={[styles.buttonContainer]}>
+                                    <Text style={{color: '#fff'}}>Problème résolu</Text>
+                                </TouchableOpacity>}
                             <Text style={styles.text}>Type: {data.type}</Text>
                             <Text style={styles.text}>Color: {data.color}</Text>
                             <Text style={styles.text}>License Plate: {data.license_plate}</Text>
-                            <Button
-                                title="QR Code"
-                                color={'#2ec530'}
-                                onPress={() => {
-                                    console.log('data.id:', data.id);
-                                    setQrModalVisible(true);
-                            }}
-                            />
+                            <View>
+                                <Ionicons style={styles.qr} name={'qr-code-outline'} size={20} />
+                                <Button
+                                    title="QR Code"
+                                    color={selectedTheme.buttonColor}
+                                    onPress={() => {
+                                        console.log('data.id:', data.id);
+                                        setQrModalVisible(true);
+                                    }}
+                                >
+
+                                </Button>
+                            </View>
+
 
                             <Modal
                                 animationType="slide"
@@ -196,6 +330,7 @@ export default function VehiclesScreen() {
                     </View>
                 ))}
                 <View style={styles.buttonContainer}>
+                    <Ionicons name="add-outline" size={30} color={"white"} />
                     <Button color={"white"} title="Ajouter un véhicule" onPress={() => setModalVisible(true)} />
                 </View>
             </ScrollView>
@@ -208,30 +343,30 @@ export default function VehiclesScreen() {
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>Ajouter un véhicule</Text>
+                        <View style={styles.modalHeader}>
+                            <Ionicons name={'car-outline'} size={30} />
+                            <Text style={styles.modalTitle}>Ajouter un véhicule</Text>
+                        </View>
+
                         <TextInput
+                            placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="Brand"
                             value={newVehicleInfo.brand}
-                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, brand: text})}
+                            onChangeText={(text) => setNewVehicleInfo({ ...newVehicleInfo, brand: text })}
                         />
                         <TextInput
+                            placeholderTextColor={'#6b6b6b'}
                             style={styles.input}
                             placeholder="Color"
                             value={newVehicleInfo.color}
-                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, color: text})}
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="License Plate"
-                            value={newVehicleInfo.license_plate}
-                            onChangeText={(text) => setNewVehicleInfo({...newVehicleInfo, license_plate: text})}
+                            onChangeText={(text) => setNewVehicleInfo({ ...newVehicleInfo, color: text })}
                         />
                         <View style={styles.pickerContainer}>
                             <Picker
                                 selectedValue={newVehicleInfo.type}
-                                onValueChange={(itemValue) =>{
-                                    setNewVehicleInfo({...newVehicleInfo, type: itemValue})
+                                onValueChange={(itemValue) => {
+                                    setNewVehicleInfo({ ...newVehicleInfo, type: itemValue })
 
                                 }}
                                 style={styles.picker}
@@ -243,8 +378,31 @@ export default function VehiclesScreen() {
                                 <Picker.Item label="Trotinette" value="trotinette" />
                             </Picker>
                         </View>
+                        {newVehicleInfo.type === 'voiture' && (
+                            <TextInput
+                                placeholderTextColor={'#6b6b6b'}
+                                style={styles.input}
+                                placeholder="License Plate"
+                                value={newVehicleInfo.license_plate}
+                                onChangeText={(text) => {
+                                    setNewVehicleInfo({...newVehicleInfo, license_plate: text});
+                                    const validateInput = text => {
+                                        if (text.trim() !== '') {
+                                            setIsValid(true);
+                                        } else {
+                                            setIsValid(false);
+                                        }
+                                    };
+                                    validateInput(text);
+                                }}
+                            />
+                        )}
                         <View style={styles.buttonContainer}>
-                            <Button color={"white"} title="Ajouter" onPress={addVehicle} />
+                            <Button
+                                color={"white"}
+                                title="Ajouter"
+                                disabled={!isValid && newVehicleInfo.type === 'voiture'}
+                                onPress={addVehicle} />
                         </View>
                         <View style={styles.buttonContainer}>
                             <Button color={"white"} title="Annuler" onPress={() => setModalVisible(false)} />
@@ -257,100 +415,3 @@ export default function VehiclesScreen() {
 }
 
 const windowWidth = Dimensions.get('window').width;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    scrollViewContainer: {
-        alignItems: 'center',
-        flexGrow: 1,
-        paddingTop: 50,
-        paddingBottom: 100,
-    },
-    card: {
-        backgroundColor: '#f5f5f5',
-        borderRadius: 8,
-        padding: 16,
-        marginVertical: 8,
-        width: windowWidth * 0.9,
-        maxWidth: 400,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    deleteButton: {
-        position: "relative",
-        marginRight: 8,
-        top: -40,
-        left: 300,
-    },
-    cardContent: {
-        flex: 1,
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 8,
-    },
-    text: {
-        marginBottom: 4,
-    },
-    buttonContainer: {
-        marginVertical: 16,
-        backgroundColor: '#2ec530',
-        borderRadius: 10,
-        padding: 1,
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        padding: 16,
-        alignItems: 'center',
-        width: windowWidth * 0.9,
-        maxWidth: 400,
-    },
-    modalTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 16,
-    },
-    input: {
-        width: '100%',
-        padding: 8,
-        marginBottom: 16,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 4,
-    },
-    picker: {
-        width: '100%',
-        marginBottom: 16,
-    },
-    pickerContainer: {
-        width: '100%',
-        marginBottom: 16,
-    },
-    pickerItem: {
-        fontSize: 15,
-        height: 120,
-    },
-    stateIndicator: {
-        position: 'absolute',
-        top: 40,
-        left: -27,
-        width: 16,
-        height: 16,
-        borderRadius: 8,
-        marginRight: 8,
-    },
-});

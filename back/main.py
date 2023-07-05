@@ -11,8 +11,10 @@ import datetime
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from sqlalchemy import or_
 import hashlib
 import datetime
+import requests
 
 app = Flask(__name__)
 #removing cors
@@ -45,6 +47,7 @@ class Conversation(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     contact_id= db.Column(db.Integer, db.ForeignKey('user.id'))
     license_plate = db.Column(db.String(50))
+    vehicle_id = db.Column(db.Integer, db.ForeignKey('vehicle.id'))
     messages = db.relationship('Message', backref='conversation', lazy=True)
 
 class Message(db.Model):
@@ -116,6 +119,23 @@ def get_vehicules():
         })
     return jsonify(result)
 
+# Route pour récupérer un véhicule à partir de sa license plate
+@app.route('/vehicles/<license_plate>', methods=['GET'])
+def get_vehicle_by_lp(license_plate):
+    vehicle = Vehicle.query.filter_by(license_plate=license_plate).first()
+    if not vehicle:
+        return jsonify({'error': 'Véhicule introuvable'}), 404
+
+    return jsonify({
+        'id': vehicle.id,
+        'type': vehicle.type,
+        'brand': vehicle.brand,
+        'color': vehicle.color,
+        'license_plate': vehicle.license_plate,
+        'user_id': vehicle.user_id,
+        'state': vehicle.state
+    })
+
 
 # Route pour récupérer un véhicule
 @app.route('/vehicles/<id>', methods=['GET'])
@@ -150,6 +170,25 @@ def get_vehicle_by_license_plate(lp):
     app.logger.info(returned_object)
     return jsonify(returned_object)
 
+# Route pour récupérer un utilisateur selon l'id d'un vehicule
+@app.route('/user/get_by_vehicle_id/<vehicleId>', methods=['GET'])
+def get_vehicle_by_vehicle_id(vehicleId):
+    vehicle = Vehicle.query.get(vehicleId)
+    returned_object = {}
+    # le vehicule n'existe pas dans la base de données
+    if vehicle is None:
+        returned_object = {'message': 'Le véhicule n\'existe pas dans la base de données'}
+    else:
+        user = User.query.get(vehicle.user_id)
+        # l'utilisateur n'existe pas dans la base de données
+        if user is None:
+            returned_object = {'message': 'L\'utilisateur n\'existe pas dans la base de données'}
+        else:
+            returned_object = {'id': user.id, 'name': user.name, 'email': user.email}
+
+    app.logger.info(returned_object)
+    return jsonify(returned_object)
+
 # Route pour récupérer tous les véhicules d'un utilisateur
 @app.route('/vehicles/user/<user_id>', methods=['GET'])
 def get_vehicules_user(user_id):
@@ -166,6 +205,28 @@ def get_vehicules_user(user_id):
             'state': vehicle.state
         })
     return jsonify(result)
+
+# Route pour changer l'état d'un véhicule
+@app.route('/vehicles/<vehicle_id>/state', methods=['PUT'])
+def modifier_etat_vehicule(vehicle_id):
+    vehicle = Vehicle.query.get(vehicle_id)
+    if not vehicle:
+        return jsonify({'error': 'Véhicule introuvable'}), 404
+
+    data = request.get_json()
+    vehicle.state = data['state']
+    db.session.commit()
+
+    return jsonify({
+        'id': vehicle.id,
+        'type': vehicle.type,
+        'brand': vehicle.brand,
+        'color': vehicle.color,
+        'license_plate': vehicle.license_plate,
+        'user_id': vehicle.user_id,
+        'state': vehicle.state
+    })
+
 
 # Route pour créer un nouveau véhicule
 @app.route('/vehicles', methods=['POST'])
@@ -200,7 +261,7 @@ def supprimer_vehicule(id):
 # Route pour récupérer toutes les conversations d'un utilisateur
 @app.route('/conversations/user/<user_id>', methods=['GET'])
 def get_conversations_user(user_id):
-    conversations = Conversation.query.filter_by(user_id=user_id).all()
+    conversations = Conversation.query.filter(or_(Conversation.user_id == user_id, Conversation.contact_id == user_id)).all()
     result = []
     for conversation in conversations:
         result.append({
@@ -235,7 +296,7 @@ def get_conversation_by_users():
 def creer_conversation():
     data = request.get_json()
     app.logger.info('data :',data)
-    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], license_plate=data['license_plate'])
+    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], license_plate=data['license_plate'], vehicle_id=data['vehicle_id'])
     db.session.add(new_conversation)
     db.session.commit()
 
@@ -243,7 +304,8 @@ def creer_conversation():
         'id': new_conversation.id,
         'user_id': new_conversation.user_id,
         'contact_id': new_conversation.contact_id,
-        'license_plate': new_conversation.license_plate
+        'license_plate': new_conversation.license_plate,
+        'vehicle_id': new_conversation.vehicle_id
     })
 
 # Route pour supprimer une conversation
@@ -273,10 +335,12 @@ def get_messages_conversation(id):
         })
     return jsonify(result)
 
+
 # Route pour créer un message dans une conversation
 @app.route('/conversations/<id>/messages', methods=['POST'])
 def creer_message(id):
     data = request.get_json()
+    conversation = Conversation.query.get(id)
     app.logger.info(data)
 
     # vérif user_id est bien rempli
@@ -287,6 +351,12 @@ def creer_message(id):
     db.session.add(new_message)
     db.session.commit()
 
+    if(conversation.user_id == data['user_id']):
+        sendNotif(conversation.contact_id, conversation.user_id, data['content'])
+    else:
+        sendNotif(conversation.user_id, conversation.contact_id, data['content'])
+
+
     return jsonify({
         'id': new_message.id,
         'content': new_message.content,
@@ -294,6 +364,21 @@ def creer_message(id):
         'conversation_id': new_message.conversation_id,
         'user_id': new_message.user_id
     })
+
+def sendNotif(receiver_id, sender_id, content):
+    receiver_user = User.query.get(receiver_id)
+    sender_user = User.query.get(sender_id)
+    if receiver_user.expoToken is not None:
+        params ={
+            "to": receiver_user.expoToken,
+            "sound": "default",
+            "title": sender_user.name+" vous a envoyé un message",
+            "body": content
+        }
+        response = requests.post("https://exp.host/--/api/v2/push/send", json=params)
+        print(response)
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

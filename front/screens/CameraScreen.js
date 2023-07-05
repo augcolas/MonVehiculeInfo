@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-    ActivityIndicator,
+    ActivityIndicator, Alert,
     Button,
     Dimensions,
     Modal,
@@ -16,15 +16,95 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import RectangleCorners from "../components/rectangleCorners";
 import {Picker} from "@react-native-picker/picker";
 import ModalAlert from "../components/modalAlert";
+import ThemeContext from "../themes/ThemeContext";
+import {useContext} from "react";
+import {Ionicons} from "@expo/vector-icons";
+import { getVehicleByLicensePlate, getVehiculeByLicensePlate } from '../services/vehicule.service';
 
 export default function CameraScreen() {
     const [hasPermission, setHasPermission] = useState(null);
     const [ratio, setRatio] = useState('4:3');
     const cameraRef = useRef(null);
-    const [detectedPlate, setDetectedPlate] = useState('');
+    const [detectedId, setDetectedId] = useState('');
+    const [contact, setContact] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [scannedQR, setScannedQR] = useState(null);
     const [modalVisible, setModalVisible] = React.useState(false);
+    const [detectionType, setDetectionType] = useState(null);
+    const [previousQr, setPreviousQr] = useState(null);
+    const { selectedTheme } = useContext(ThemeContext);
+
+    const styles = StyleSheet.create({
+        camera: {
+            flex: 1,
+            width: '100%',
+        },
+        captureButton: {
+            position: 'absolute',
+            bottom: '15%',
+            alignSelf: 'center',
+            padding: 10,
+            backgroundColor: selectedTheme.buttonColor,
+            borderRadius: 8,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+        },
+        buttonText: {
+            color: 'white',
+            fontSize: 18,
+        },
+        plateText: {
+            position: 'absolute',
+            bottom: '10%',
+            alignSelf: 'center',
+            color: 'white',
+            fontSize: 18,
+        },
+        loader: {
+            position: 'absolute',
+            top: '60%',
+            left: '50%',
+            marginTop: -80,
+            marginLeft: -15,
+        },
+        activityIndicator: {
+            transform: [{ scale: 2 }],
+        },
+        qrText: {
+            position: 'absolute',
+            bottom: '5%',
+            alignSelf: 'center',
+            color: 'white',
+            fontSize: 18,
+        },modalContainer: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            marginBottom: 100,
+        },
+        modalContent: {
+            backgroundColor: selectedTheme.primaryColor,
+            borderRadius: 8,
+            padding: 16,
+            alignItems: 'center',
+            width: windowWidth * 0.9,
+            maxWidth: 300,
+        },
+        modalTitle: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            marginBottom: 16,
+        },
+        modalText: {
+            fontSize: 20,
+            marginBottom: 20,
+        },
+        scan:{
+            marginRight: 10,
+        }
+    });
 
 
     useEffect(() => {
@@ -35,22 +115,42 @@ export default function CameraScreen() {
 
     }, []);
 
-    const handleBarCodeScanned = ({ type, data }) => {
+    const closeModal = () => {
+        setModalVisible(false);
+        setPreviousQr(null);
+    }
+    const handleBarCodeScanned = async ({ data }) => {
         const prefix = 'vehiculeId: ';
 
-        if (data.startsWith(prefix)) {
-            const vehicleId = data.slice(prefix.length);
+        if (previousQr !== data) {
+            setPreviousQr(data);
+            if (data.startsWith(prefix)) {
+                const vehicleId = data.slice(prefix.length);
 
-            setScannedQR(vehicleId);
-        } else {
-            setDetectedPlate("QR code invalide");
+                const response1 = await fetch(
+                    `http://minikit.pythonanywhere.com/user/get_by_vehicle_id/${vehicleId}`
+                );
+                const contact1 = await response1.json();
+                if (contact1.id == null) {
+                    Alert.alert("Avertissement", "Ce véhicule n'est pas enregistré dans notre base de données");
+                    setIsLoading(false);
+                    return
+                }
+                setContact(contact1);
+                setDetectedId(vehicleId);
+                setScannedQR(vehicleId);
+                setModalVisible(true);
+                setDetectionType("qrCode");
+            } else {
+                setDetectedId("QR code invalide");
+            }
         }
     }
     const handleScanPlate = async () => {
         if (cameraRef.current) {
             setIsLoading(true);
-            setDetectedPlate('');
-
+            setDetectedId('');
+            let vehiclePlate ='';
             let photo = await cameraRef.current.takePictureAsync();
             let resizedPhoto = await ImageManipulator.manipulateAsync(
                 photo.uri,
@@ -80,21 +180,42 @@ export default function CameraScreen() {
                 body: form,
             })
             .then((response) => response.json())
-            .then((json) => {
+            .then(async (json) => {
                 if (json.results && json.results.length > 0) {
                     let plate = json.results[0].plate;
                     let regex = /^[A-Z]{2}\d{3}[A-Z]{2}$/i;
                     if (regex.test(plate)) {
-                        setDetectedPlate(plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3"));
+                        vehiclePlate = plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3");
+                        setDetectedId(plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3"));
                     } else {
-                        setDetectedPlate(plate.toUpperCase());
+                        vehiclePlate = plate.toUpperCase();
+                        setDetectedId(plate.toUpperCase());
                     }
                 } else {
-                    setDetectedPlate('Aucune plaque détectée');
-
-                    setDetectedPlate('PLAQUE');
-                    setModalVisible(true)
+                    vehiclePlate = "PLAQUE";
+                    setDetectedId('PLAQUE');
                 }
+                //getting the contact infos
+                const response2 = await fetch(
+                    `http://minikit.pythonanywhere.com/user/get_by_license_plate/${vehiclePlate}`
+                );
+                console.log("ddddd");
+                const contact2 = await response2.json();
+                console.log(contact2)
+                if(contact2.id == null){
+                    Alert.alert("Avertissement", "Ce véhicule n'est pas enregistré dans notre base de données");
+                    setIsLoading(false);
+                    return
+                }
+
+
+                const vehicle = await getVehicleByLicensePlate(vehiclePlate);
+                console.log(vehicle);
+                setDetectedId(vehicle.id);
+                setContact(contact2);
+
+                setDetectionType("plate");
+                setModalVisible(true)
                 setIsLoading(false);
             })
             .catch((error) => {
@@ -126,22 +247,26 @@ export default function CameraScreen() {
                 </View>
             ) : <RectangleCorners />}
             <TouchableOpacity onPress={handleScanPlate} style={styles.captureButton}>
+                <Ionicons name={'scan-outline'} size={24} color={'white'} style={styles.scan}/>
                 <Text style={styles.buttonText}>Scanner une plaque</Text>
             </TouchableOpacity>
-            {detectedPlate && (
-                <Text style={styles.plateText}>{detectedPlate}</Text>
+            {detectedId && (
+                <Text style={styles.plateText}>dernier scan : "{detectedId}"</Text>
             )}
 
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
+                 onRequestClose={() => setModalVisible(false)}
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <ModalAlert license_plate={detectedPlate}></ModalAlert>
-                        <Button onPress={() => setModalVisible(false)}  title={"Annuler"} color={"#2ec530"}></Button>
+
+                        {contact != null && contact.id != null &&(
+                                <ModalAlert identification={detectedId} type={detectionType} contact={contact}></ModalAlert>
+                        )}
+                        <Button onPress={() => closeModal()}  title={"Annuler"} color={selectedTheme.buttonColor}></Button>
                     </View>
                 </View>
             </Modal>
@@ -149,69 +274,3 @@ export default function CameraScreen() {
     );
 }
 const windowWidth = Dimensions.get('window').width;
-
-const styles = StyleSheet.create({
-    camera: {
-        flex: 1,
-        width: '100%',
-    },
-    captureButton: {
-        position: 'absolute',
-        bottom: '15%',
-        alignSelf: 'center',
-        padding: 10,
-        backgroundColor: '#2ec530',
-        borderRadius: 8,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 18,
-    },
-    plateText: {
-        position: 'absolute',
-        bottom: '10%',
-        alignSelf: 'center',
-        color: 'white',
-        fontSize: 18,
-    },
-    loader: {
-        position: 'absolute',
-        top: '60%',
-        left: '50%',
-        marginTop: -80,
-        marginLeft: -15,
-    },
-    activityIndicator: {
-        transform: [{ scale: 2 }],
-    },
-    qrText: {
-        position: 'absolute',
-        bottom: '5%',
-        alignSelf: 'center',
-        color: 'white',
-        fontSize: 18,
-    },modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        marginBottom: 100,
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        borderRadius: 8,
-        padding: 16,
-        alignItems: 'center',
-        width: windowWidth * 0.9,
-        maxWidth: 300,
-    },
-    modalTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginBottom: 16,
-    },
-    modalText: {
-        fontSize: 20,
-        marginBottom: 20,
-    }
-});

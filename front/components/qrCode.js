@@ -3,9 +3,12 @@ import QRCode from 'react-native-qrcode-svg';
 import {Button, Text, View} from "react-native";
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
+import ThemeContext from "../themes/ThemeContext";
+import {useContext} from "react";
 
 
 function VehicleQRCode({vehicleId, styles, setQrModalVisible}) {
+    const { selectedTheme } = useContext(ThemeContext);
     const value = `vehiculeId: ${vehicleId}`;
     let qrCode = useRef(null);
 
@@ -22,7 +25,6 @@ function VehicleQRCode({vehicleId, styles, setQrModalVisible}) {
                     .then(async () => {
                         const asset = await MediaLibrary.createAssetAsync(path);
                         await MediaLibrary.createAlbumAsync('MediaLibrary/Default', asset, false);
-                        console.log('QR code saved at: ', path);
                     })
                     .catch((error) => {
                         console.error('Error saving QR to disk ', error);
@@ -40,7 +42,7 @@ function VehicleQRCode({vehicleId, styles, setQrModalVisible}) {
                     getRef={(c) => (qrCode = c)}
                     value={value}
                     size={150}
-                    color='#2ec530'
+                    color={selectedTheme.buttonColor}
                     backgroundColor='white'
                     logo={require('../assets/logo_green.png')}
                     logoSize={30}
