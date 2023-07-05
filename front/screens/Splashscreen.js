@@ -7,7 +7,7 @@ import ThemeContext from "../themes/ThemeContext";
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 
-SplashScreen.preventAutoHideAsync();
+//SplashScreen.preventAutoHideAsync();
 
 export default function Splashscreen() {
 
@@ -38,7 +38,7 @@ export default function Splashscreen() {
     return (
       <View style={[styles.container, {backgroundColor: selectedTheme.buttonColor}]} onLayout={onLayoutView}>
         <Entypo color={selectedTheme.primaryColor} name="info-with-circle" size={60} />
-        <Text style={[styles.title, {color: selectedTheme.primaryColor}]}>M-V-I</Text>
+        <Text style={[styles.title, {color: selectedTheme.primaryColor}]}>M V I</Text>
       </View> 
     );
   } else {

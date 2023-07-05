@@ -2,6 +2,7 @@
   "expo": {
     "name": "front",
     "slug": "front",
+    "platforms": ["ios", "android", "web"],
     "scheme": "front",
     "version": "1.0.0",
     "orientation": "portrait",
