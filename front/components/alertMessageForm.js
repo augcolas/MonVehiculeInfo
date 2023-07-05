@@ -43,8 +43,9 @@ const AlertMessageForm = ({ option, identification,type, contact }) => {
         if(conversation.message != null) {
             conversation = await createConversation(user.id, contact.id, identification, type);
         }
+        
         await createMessage(conversation.id, message, user.id);
-       // modifyVehicleState(identification, 'alert');
+        modifyVehicleState(identification, 'alert');
     }
 
     return (

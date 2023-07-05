@@ -269,11 +269,11 @@ export default function VehiclesScreen() {
         return refs;
     }, {});
 
-    /*const handleChangeState = async (lp) => {
-        const test = await modifyVehicleState(lp, 'alert');
+    const handleChangeState = async (vehicleId) => {
+        const test = await modifyVehicleState(vehicleId, 'good');
         initVehicles();
         console.log(test);
-    }*/
+    }
 
 
     <Button color={"white"} title="Télécharger" onPress={() => saveQrToDisk(data.id)} />
@@ -295,7 +295,7 @@ export default function VehiclesScreen() {
                             <Text style={styles.title}>{data.brand}</Text>
                             <View style={[styles.stateIndicator, { backgroundColor: getStateColor(data.state) }]} />
                             {data.state !== 'good' &&
-                                <TouchableOpacity onPress={() => handleChangeState(data.license_plate)} style={[styles.buttonContainer]}>
+                                <TouchableOpacity onPress={() => handleChangeState(data.id)} style={[styles.buttonContainer]}>
                                     <Text style={{color: '#fff'}}>Problème résolu</Text>
                                 </TouchableOpacity>}
                             <Text style={styles.text}>Type: {data.type}</Text>

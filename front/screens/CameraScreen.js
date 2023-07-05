@@ -19,6 +19,7 @@ import ModalAlert from "../components/modalAlert";
 import ThemeContext from "../themes/ThemeContext";
 import {useContext} from "react";
 import {Ionicons} from "@expo/vector-icons";
+import { getVehicleByLicensePlate, getVehiculeByLicensePlate } from '../services/vehicule.service';
 
 export default function CameraScreen() {
     const [hasPermission, setHasPermission] = useState(null);
@@ -207,6 +208,10 @@ export default function CameraScreen() {
                     return
                 }
 
+
+                const vehicle = await getVehicleByLicensePlate(vehiclePlate);
+                console.log(vehicle);
+                setDetectedId(vehicle.id);
                 setContact(contact2);
 
                 setDetectionType("plate");
