@@ -5,7 +5,7 @@ import {useAuth} from "../context/Auth";
 import {Alert} from "react-native";
 import {checkConversationExist, createConversation, createMessage} from "../services/conversation.service";
 import ThemeContext from '../themes/ThemeContext';
-import modifyVehicleState from "../services/vehicule.service";
+import { modifyVehicleState } from "../services/vehicule.service";
 
 const AlertMessageForm = ({ option, identification,type, contact }) => {
     const {user} = useAuth();
@@ -43,8 +43,10 @@ const AlertMessageForm = ({ option, identification,type, contact }) => {
         if(conversation.message != null) {
             conversation = await createConversation(user.id, contact.id, identification, type);
         }
+        
         await createMessage(conversation.id, message, user.id);
-       // modifyVehicleState(identification, 'alert');
+        console.log("id", identification);
+        modifyVehicleState(identification, 'alert');
     }
 
     return (

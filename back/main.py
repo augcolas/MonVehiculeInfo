@@ -119,6 +119,23 @@ def get_vehicules():
         })
     return jsonify(result)
 
+# Route pour récupérer un véhicule à partir de sa license plate
+@app.route('/vehicles/<license_plate>', methods=['GET'])
+def get_vehicle_by_lp(license_plate):
+    vehicle = Vehicle.query.filter_by(license_plate=license_plate).first()
+    if not vehicle:
+        return jsonify({'error': 'Véhicule introuvable'}), 404
+
+    return jsonify({
+        'id': vehicle.id,
+        'type': vehicle.type,
+        'brand': vehicle.brand,
+        'color': vehicle.color,
+        'license_plate': vehicle.license_plate,
+        'user_id': vehicle.user_id,
+        'state': vehicle.state
+    })
+
 
 # Route pour récupérer un véhicule
 @app.route('/vehicles/<id>', methods=['GET'])
@@ -188,6 +205,28 @@ def get_vehicules_user(user_id):
             'state': vehicle.state
         })
     return jsonify(result)
+
+# Route pour changer l'état d'un véhicule
+@app.route('/vehicles/<vehicle_id>/state', methods=['PUT'])
+def modifier_etat_vehicule(vehicle_id):
+    vehicle = Vehicle.query.get(vehicle_id)
+    if not vehicle:
+        return jsonify({'error': 'Véhicule introuvable'}), 404
+
+    data = request.get_json()
+    vehicle.state = data['state']
+    db.session.commit()
+
+    return jsonify({
+        'id': vehicle.id,
+        'type': vehicle.type,
+        'brand': vehicle.brand,
+        'color': vehicle.color,
+        'license_plate': vehicle.license_plate,
+        'user_id': vehicle.user_id,
+        'state': vehicle.state
+    })
+
 
 # Route pour créer un nouveau véhicule
 @app.route('/vehicles', methods=['POST'])
