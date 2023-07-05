@@ -6,18 +6,18 @@ export const globalOptionsTab = [
 
 export const optionsTab = {
     Stationnement: [
-        "place interdite",
+        "est actuellement sur une place interdite",
         "bloque le passage",
     ],
     Accident: [
-        "un véhicule a percuté le votre",
-        "une vitre brisé"
+        "à été percuté par un autre véhicule",
+        "à une vitre brisé"
     ],
     Dysfonctionnement: [
-        "un pneu creuvé",
-        "une fuite d'huile",
-        "vos phares allumés",
+        "à un pneu creuvé",
+        "à une fuite d'huile",
+        "à ses phares allumés",
     ]
 }
 
-export const ALERT = "Bonjour, vous avez {option} sur le véhicule : \"{licensePlate}\""
+export const ALERT = "Bonjour, votre {vehicle_type} {vehicle_brand} {option}."
