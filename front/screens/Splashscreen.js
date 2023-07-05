@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
+import { useContext } from "react";
 import Entypo from '@expo/vector-icons/Entypo';
 import MainApp from '../mainApp';
+import ThemeContext from "../themes/ThemeContext";
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 
@@ -10,6 +12,7 @@ SplashScreen.preventAutoHideAsync();
 export default function Splashscreen() {
 
   const [appIsReady, setAppIsReady] = useState(false);
+  const {selectedTheme} = useContext(ThemeContext);
 
   useEffect(() => {
     async function prepare() {
@@ -33,9 +36,9 @@ export default function Splashscreen() {
 
   if (!appIsReady) {
     return (
-      <View style={styles.container} onLayout={onLayoutView}>
-        <Entypo style={styles.icon} name="info-with-circle" size={60} />
-        <Text style={styles.title}>M-V-I</Text>
+      <View style={[styles.container, {backgroundColor: selectedTheme.buttonColor}]} onLayout={onLayoutView}>
+        <Entypo color={selectedTheme.primaryColor} name="info-with-circle" size={60} />
+        <Text style={[styles.title, {color: selectedTheme.primaryColor}]}>M-V-I</Text>
       </View> 
     );
   } else {
@@ -53,16 +56,10 @@ const styles = {
     display: "flex",
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: "#2EC530",
-  },
-  icon: {
-    color: 'white',
   },
   title: {
     fontSize: 30,
     fontWeight: 700,
     marginTop: 20,
-    color: 'white',
   }
-  
 }

@@ -1,15 +1,15 @@
 import { StyleSheet, View } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useAuth } from "../context/Auth";
+import { useContext } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import ProfileScreen from "../screens/ProfileScreen";
 import VehiclesScreen from "../screens/vehiclesScreen";
 import CameraScreen from "../screens/CameraScreen";
 import HistoricScreen from "../screens/HistoricScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import * as React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ThemeContext from "../themes/ThemeContext";
-import { useAuth } from "../context/Auth";
-import {useContext} from "react";
+import * as React from "react";
 
 export default function Tabs() {
     const Tab = createBottomTabNavigator();
