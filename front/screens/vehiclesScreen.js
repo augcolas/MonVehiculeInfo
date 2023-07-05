@@ -147,20 +147,25 @@ export default function VehiclesScreen() {
         }
     });
 
+
     const getStateColor = (state) => {
         return state == 'good' ? 'green' : 'red';
     };
 
     const initVehicles = () => {
         getOwnVehicles().then((data) => {
-            console.log('data', data)
+            console.log('data', data);
             setVehicles(data);
         });
     }
 
     React.useEffect(() => {
         initVehicles();
+        //check vehicule state every 5 seconds
+        const interval = setInterval(initVehicles, 5000);
+        return () => clearInterval(interval);
     }, []);
+
 
     const getOwnVehicles = async () => {
         let response = await fetch(
