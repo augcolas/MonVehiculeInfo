@@ -112,7 +112,7 @@ export default function VehiclesScreen() {
             padding: 8,
             marginBottom: 16,
             borderWidth: 1,
-            borderColor: '#6b6b6',
+            borderColor: '#6b6b6b',
             borderRadius: 4,
             color: '#6b6b6b',
         },
@@ -294,7 +294,7 @@ export default function VehiclesScreen() {
                         <View style={styles.cardContent}>
                             <Text style={styles.title}>{data.brand}</Text>
                             <View style={[styles.stateIndicator, { backgroundColor: getStateColor(data.state) }]} />
-                            {data.state === 'good' &&
+                            {data.state !== 'good' &&
                                 <TouchableOpacity onPress={() => handleChangeState(data.license_plate)} style={[styles.buttonContainer]}>
                                     <Text style={{color: '#fff'}}>Problème résolu</Text>
                                 </TouchableOpacity>}

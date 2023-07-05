@@ -265,7 +265,7 @@ def creer_conversation():
         'id': new_conversation.id,
         'user_id': new_conversation.user_id,
         'contact_id': new_conversation.contact_id,
-        'license_plate': new_conversation.license_plate
+        'license_plate': new_conversation.license_plate,
         'vehicle_id': new_conversation.vehicle_id
     })
 
@@ -315,7 +315,7 @@ def creer_message(id):
     if(conversation.user_id == data['user_id']):
         sendNotif(conversation.contact_id, conversation.user_id, data['content'])
     else:
-        sendNotif(conversation.user_id, conversation.contact.id, data['content'])
+        sendNotif(conversation.user_id, conversation.contact_id, data['content'])
 
 
     return jsonify({
