@@ -1,13 +1,13 @@
 import * as React from "react";
 import {useAuth} from "./context/Auth";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Tabs from "./components/Tabs";
 import LoginScreen from "./screens/Auth/LoginScreen";
-import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import RegisterScreen from "./screens/Auth/RegisterScreen";
 
 export default function MainApp() {
-    const {user} = useAuth();
 
+    const {user} = useAuth();
     const Stack = createNativeStackNavigator();
 
     return (
@@ -21,4 +21,5 @@ export default function MainApp() {
             }
         </>
     )
+
 }
