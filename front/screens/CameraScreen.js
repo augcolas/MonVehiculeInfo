@@ -199,9 +199,7 @@ export default function CameraScreen() {
                 const response2 = await fetch(
                     `http://minikit.pythonanywhere.com/user/get_by_license_plate/${vehiclePlate}`
                 );
-                console.log("ddddd");
                 const contact2 = await response2.json();
-                console.log(contact2)
                 if(contact2.id == null){
                     Alert.alert("Avertissement", "Ce véhicule n'est pas enregistré dans notre base de données");
                     setIsLoading(false);
@@ -210,7 +208,6 @@ export default function CameraScreen() {
 
 
                 const vehicle = await getVehicleByLicensePlate(vehiclePlate);
-                console.log(vehicle);
                 setDetectedId(vehicle.id);
                 setContact(contact2);
 
