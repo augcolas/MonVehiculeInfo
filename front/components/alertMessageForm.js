@@ -7,7 +7,7 @@ import {checkConversationExist, createConversation, createMessage} from "../serv
 import ThemeContext from '../themes/ThemeContext';
 import { modifyVehicleState } from "../services/vehicule.service";
 
-const AlertMessageForm = ({ option, identification,type, contact, vehicule}) => {
+const AlertMessageForm = ({ option, identification,type, contact, vehicule, updateState}) => {
     const {user} = useAuth();
     const [message,setMessage] = useState(ALERT.replace("{option}", option).replace("{vehicle_type}", vehicule.type).replace("{vehicle_brand}", vehicule.brand))
     const { selectedTheme } = useContext(ThemeContext);
@@ -47,6 +47,9 @@ const AlertMessageForm = ({ option, identification,type, contact, vehicule}) => 
         await createMessage(conversation.id, message, user.id);
         console.log("id", identification);
         modifyVehicleState(identification, 'alert');
+
+        //updating the state of the parent component
+        updateState();
     }
 
     return (

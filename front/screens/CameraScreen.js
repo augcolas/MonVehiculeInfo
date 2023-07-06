@@ -120,6 +120,12 @@ export default function CameraScreen() {
         setModalVisible(false);
         setPreviousQr(null);
     }
+
+    const updateState = () => {
+        console.log("updateState to null");
+        setPreviousQr(null);
+    }
+
     const handleBarCodeScanned = async ({ data }) => {
         const prefix = 'vehiculeId: ';
 
@@ -266,7 +272,7 @@ export default function CameraScreen() {
                     <View style={styles.modalContent}>
 
                         {contact != null && contact.id != null &&(
-                                <ModalAlert identification={detectedId} type={detectionType} contact={contact} vehicule={vehicule}></ModalAlert>
+                                <ModalAlert identification={detectedId} type={detectionType} contact={contact} vehicule={vehicule} updateState={updateState}></ModalAlert>
                         )}
                         <Button onPress={() => closeModal()}  title={"Annuler"} color={selectedTheme.buttonColor}></Button>
                     </View>
