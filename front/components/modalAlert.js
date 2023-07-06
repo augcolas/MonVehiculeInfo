@@ -5,7 +5,7 @@ import AlertMessageForm from "./alertMessageForm";
 import ThemeContext from "../themes/ThemeContext";
 import { useContext } from "react";
 
-const ModalAlert = ({identification, type, contact, vehicule, closeModal}) => {
+const ModalAlert = ({identification, type, contact, vehicule, closeModal, updateState}) => {
     const [selectedOption, setSelectedOption] = useState();
     const [isPressed, setIsPressed] = useState(false);
     const [options, setOptions] = useState();
@@ -83,7 +83,15 @@ const ModalAlert = ({identification, type, contact, vehicule, closeModal}) => {
             </>
             )}
             {selectedOption && (
-                <AlertMessageForm option={selectedOption} identification={identification} type={type} contact={contact} vehicule={vehicule} closeModal={closeModal}></AlertMessageForm>
+                <AlertMessageForm
+                    option={selectedOption}
+                    identification={identification}
+                    type={type}
+                    contact={contact}
+                    vehicule={vehicule}
+                    closeModal={closeModal}
+                    updateState={updateState}
+                ></AlertMessageForm>
             )}
         </View>
 

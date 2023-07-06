@@ -124,7 +124,6 @@ export default function CameraScreen() {
         const prefix = 'vehiculeId: ';
 
         if (previousQr !== data) {
-            setPreviousQr(data);
             if (data.startsWith(prefix)) {
                 const vehicleId = data.slice(prefix.length);
 
@@ -136,6 +135,7 @@ export default function CameraScreen() {
                 if (contact1.user.id == null) {
                     Alert.alert("Avertissement", "Ce véhicule n'est pas enregistré dans notre base de données");
                     setIsLoading(false);
+                    setPreviousQr(data);
                     return
                 }
                 setVehicule(contact1.vehicle);
@@ -144,8 +144,10 @@ export default function CameraScreen() {
                 setScannedQR(vehicleId);
                 setModalVisible(true);
                 setDetectionType("qrCode");
+                setPreviousQr(data);
             } else {
                 setDetectedId("QR code invalide");
+                setPreviousQr(data);
             }
         }
     }
@@ -230,6 +232,12 @@ export default function CameraScreen() {
         }
     };
 
+    const updateState = () => {
+        //reset all states
+        setScannedQR(null);
+        setPreviousQr(null);
+    }
+
     if (hasPermission === null) {
         return <Text>Requesting for camera permission</Text>;
     }
@@ -265,7 +273,14 @@ export default function CameraScreen() {
                     <View style={styles.modalContent}>
 
                         {contact != null && contact.id != null &&(
-                                <ModalAlert identification={detectedId} type={detectionType} contact={contact} vehicule={vehicule} closeModal={closeModal}></ModalAlert>
+                                <ModalAlert
+                                    identification={detectedId}
+                                    type={detectionType}
+                                    contact={contact}
+                                    vehicule={vehicule}
+                                    closeModal={closeModal}
+                                    updateState={updateState}
+                                ></ModalAlert>
                         )}
                         <Button onPress={() => closeModal()}  title={"Annuler"} color={selectedTheme.buttonColor}></Button>
                     </View>
