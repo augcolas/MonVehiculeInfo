@@ -280,7 +280,7 @@ export default function VehiclesScreen() {
                             <Text style={styles.title}>{data.brand}</Text>
                             <View style={[styles.stateIndicator, { backgroundColor: getStateColor(data.state) }]} />
                             {data.state !== 'good' &&
-                                <TouchableOpacity onPress={() => handleChangeState(data.id)} style={[styles.buttonContainer]}>
+                                <TouchableOpacity onPress={() => handleChangeState(data.id)} style={{backgroundColor: selectedTheme.buttonColor, width: 250, padding: 2, alignItems: 'center', borderRadius: 20}}>
                                     <Text style={{color: '#fff'}}>Problème résolu</Text>
                                 </TouchableOpacity>}
                             <Text style={styles.text}>Type: {data.type}</Text>
