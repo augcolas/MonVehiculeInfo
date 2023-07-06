@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import {useContext} from "react";
+import ThemeContext from "../themes/ThemeContext";
 
 
 const MessageCard = ({ message, isReceived }) => {
     // Utilise la propriété "isReceived" pour déterminer la couleur de la bulle de conversation
-    const bubbleColor = isReceived ? '#E5E5EA' : '#2ec530';
-    const textColor = isReceived ? 'black' : 'white'; 
+    const { selectedTheme } = useContext(ThemeContext);
+    const bubbleColor = isReceived ? selectedTheme.primaryColor : selectedTheme.buttonColor
+    const textColor = isReceived ? 'black' : 'white';
   
     return (
       <View style={[styles.container, { backgroundColor: bubbleColor }, isReceived ? {marginRight: 80} : {marginLeft: 80}]}>
@@ -13,7 +16,7 @@ const MessageCard = ({ message, isReceived }) => {
       </View>
     );
   };
-  
+
 
   const styles = StyleSheet.create({
     container: {

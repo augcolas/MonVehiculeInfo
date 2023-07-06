@@ -7,9 +7,9 @@ import {checkConversationExist, createConversation, createMessage} from "../serv
 import ThemeContext from '../themes/ThemeContext';
 import { modifyVehicleState } from "../services/vehicule.service";
 
-const AlertMessageForm = ({ option, identification,type, contact }) => {
+const AlertMessageForm = ({ option, identification,type, contact, vehicule}) => {
     const {user} = useAuth();
-    const [message,setMessage] = useState(ALERT.replace("{option}", option).replace("{licensePlate}", identification))
+    const [message,setMessage] = useState(ALERT.replace("{option}", option).replace("{vehicle_type}", vehicule.type).replace("{vehicle_brand}", vehicule.brand))
     const { selectedTheme } = useContext(ThemeContext);
 
     const styles = StyleSheet.create({
@@ -43,7 +43,7 @@ const AlertMessageForm = ({ option, identification,type, contact }) => {
         if(conversation.message != null) {
             conversation = await createConversation(user.id, contact.id, identification, type);
         }
-        
+
         await createMessage(conversation.id, message, user.id);
         console.log("id", identification);
         modifyVehicleState(identification, 'alert');

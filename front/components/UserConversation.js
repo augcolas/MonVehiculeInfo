@@ -3,12 +3,34 @@ import { Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ConversationScreen from "../screens/conversationScreen";
 import { Ionicons } from "@expo/vector-icons";
+import {useContext} from "react";
+import ThemeContext from "../themes/ThemeContext";
 
 export default function UserConversation(conversation) {
 
     const [modalVisible, setModalVisible] = React.useState(false);
     const [messages, setMessages] = React.useState([]);
     const [lastMessage, setLastMessage] = React.useState();
+    const { selectedTheme } = useContext(ThemeContext);
+
+    const styles = StyleSheet.create({
+        header: {
+            alignItems: 'center',
+            paddingVertical: 10,
+            borderBottomWidth: 1,
+            borderBottomColor: selectedTheme.cardColor,
+            backgroundColor: selectedTheme.primaryColor,
+            marginBottom: 10,
+        },
+        conversationNumber: {
+            fontSize: 18,
+            fontWeight: 'bold',
+            color: selectedTheme.secondaryColor,
+        },
+        label: {
+            color: selectedTheme.secondaryColor,
+        }
+    });
 
     React.useEffect(() => {
         fetch(`http://minikit.pythonanywhere.com/conversations/${conversation.conversation.id}/messages`)
@@ -35,7 +57,7 @@ export default function UserConversation(conversation) {
                 Conversation # {conversation.conversation.license_plate}
             </Text>
             <TouchableOpacity onPress={handlePress}>
-                <Text>
+                <Text style={styles.label}>
                     {lastMessage}
                 </Text>
             </TouchableOpacity>
@@ -45,7 +67,7 @@ export default function UserConversation(conversation) {
                 visible={modalVisible}
                 onRequestClose={() => setModalVisible(false)}
             >
-                <Ionicons onPress={() => setModalVisible(false)} style={[{ paddingTop: 35 }, {height: 70}]} name="arrow-back-outline"
+                <Ionicons onPress={() => setModalVisible(false)} style={[{ paddingTop: 35 }, {height: 70}, styles.label] } name="arrow-back-outline"
                         size={36} color="black" />
                 <ConversationScreen
                     messages={messages}
@@ -57,18 +79,3 @@ export default function UserConversation(conversation) {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    header: {
-        alignItems: 'center',
-        paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
-        backgroundColor: '#fff',
-        marginBottom: 10,
-    },
-    conversationNumber: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-});
