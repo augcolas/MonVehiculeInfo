@@ -6,6 +6,7 @@ import MainApp from '../mainApp';
 import ThemeContext from "../themes/ThemeContext";
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+import {Ionicons} from "@expo/vector-icons";
 
 //SplashScreen.preventAutoHideAsync();
 
@@ -37,8 +38,8 @@ export default function Splashscreen() {
   if (!appIsReady) {
     return (
       <View style={[styles.container, {backgroundColor: selectedTheme.buttonColor}]} onLayout={onLayoutView}>
-        <Entypo color={selectedTheme.primaryColor} name="info-with-circle" size={60} />
-        <Text style={[styles.title, {color: selectedTheme.primaryColor}]}>M V I</Text>
+        <Ionicons name={"car"} size={100} color={selectedTheme.primaryColor} />
+        <Text style={[styles.title, {color: selectedTheme.primaryColor}]}>Mon Véhicule Info</Text>
       </View> 
     );
   } else {
