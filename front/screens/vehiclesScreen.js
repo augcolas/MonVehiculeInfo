@@ -223,26 +223,6 @@ export default function VehiclesScreen() {
         }
     };
 
-    const shareQRCode = async () => {
-        try {
-            const result = await Share.share({
-                message: 'Here is the QR code for my vehicle',
-            });
-
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    console.log('Shared with activity: ' + result.activityType);
-                } else {
-                    console.log('Shared successfully!');
-                }
-            } else if (result.action === Share.dismissedAction) {
-                console.log('Share dialog was closed');
-            }
-        } catch (error) {
-            console.error(error.message);
-        }
-    };
-
     const saveQrToDisk = async (vehicleId) => {
         const { status } = await MediaLibrary.requestPermissionsAsync();
 

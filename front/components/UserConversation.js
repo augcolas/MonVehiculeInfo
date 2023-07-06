@@ -35,7 +35,7 @@ export default function UserConversation(conversation) {
     React.useEffect(() => {
         fetch(`http://minikit.pythonanywhere.com/conversations/${conversation.conversation.id}/messages`)
             .then((res) => res.json())
-            .then((res) => { if (res.length >= 0) { setMessages(res) } });
+            .then((res) => { if (res.length >= 0) { setMessages(res.reverse())} });
     }, []);
 
     React.useEffect(() => {
