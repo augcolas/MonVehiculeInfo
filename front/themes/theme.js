@@ -9,14 +9,12 @@ export const darkTheme = {
     primaryColor: '#000000',
     secondaryColor: '#FFFFFF',
     buttonColor: '#2ec530',
-    cardColor: '#363535'
-
+    cardColor: '#2f2f2f'
 };
 
 export const purpleTheme = {
     primaryColor: '#000000',
     secondaryColor: '#FFFFFF',
     buttonColor: '#a03cde',
-    cardColor: '#363535'
-
+    cardColor: '#4b4b4b'
 };

@@ -2,8 +2,8 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {AuthProvider} from "./context/Auth";
 import {ThemeProvider} from "./themes/ThemeContext";
-import MainApp from "./mainApp";
 import {configNotification} from "./config/notification";
+import Splashscreen from "./screens/Splashscreen";
 
 export default function App() {
     configNotification();
@@ -11,7 +11,7 @@ export default function App() {
         <NavigationContainer>
             <ThemeProvider>
                 <AuthProvider>
-                    <MainApp></MainApp>
+                    <Splashscreen></Splashscreen>
                 </AuthProvider>
             </ThemeProvider>
         </NavigationContainer>
