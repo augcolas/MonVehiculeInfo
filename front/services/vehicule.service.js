@@ -14,3 +14,7 @@ export const modifyVehicleState = async (plate, newState, type) => {
 export const getVehicleByLicensePlate = async (plate) => {
   return fetch(`http://minikit.pythonanywhere.com/vehicles/${plate}`);
 }
+
+export const getVehicleById = async (id) => {
+  return fetch(`http://minikit.pythonanywhere.com/vehicles/${id}`).then(res => res.json());
+}

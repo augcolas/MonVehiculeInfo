@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
-import { Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React, {useContext} from "react";
+import {Modal, StyleSheet, Text, View} from "react-native";
+import {TouchableOpacity} from "react-native-gesture-handler";
 import ConversationScreen from "../screens/conversationScreen";
-import { Ionicons } from "@expo/vector-icons";
-import {useContext} from "react";
+import {Ionicons} from "@expo/vector-icons";
 import ThemeContext from "../themes/ThemeContext";
 
 export default function UserConversation(conversation) {
@@ -35,7 +34,7 @@ export default function UserConversation(conversation) {
     React.useEffect(() => {
         fetch(`http://minikit.pythonanywhere.com/conversations/${conversation.conversation.id}/messages`)
             .then((res) => res.json())
-            .then((res) => { if (res.length >= 0) { setMessages(res) } });
+            .then((res) => { if (res.length >= 0) { setMessages(res.reverse())} });
     }, []);
 
     React.useEffect(() => {
@@ -54,7 +53,7 @@ export default function UserConversation(conversation) {
     return (
         <View style={styles.header}>
             <Text style={styles.conversationNumber}>
-                Conversation # {conversation.conversation.license_plate}
+                Alerte ! {conversation.conversation.vehicle.brand} {conversation.conversation.vehicle.color}
             </Text>
             <TouchableOpacity onPress={handlePress}>
                 <Text style={styles.label}>
@@ -71,7 +70,7 @@ export default function UserConversation(conversation) {
                         size={36} color="black" />
                 <ConversationScreen
                     messages={messages}
-                    plaque={conversation.conversation.license_plate}
+                    vehicle={conversation.conversation.vehicle}
                     conversation_id={conversation.conversation.id}
                 >
                 </ConversationScreen>

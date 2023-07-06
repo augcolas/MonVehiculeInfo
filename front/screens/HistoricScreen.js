@@ -40,6 +40,11 @@ export default function HistoricScreen() {
 
     React.useEffect(() => {
         getConversations();
+        const interval = setInterval(() => {
+            getConversations();
+        }, 5000);
+
+        return () => clearInterval(interval);
     }, []);
 
     return (

@@ -6,7 +6,7 @@ import { useAuth } from '../context/Auth';
 import {useContext} from "react";
 import ThemeContext from "../themes/ThemeContext";
 
-const ConversationScreen = ({ conversation_id, plaque }) => {
+const ConversationScreen = ({ conversation_id, vehicle }) => {
     const [messages, setMessages] = useState([]);
     const [messageToSend, setMessageToSend] = useState('');
     const { user } = useAuth();
@@ -106,9 +106,9 @@ const ConversationScreen = ({ conversation_id, plaque }) => {
         >
             <View style={styles.header}>
                 <Text style={styles.conversationNumber}>
-                    {`Conversation # ${conversation_id}`}
+                    {`Alerte # ${conversation_id}`}
                 </Text>
-                <Text style={styles.label}>{`Plaque # ${plaque}`}</Text>
+                <Text>{`${vehicle.brand} ${vehicle.color}`}</Text>
             </View>
             <FlatList
                 inverted

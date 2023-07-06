@@ -1,8 +1,7 @@
 import {Button, StyleSheet, TextInput, View} from "react-native";
 import {ALERT} from "../utils/options.helper";
-import {useState, useContext} from "react";
+import {useContext, useState} from "react";
 import {useAuth} from "../context/Auth";
-import {Alert} from "react-native";
 import {checkConversationExist, createConversation, createMessage} from "../services/conversation.service";
 import ThemeContext from '../themes/ThemeContext';
 import {modifyVehicleState} from "../services/vehicule.service";
@@ -61,7 +60,7 @@ const AlertMessageForm = ({option, identification, type, contact, vehicule, clos
             />
             <View style={styles.buttonContainer}>
                 <Button title="ENVOYER" color={selectedTheme.primaryColor}
-                        onPress={() => sendMessage()}>
+                    onPress={() => sendMessage()}>
                 </Button>
             </View>
         </>
