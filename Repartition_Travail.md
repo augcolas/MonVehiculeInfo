@@ -1,32 +1,35 @@
-# MonVéhiculeInfo
+# Rapport sur le projet "Mon Véhicule Info"
 
-Ce fichier a pour objectif de déterminer (en pourcentage) la participation / volume de travail de chaque membre du groupe au projet 'Mon Véhicule Info'.
+Salut les amis !
 
-# Front
+Voici le rapport super cool sur notre projet génial "Mon Véhicule Info" ! On va vous montrer la répartition du travail de chacun, avec plein de bonnes vibes !
 
-Augustin COLAS : 21%
-Mathis DE LAS HERAS : 21%
-Félix CHABELLARD : 16%
-Sébastien CANDAU : 21%
-Pierre-Emmanuel DELAGRANGE : 21%
+## Tâches Front
 
-# Back
+- Augustin COLAS : 21% (C'est notre gourou du front-end !)
+- Mathis DE LAS HERAS : 21% (Ce mec a du talent pour l'interface utilisateur !)
+- Félix CHABELLARD : 16% (Félix, le maître du design front-end !)
+- Sébastien CANDAU : 21% (Sébastien est notre magicien du code front-end !)
+- Pierre-Emmanuel DELAGRANGE : 21% (Pierre-Emmanuel, notre rockstar du front-end !)
 
-Augustin COLAS : 40%
-Mathis DE LAS HERAS : 10%
-Félix CHABELLARD : 15%
-Sébastien CANDAU : 15%
-Pierre-Emmanuel DELAGRANGE : 20%
+## Tâches Back
 
-# Autres
+- Augustin COLAS : 40% (Notre as du back-end !)
+- Mathis DE LAS HERAS : 10% (Mathis met ses compétences back-end au service du projet !)
+- Félix CHABELLARD : 15% (Félix contribue également à l'aspect back-end !)
+- Sébastien CANDAU : 15% (Sébastien est un pro du back-end lui aussi !)
+- Pierre-Emmanuel DELAGRANGE : 20% (Pierre-Emmanuel, notre expert back-end !)
 
-Mathis s'occupe des différentes démonstrations, Félix a préparé ce présent document et le "script" des démos avec Mathis.
+## Autres contributions
 
-# Total
+- Mathis s'occupe des démos géniales pour épater la galerie !
+- Félix a préparé ce document super sympa et le "script" des démos avec l'aide de Mathis.
 
-Répartition entre les différents axes principaux du projet :
+## Total
 
-Front = 70%
-Back = 25%
-Firebase (Back) = 5%
+Maintenant, voyons comment se répartit notre projet topissime :
+
+- Front-end : 70% (On donne tout pour une expérience utilisateur au top !)
+- Back-end : 25% (Le moteur qui fait tourner notre projet, on assure grave !)
+- Firebase (Back-end) : 5% (Firebase est notre ami, il nous donne un coup de pouce !)
 
