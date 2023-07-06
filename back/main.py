@@ -266,11 +266,13 @@ def get_conversations_user(user_id):
     conversations = Conversation.query.filter(or_(Conversation.user_id == user_id, Conversation.contact_id == user_id)).all()
     result = []
     for conversation in conversations:
+        vehicle = Vehicle.query.get(conversation.vehicle_id)
         result.append({
             'id': conversation.id,
             'user_id': conversation.user_id,
             'contact_id': conversation.contact_id,
             'license_plate': conversation.license_plate,
+            'vehicle_id':conversation.vehicle_id
         })
     return jsonify(result)
 
