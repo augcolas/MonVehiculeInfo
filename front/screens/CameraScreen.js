@@ -192,12 +192,14 @@ export default function CameraScreen() {
                         vehiclePlate = plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3");
                         setDetectedId(plate.toUpperCase().replace(/(\w{2})(\d{3})(\w{2})/, "$1-$2-$3"));
                     } else {
-                        vehiclePlate = plate.toUpperCase();
-                        setDetectedId(plate.toUpperCase());
+                        Alert.alert("Avertissement", "Ceci n'est pas une plaque d'immatriculation française");
+                        setIsLoading(false);
+                        return
                     }
                 } else {
-                    vehiclePlate = "PLAQUE";
-                    setDetectedId('PLAQUE');
+                       Alert.alert("Avertissement", "Aucune plaque n'a été détectée");
+                        setIsLoading(false);
+                        return
                 }
                 //getting the contact infos
                 const response2 = await fetch(
