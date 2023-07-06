@@ -134,7 +134,6 @@ export default function CameraScreen() {
                 const contact1 = await response1.json();
                 console.log(contact1.user);
                 if (contact1.user.id == null) {
-                    
                     Alert.alert("Avertissement", "Ce véhicule n'est pas enregistré dans notre base de données");
                     setIsLoading(false);
                     return
@@ -267,7 +266,7 @@ export default function CameraScreen() {
                     <View style={styles.modalContent}>
 
                         {contact != null && contact.id != null &&(
-                                <ModalAlert identification={detectedId} type={detectionType} contact={contact} vehicule={vehicule}></ModalAlert>
+                                <ModalAlert identification={detectedId} type={detectionType} contact={contact} vehicule={vehicule} closeModal={closeModal}></ModalAlert>
                         )}
                         <Button onPress={() => closeModal()}  title={"Annuler"} color={selectedTheme.buttonColor}></Button>
                     </View>
