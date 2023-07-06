@@ -184,7 +184,9 @@ def get_vehicle_by_vehicle_id(vehicleId):
         if user is None:
             returned_object = {'message': 'L\'utilisateur n\'existe pas dans la base de données'}
         else:
-            returned_object = {'id': user.id, 'name': user.name, 'email': user.email}
+            returned_user = {'id': user.id, 'name': user.name, 'email': user.email, }
+            returned_vehicle = {'id': vehicle.id,'type': vehicle.type,'brand': vehicle.brand,'color': vehicle.color,'license_plate': vehicle.license_plate, 'user_id': vehicle.user_id,'state': vehicle.state }
+            returned_object = {'user': returned_user, 'vehicle': returned_vehicle}
 
     app.logger.info(returned_object)
     return jsonify(returned_object)
