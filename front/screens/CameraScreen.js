@@ -253,9 +253,6 @@ export default function CameraScreen() {
                 <Ionicons name={'scan-outline'} size={24} color={'white'} style={styles.scan}/>
                 <Text style={styles.buttonText}>Scanner une plaque</Text>
             </TouchableOpacity>
-            {detectedId && (
-                <Text style={styles.plateText}>dernier scan : "{detectedId}"</Text>
-            )}
 
             <Modal
                 animationType="slide"
