@@ -267,12 +267,21 @@ def get_conversations_user(user_id):
     result = []
     for conversation in conversations:
         vehicle = Vehicle.query.get(conversation.vehicle_id)
+        vehicle_json = {
+                     'id': vehicle.id,
+                    'type': vehicle.type,
+                    'brand': vehicle.brand,
+                    'color': vehicle.color,
+                    'license_plate': vehicle.license_plate,
+                    'user_id': vehicle.user_id,
+                    'state': vehicle.state
+                    }
         result.append({
             'id': conversation.id,
             'user_id': conversation.user_id,
             'contact_id': conversation.contact_id,
             'license_plate': conversation.license_plate,
-            'vehicle_id':conversation.vehicle_id
+            'vehicle': vehicle_json
         })
     return jsonify(result)
 
