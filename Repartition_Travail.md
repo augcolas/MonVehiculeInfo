@@ -24,6 +24,7 @@ Voici le rapport super cool sur notre projet génial "Mon Véhicule Info" ! On v
 
 - Mathis s'occupe des démos géniales pour épater la galerie ! 💡🎥✨
 - Félix a préparé ce document super sympa et le "script" des démos avec l'aide de Mathis. 📄🎥🌟
+- Pierre-Emmanuel s'est occupé de toute la partie avec firebase pour l'authentification (100%)
 
 ## Total
 
