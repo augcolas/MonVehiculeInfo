@@ -309,7 +309,7 @@ def get_conversation_by_users():
 def creer_conversation():
     data = request.get_json()
     app.logger.info('data :',data)
-    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], license_plate=data['license_plate'], vehicle_id=data['vehicle_id'])
+    new_conversation = Conversation(user_id=data['user_id'], contact_id=data['contact_id'], vehicle_id=data['vehicle_id'])
     db.session.add(new_conversation)
     db.session.commit()
 
@@ -317,7 +317,6 @@ def creer_conversation():
         'id': new_conversation.id,
         'user_id': new_conversation.user_id,
         'contact_id': new_conversation.contact_id,
-        'license_plate': new_conversation.license_plate,
         'vehicle_id': new_conversation.vehicle_id
     })
 

@@ -43,7 +43,7 @@ const AlertMessageForm = ({option, identification, contact, vehicule, closeModal
         conversation = await createConversation(user.id, contact.id, vehicule.id);
 
         await createMessage(conversation.id, message, user.id);
-        modifyVehicleState(identification, 'alert');
+        await modifyVehicleState(vehicule.id, 'alert');
 
 
         closeModal();
