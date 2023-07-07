@@ -85,8 +85,6 @@ const ModalAlert = ({identification, type, contact, vehicule, closeModal, update
             {selectedOption && (
                 <AlertMessageForm
                     option={selectedOption}
-                    identification={identification}
-                    type={type}
                     contact={contact}
                     vehicule={vehicule}
                     closeModal={closeModal}

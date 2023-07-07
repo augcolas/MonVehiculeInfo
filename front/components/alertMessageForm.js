@@ -7,7 +7,7 @@ import ThemeContext from '../themes/ThemeContext';
 import {modifyVehicleState} from "../services/vehicule.service";
 import {useNavigation} from "@react-navigation/native";
 
-const AlertMessageForm = ({option, identification, type, contact, vehicule, closeModal, updateState}) => {
+const AlertMessageForm = ({option, identification, contact, vehicule, closeModal, updateState}) => {
     const {user} = useAuth();
     const [message, setMessage] = useState(ALERT.replace("{option}", option).replace("{vehicle_type}", vehicule.type).replace("{vehicle_brand}", vehicule.brand))
     const {selectedTheme} = useContext(ThemeContext);
@@ -40,7 +40,7 @@ const AlertMessageForm = ({option, identification, type, contact, vehicule, clos
         //getting the conversation infos
         let conversation = await checkConversationExist(user.id, contact.id);
 
-        conversation = await createConversation(user.id, contact.id, identification, type);
+        conversation = await createConversation(user.id, contact.id, vehicule.id);
 
         await createMessage(conversation.id, message, user.id);
         modifyVehicleState(identification, 'alert');
